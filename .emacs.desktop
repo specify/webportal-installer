@@ -1,0 +1,414 @@
+;; -*- mode: emacs-lisp; coding: emacs-mule; -*-
+;; --------------------------------------------------------------------------
+;; Desktop File for Emacs
+;; --------------------------------------------------------------------------
+;; Created Thu Aug 23 18:13:34 2012
+;; Desktop file format version 206
+;; Emacs version 24.1.1
+
+;; Global section:
+(setq desktop-missing-file-warning nil)
+(setq tags-file-name nil)
+(setq tags-table-list nil)
+(setq search-ring '("alert" "this.store" "getSt" "solrmain" "emptyT" "mapB" "map"))
+(setq regexp-search-ring nil)
+(setq register-alist nil)
+(setq file-name-history '("~/devweb/spwp/app/view/DetailsGrid.js" "~/devweb/spwp/app/controller/Settings.js" "~/devweb/spwp/app/view/SettingsView.js" "~/devweb/spwp/app/controller/Settings.js" "~/devweb/spwp/app/model/MainModel.js" "~/devweb/portalinprogress/bones.js" "~/devweb/spwp/app/view/DetailsPanel.js" "~/devweb/spwp/app/view/DetailsView.js" "~/devweb/spwp/app/view/ExpressSearchButton.js" "~/devweb/spwp/app/view/AdvancedSearchView.js" "~/devweb/spwp/locale/spwp-lang-se.js" "~/devweb/extjs-4.1.1/locale/ext-lang-fr.js" "~/devweb/extjs-4.1.1/locale/ext-lang-en.js" "~/devweb/spwp/app/controller/AdvancedSearch.js" "~/devweb/spwp/app/controller/ExpressSearch.js" "~/devweb/spwp/app/view/ExpressSearchView.js" "~/devweb/spwp/sqlscratch/solrSubs.txt" "~/devweb/spwp/resources/config/fldmodel.json" "~/devweb/spwp/resources/config/settings.json" "~/devweb/spwp/app/app.js" "~/devweb/spwp/app/store/SettingsStore.js" "~/devweb/spwp/app/store/FieldDefStore.js" "~/devweb/spwp/app/store/MainSolrStore.js" "~/devweb/spwp/app/model/SettingsModel.js" "~/devweb/spwp/app/model/AttachedImageModel.js" "~/devweb/spwp/app/controller/Mapper.js" "~/devweb/spwp/app/view/DetailPanel.js" "~/devweb/spwp/app/view/DetailView.js" "~/devweb/spwp/app/view/Viewport.js" "~/devweb/spwp/app/controller/Detailer.js"))
+
+;; Buffer section -- buffers listed in same order as in buffer list:
+(desktop-create-buffer 206
+  "/home/timo/devweb/spwp/app/controller/ExpressSearch.js"
+  "ExpressSearch.js"
+  'js-mode
+  nil
+  610
+  '(1365 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/timo/devweb/spwp/app/store/MainSolrStore.js"
+  "MainSolrStore.js"
+  'js-mode
+  nil
+  1708
+  '(1533 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/timo/devweb/spwp/app/controller/Mapper.js"
+  "Mapper.js"
+  'js-mode
+  nil
+  8334
+  '(8334 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix) (overwrite-mode)))
+
+(desktop-create-buffer 206
+  "/home/timo/devweb/spwp/resources/config/settings.json"
+  "settings.json"
+  'js-mode
+  nil
+  217
+  '(217 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . utf-8-unix)))
+
+(desktop-create-buffer 206
+  "/home/timo/devweb/spwp/index.html"
+  "index.html"
+  'html-mode
+  nil
+  196
+  '(196 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . utf-8-unix) (overwrite-mode)))
+
+(desktop-create-buffer 206
+  "/home/timo/devweb/spwp/app/view/DetailPanel.js"
+  "DetailPanel.js"
+  'js-mode
+  nil
+  2439
+  '(2439 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . utf-8-unix)))
+
+(desktop-create-buffer 206
+  "/home/timo/devweb/spwp/app/controller/Detailer.js"
+  "Detailer.js"
+  'js-mode
+  nil
+  4435
+  '(4435 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/timo/devweb/spwp/app/view/DetailsPanel.js"
+  "DetailsPanel.js"
+  'js-mode
+  nil
+  1703
+  '(1674 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . utf-8-unix)))
+
+(desktop-create-buffer 206
+  "/home/timo/devweb/spwp/app/view/DetailView.js"
+  "DetailView.js"
+  'js-mode
+  nil
+  628
+  '(628 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/timo/devweb/spwp/app/view/MainGrid.js"
+  "MainGrid.js"
+  'js-mode
+  nil
+  5183
+  '(5183 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/timo/devweb/spwp/app/view/Viewport.js"
+  "Viewport.js"
+  'js-mode
+  nil
+  1211
+  '(1211 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/timo/devweb/spwp/locale/spwp-lang-se.js"
+  "spwp-lang-se.js"
+  'js-mode
+  nil
+  799
+  '(799 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . utf-8-unix)))
+
+(desktop-create-buffer 206
+  "/home/timo/devweb/spwp/app/controller/Settings.js"
+  "Settings.js"
+  'js-mode
+  nil
+  2035
+  '(2035 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . utf-8-unix)))
+
+(desktop-create-buffer 206
+  "/home/timo/devweb/spwp/app/view/SettingsView.js"
+  "SettingsView.js"
+  'js-mode
+  nil
+  949
+  '(910 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . utf-8-unix)))
+
+(desktop-create-buffer 206
+  "/home/timo/devweb/spwp/app/model/SettingsModel.js"
+  "SettingsModel.js"
+  'js-mode
+  nil
+  272
+  '(268 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . utf-8-unix)))
+
+(desktop-create-buffer 206
+  "/home/timo/devweb/spwp/app/view/ImageView.js"
+  "ImageView.js"
+  'js-mode
+  nil
+  575
+  '(575 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/timo/devweb/spwp/app/app.js"
+  "app.js"
+  'js-mode
+  nil
+  437
+  '(437 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/timo/devweb/spwp/resources/config/fldmodel.json"
+  "fldmodel.json"
+  'js-mode
+  nil
+  2908
+  '(2908 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/timo/devweb/spwp/app/model/MainModel.js"
+  "MainModel.js"
+  'js-mode
+  nil
+  215
+  '(215 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/timo/devweb/spwp/app/controller/Image.js"
+  "Image.js"
+  'js-mode
+  nil
+  2463
+  '(2463 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/timo/devweb/portalinprogress/bones.js"
+  "bones.js"
+  'js-mode
+  nil
+  1909
+  '(1847 t)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-dos)))
+
+(desktop-create-buffer 206
+  "/home/timo/devweb/spwp/app/view/ThumbnailView.js"
+  "ThumbnailView.js"
+  'js-mode
+  nil
+  415
+  '(415 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/timo/devweb/spwp/app/view/AdvancedSearchView.js"
+  "AdvancedSearchView.js"
+  'js-mode
+  nil
+  1336
+  '(1336 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/timo/devweb/spwp/app/view/ExpressSearchView.js"
+  "ExpressSearchView.js"
+  'js-mode
+  nil
+  1236
+  '(525 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/timo/devweb/spwp/app/view/ExpressSearchButton.js"
+  "ExpressSearchButton.js"
+  'js-mode
+  nil
+  1
+  '(nil nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/timo/devweb/extjs-4.1.1/locale/ext-lang-fr.js"
+  "ext-lang-fr.js"
+  'js-mode
+  nil
+  1472
+  '(1352 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . utf-8-with-signature-unix)))
+
+(desktop-create-buffer 206
+  "/home/timo/devweb/extjs-4.1.1/locale/ext-lang-en.js"
+  "ext-lang-en.js"
+  'js-mode
+  nil
+  1
+  '(nil nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/timo/devweb/spwp/app/controller/AdvancedSearch.js"
+  "AdvancedSearch.js"
+  'js-mode
+  nil
+  1178
+  '(1178 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/timo/devweb/spwp/sqlscratch/solrSubs.txt"
+  "solrSubs.txt"
+  'text-mode
+  nil
+  815
+  '(815 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . utf-8-unix)))
+
+(desktop-create-buffer 206
+  "/home/timo/devweb/spwp/app/store/FieldDefStore.js"
+  "FieldDefStore.js"
+  'js-mode
+  nil
+  421
+  '(421 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/timo/devweb/spwp/app/store/SettingsStore.js"
+  "SettingsStore.js"
+  'js-mode
+  nil
+  427
+  '(427 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . utf-8-unix)))
+
+(desktop-create-buffer 206
+  "/home/timo/devweb/spwp/app/model/AttachedImageModel.js"
+  "AttachedImageModel.js"
+  'js-mode
+  nil
+  413
+  '(413 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/timo/devweb/spwp/resources/css/thumb-view.css"
+  "thumb-view.css"
+  'css-mode
+  nil
+  6
+  '(1 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/timo/devweb/img2/data-view.css"
+  "data-view.css"
+  'css-mode
+  nil
+  361
+  '(361 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/timo/devweb/img2/data-view.js"
+  "data-view.js"
+  'js-mode
+  nil
+  1314
+  '(1314 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/timo/devweb/img2/data-view.html"
+  "data-view.html"
+  'html-mode
+  nil
+  1201
+  '(1201 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . iso-latin-1-unix)))
+
