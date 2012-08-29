@@ -1,0 +1,64 @@
+How to set up a web portal.
+
+
+
+1. If necessary, in Specify, create an Export Mapping. (Work needs to be done to the mapper - remove requirement of a 'concept', allow setting of web portal settings). The ku fish, ento and mammal databases on starling already have mappings created and exported to cache tables. It probably would be a good idea to use them.
+
+
+2. Open the Exporter application. If necessary build or update the cache. Then
+ click the Set up Web Portal button. When prompted, choose a directory (preferably empty) to hold the generated files. The app will index the contents of the cache for the selected mapping and generate config files for solr and the webportal app.
+
+
+3. Set up solr:
+
+   
+	a) locate the example directory. e.g apache-solr-3.5.0/example
+   
+	b) remove all files from example/solr/data/index
+   
+	c) copy the files in the solr directory generated in step 2 to example/solr/data/index
+   
+	d) open the file example/solr/conf/schema.xml and replace the fields in the <fields> block with the contents of the file SolrFldSchema.xml generated in step 2. Leave the <dynamicField> definition in the schema.xml file.
+   
+
+4. To start solr, from the example directory, execute:
+java -jar -Djetty.port=443 start.jar
+
+
+
+5. If necessary, copy the contents of the web portal app directory spwp/ to the apache html directory. In linux this usually is /var/www/html/. The spwp/ dir can be found at BITEME/WebPortal.
+6. If necessary, change the settings in the file resources/config/settings.json. The settings currently available are: solrUrl, solrPort, solrCore, solrPageSize, and imageBaseUrl.
+7. Copy the .json file generated in step 2 to spwp/resources/config/fldmodel.json
+
+
+8. See if it's working by opening localhost/spwp/index.html in a web browser.
+
+
+
+ 
+
+
+Configuration.
+
+The fldmodel.json file created in step 7 contains information about the fields selected for the portal. Each field has the following settings:
+
+colname: The name of the column in the specify cache. DO NOT EDIT! 
+solrname: The name of the column in the solr index. DO NOT EDIT! 
+solrtitle: ? DO NOT EDIT! 
+title: The title for the field displayed in column headers, forms etc.
+type: the data type. DO NOT EDIT! 
+width: the length of text flds. DO NOT EDIT! 
+concept: the name of the concept the field is mapped to.
+concepturl: the concept's url.
+sptable: the name of the field's table in the specify db. DO NOT EDIT! 
+sptabletitle: the sptable's title. 
+spfld: the name of the field in the specify database}, DO NOT EDIT! 
+spfldtitle: the spfld's title.
+spdescription: the spfld's description
+colidx: the position of the field in the specify cache. DO NOT EDIT! 
+advancedsearch: If this setting is true the field will be available in the advanced-search interface. (boolean, defaultvalue: true)
+displaycolidx:  the position of the field in the results display table, and the detail form view.
+hiddenbydefault: If this setting is true then the field will not be initially displayed in the results view, though it can be made visible by clicking on a column header in the results view and choosing 'Columns'. type: 'boolean', defaultvalue: false},
+displayinmap: If true the field will displayed in the info window in Google maps views. (type: boolean, defaultvalue: true)
+mapmarkertitle: If true the field will appear in the label for points in Google maps views. (type: boolean, defaultvalue: false
+
