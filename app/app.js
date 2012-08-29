@@ -24,7 +24,6 @@ Ext.application({
 	//set up the fields for the main model
 	var fieldStore = Ext.getStore('FieldDefStore');
 
-	var geoCoordFlds = [];
 	var dataFlds = new Array(fieldStore.count());
 	for (var f = 0; f < fieldStore.count(); f++) {
 	    var fldDef = fieldStore.getAt(f);
@@ -33,6 +32,7 @@ Ext.application({
 		type: fldDef.get('solrtype')
 	    });
 	    dataFlds[f] = newFld;
+	}
 
 	Ext.define('SpWebPortal.model.MainModel', {
 	    extend: 'Ext.data.Model',
