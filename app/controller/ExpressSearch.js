@@ -23,9 +23,18 @@ Ext.define('SpWebPortal.controller.ExpressSearch', {
 	    },
 	    'expressSrch textfield': {
 		specialkey: this.onSpecialKey
+	    },
+	    'button[itemid="mapsearchbtn"]': {
+		click: this.onMapSearchClick
 	    }
 	});
 	this.callParent(arguments);
+    },
+
+    onMapSearchClick: function() {
+	this.setForceFitToMap(true);
+	this.doSearch();
+	this.setForceFitToMap(false);
     },
 
     doSearch: function() {
@@ -36,7 +45,8 @@ Ext.define('SpWebPortal.controller.ExpressSearch', {
 	var images = this.getRequireImages();
 	var maps = this.getRequireGeoCoords();
 	var mainQ = control[0].value.toLowerCase();
-	if (images || maps) {
+	var filterToMap = (this.getForceFitToMap() || this.getFitToMap()) && this.mapViewIsActive();
+	if (images || maps || filterToMap) {
 	    mainQ = '_query_:"' + mainQ + '"+AND+_query_:"';
 	}
 	var url = solr.urlTemplate + mainQ;
@@ -50,7 +60,13 @@ Ext.define('SpWebPortal.controller.ExpressSearch', {
 	    }
 	    url += solr.getGeoCoordRequirementFilter();
 	}
-	if (images || maps) {
+	if (filterToMap) {
+	    if (images || maps) {
+		url += '+AND+';
+	    }
+	    url += solr.getMapFitFilter();
+	}
+	if (images || maps || filterToMap) {
 	    url += '"';
 	}
 	if (this.getMatchAll()) { 
@@ -59,7 +75,11 @@ Ext.define('SpWebPortal.controller.ExpressSearch', {
 
 	solr.getProxy().url = url; 
 
-	solr.loadPage(1);
+	solr.loadPage(1, {
+	    callback: function() {
+		//Ext.getCmp('spwpmainpagingtoolbar').fireEvent('change');
+	    }
+	});
     }
 });
 

@@ -90,15 +90,48 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
 	this.callParent(arguments);
     },
 
+    fillStore: function(theStore, records, size) {
+	var start = theStore.data.items.length;
+	var r;
+	//console.log("filling records " + start + " to " + (start+size));
+	if (start == 0) {
+	    this.down('tabpanel').getActiveTab().setLoading(true);
+	} 
+	var result = start + size <= records.length;
+	var end = result ? start + size : records.length;
+	theStore.add(records.slice(start, end));
+	if (!result) {
+	    this.setCount(records.length);
+	    theStore.loadPage(1);
+	    this.down('tabpanel').getActiveTab().setLoading(false);
+	}	    
+	return result;
+    },
+
     loadRecords: function(records) {
+	//console.info("DetailsPanel.loadRecords()");
 	var theStore = this.down('pagingtoolbar').getStore();
 	theStore.removeAll();
 	this.setCount(0);
-	for (var r = 0; r < records.length; r++) {
-	    theStore.add(records[r]);
+	if (false) {
+	    theStore.add(records);
+	    //console.info("DetailsPanel.loadRecords(): filled store");
+	    this.setCount(records.length);
+	    theStore.loadPage(1);
+	    this.down('tabpanel').getActiveTab().setLoading(false);
+	} else {
+	    var task = Ext.TaskManager.newTask({
+		run: this.fillStore,
+		args: [
+		    theStore,
+		    records,
+		    400
+		],
+		scope: this,
+		interval: 200
+	    });
+	    task.start();
 	}
-	this.setCount(records.length);
-	theStore.loadPage(1);
 	//this.down('spdetailpanel').loadRecord(record
     },
 

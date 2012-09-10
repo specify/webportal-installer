@@ -9,6 +9,9 @@ Ext.define('SpWebPortal.controller.Search', {
 	    },
 	    'checkbox[itemid="req-geo-ctl"]': {
 		change: this.reqGeoChange
+	    },
+	    'checkbox[itemid="fit-to-map"]': {
+		change: this.fitToMapChange
 	    }
 	});
 
@@ -18,13 +21,19 @@ Ext.define('SpWebPortal.controller.Search', {
     config: {
 	requireImages: false,
 	requireGeoCoords: false,
-	matchAll: false
+	matchAll: false,
+	fitToMap: false,
+	forceFitToMap: false
     },
 
     onSpecialKey: function(field, e) {
 	if (e.getKey() == e.ENTER) {
 	    this.doSearch();
 	}
+    },
+
+    mapViewIsActive: function() {
+	return Ext.getCmp('spwpmainmappane').isVisible();
     },
 
     getViewAlias: function() {
@@ -37,6 +46,10 @@ Ext.define('SpWebPortal.controller.Search', {
 
     reqGeoChange: function() {
 	this.setRequireGeoCoords(!this.getRequireGeoCoords());
+    },
+
+    fitToMapChange: function() {
+	this.setFitToMap(!this.getFitToMap());
     },
 
     matchAllChange: function() {

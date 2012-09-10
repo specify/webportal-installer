@@ -7,7 +7,7 @@ Ext.application({
 
     models: ['FieldDefModel','AttachedImageModel'],
     stores: ['SettingsStore', 'FieldDefStore', 'NumericOps', 'DateOps', 'StringOps', 'Sorts'],
-    controllers: ['ExpressSearch', 'AdvancedSearch', 'Mapper', 'Detailer',
+    controllers: ['Mapper', 'ExpressSearch', 'AdvancedSearch', 'Detailer',
 		 'Image', 'Settings'],
 
     

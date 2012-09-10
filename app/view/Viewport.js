@@ -11,9 +11,12 @@ Ext.define('SpWebPortal.view.Viewport', {
     pagerDisplayMsg: 'Displaying records {0} - {1} of {2}',
     pagerEmptyMsg: 'No records to display',
     searchToolsTitle: 'Search Tools',
-    mapsCheckBox: 'Maps',
+    mapsCheckBox: 'Geo Coords',
     imagesCheckBox: 'Images',
+    fitToMapCheckBox:'Fit to Map',
     settingsBtnTip: 'Settings',
+    mapSearchBtn: 'Search',
+    mapSearchBtnTip: 'Apply current search criteria to map region',
     //...localizable text
 
     requires: [
@@ -22,7 +25,8 @@ Ext.define('SpWebPortal.view.Viewport', {
 	'SpWebPortal.view.ExpressSearchView',
 	'SpWebPortal.view.AdvancedSearchView',
 	'SpWebPortal.view.MainGrid',
-	'SpWebPortal.view.ImageView'
+	'SpWebPortal.view.ImageView',
+	'SpWebPortal.view.MapView'
     ],
 
 
@@ -39,13 +43,23 @@ Ext.define('SpWebPortal.view.Viewport', {
 			xtype: 'tabpanel',
 			layout: 'fit',
 			id: 'spwpmaintabpanel',
-			bbar: {
-			    xtype: 'pagingtoolbar',
-			    store: Ext.getStore('MainSolrStore'),
-			    displayInfo: true,
-			    displayMsg: this.pagerDisplayMsg,
-			    emptyMsg: this.pagerEmptyMsg
-			},
+			bbar: [
+			    {
+				xtype: 'pagingtoolbar',
+				id: 'spwpmainpagingtoolbar',
+				store: Ext.getStore('MainSolrStore'),
+				displayInfo: true,
+				displayMsg: this.pagerDisplayMsg,
+				emptyMsg: this.pagerEmptyMsg,
+				region: 'center'
+			    },
+			    {
+				xtype: 'button',
+				itemid: 'mapsearchbtn',
+				text: this.mapSearchBtn,
+				region: 'east'
+			    }
+			],
 			items: [
 			    {
 				xtype: 'spmaingrid',
@@ -59,7 +73,7 @@ Ext.define('SpWebPortal.view.Viewport', {
 				title: this.imagesTitle
 			    },
 			    {
-				xtype: 'panel',
+				xtype: 'spmapview',
 				title: this.mapsTitle,
 				id: 'spwpmainmappane'
 			    }
@@ -98,6 +112,13 @@ Ext.define('SpWebPortal.view.Viewport', {
 				boxLabel: this.imagesCheckBox,
 				name: 'Images',
 				itemid: 'req-img-ctl',
+				checked: false
+			    },
+			    {
+				xtype: 'checkbox',
+				boxLabel: this.fitToMapCheckBox,
+				name: 'Map',
+				itemid: 'fit-to-map',
 				checked: false
 			    },
 			    {

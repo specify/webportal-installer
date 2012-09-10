@@ -6,8 +6,11 @@ Ext.define('SpWebPortal.controller.Mapper', {
     geoCoordFlds: [],
     fldsOnMap: [],
     mapMarkTitleFld: '',
-    mapCtl: null,
+    mainMapCtl: null,
     mapPopupWin: null,
+    mapMarkers: [],
+    fitToMap: false,
+    forceFitToMap: false,
 
     //localizable text...
     mapTitle: 'Map',
@@ -17,33 +20,82 @@ Ext.define('SpWebPortal.controller.Mapper', {
     init: function() {
 	//console.info("Mapper.init");
 	this.control({
+	    'expressSrch button[itemid="search-btn"]': {
+		click: this.onExpressSearch
+	    },
+	    'expressSrch textfield': {
+		specialkey: this.onExpressSearch
+	    },
+	    'advSrch button[itemid="search-btn"]': {
+		click: this.onAdvancedSearch
+	    },
+	    'advSrch textfield': {
+		specialkey: this.onAdvancedSearch
+	    },
 	    'spmaingrid': {
 	        mapsetsready: this.mapSettingsReady
 	    },
 	    'actioncolumn[itemid="map-popup-ctl"]': {
 		clicked: this.onPopupClk
 	    },	
-	    '#spwpmaintabpanel > pagingtoolbar': {
+	    '#spwpmainpagingtoolbar': {
+		beforechange: this.onBeforePageChange,
 		change: this.onPageChange
 	    },
 	    '#spwpmaintabpanel': {
 		tabchange: this.onTabChange
-	    }	
+	    },
+	    'button[itemid="mapsearchbtn"]': {
+		click: this.onMapSearchClk
+	    },
+	    'checkbox[itemid="fit-to-map"]': {
+		change: this.fitToMapChange
+	    }
 	});
 
 	
 	this.callParent(arguments);
     },
 
+    getMapPane: function() {
+	return Ext.getCmp('spwpmainmappane');
+    },
+
+    fitToMapChange: function() {
+	this.fitToMap = !this.fitToMap;
+    },
+
+    onExpressSearch: function() {
+	console.info("Mapper.onExpressSearch()");
+	this.forceFitToMap = false;
+	this.getMapPane().setLoading(true);
+    },
+
+    onAdvancedSearch: function() {
+	console.info("Mapper.onAdvancedSearch()");
+	this.forceFitToMap = false;
+    },
+
+    onMapSearchClk: function() {
+	console.info("Mapper.onMapSearchClk()");
+	this.forceFitToMap = true;
+	this.getMapPane().setLoading(true);
+    },
+
     onGoogleMarkerClick: function(record) {
 	//console.info("Mapper.onGoogleMarkerClick");
-	var mappane = Ext.getCmp('spwpmainmappane');
+	var mappane = this.getMapPane();
+	//mappane.setLoading(true);
 	mappane.fireEvent('googlemarkerclick', record);
     },
 
     onTabChange: function(tabPanel, newCard) {
 	if (newCard.id == 'spwpmainmappane') {
+	    this.getMapPane().setLoading(true);
 	    this.mapPage();
+	    tabPanel.down('button[itemid="mapsearchbtn"]').setVisible(true);
+	} else {
+	    tabPanel.down('button[itemid="mapsearchbtn"]').setVisible(false);
 	}
     },
 
@@ -66,8 +118,18 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	this.mapMarkTitleFld = mapMarkTitleFld;
     },
 
+    onBeforePageChange: function(pager) {
+	console.info('Mapper.onBeforePageChange()');
+	var tabber = pager.up('tabpanel');
+	var tab = tabber.getActiveTab();
+	if (tab.id == 'spwpmainmappane') {
+	    this.getMapPane().setLoading(true);
+	}
+	return true;
+    },
+
     onPageChange: function(pager) {
-	//console.info('Mapper.onPageChange()');
+	console.info('Mapper.onPageChange()');
 	var tabber = pager.up('tabpanel');
 	var tab = tabber.getActiveTab();
 	if (tab.id == 'spwpmainmappane') {
@@ -84,7 +146,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
     },
     
     isMappable: function(geoCoord) {
-	return geoCoord != null && geoCoord.trim() != "";
+	return geoCoord != null;//&& geoCoord.trim() != "";
     },
 
     areMappable: function(geoCoords) {
@@ -108,8 +170,8 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	    coords[0] = records[r].get(geoCoordFlds[0]);
 	    coords[1] = records[r].get(geoCoordFlds[1]);
 	    if (this.areMappable(coords)) {
-		coords[0] = parseFloat(coords[0]);
-		coords[1] = parseFloat(coords[1]);
+		//coords[0] = parseFloat(coords[0]);
+		//coords[1] = parseFloat(coords[1]);
 		geoCoords[p] = [];
 		geoCoords[p][0] = coords[0];
 		geoCoords[p][1] = coords[1];
@@ -163,10 +225,17 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	    } else {
 		dom = Ext.getDom('spwpmainmappane');
 	    }
+	    var mapCtl;
 	    if (geoCoords.length == 1) {
-		mapCtl = this.geWinInitializeSingle(geoCoords[0], dom);
+		mapCtl = this.geWinInitializeSingle(geoCoords[0], dom, isPopup);
 	    } else {
-		mapCtl = this.geWinInitializeSet(minLat, minLong, maxLat, maxLong, dom);
+		mapCtl = this.geWinInitializeSet(minLat, minLong, maxLat, maxLong, dom, isPopup);
+	    }
+	    if (!isPopup) {
+		if (this.mainMapCtl == null) {
+		    this.mainMapCtl = mapCtl;
+		    this.getMapPane().setMapCmp(this.mainMapCtl);
+		}
 	    }
 	    //XXX Can't get sort function to work and can't find documentation
 	    //so the sort is alphabetical. Which might be OK?
@@ -214,49 +283,104 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	    
 	} else {
 	    if (records.length > 0) {
-		alert(this.noGeoCoordMsg);
+		if (isPopup) {
+		    alert(this.noGeoCoordMsg);
+		}
 	    } else if (!isPopup) {
 		mapCtl = this.geWinInitializeEmpty(Ext.getDom('spwpmainmappane'));
+		if (this.mainMapCtl == null) {
+		    this.mainMapCtl = mapCtl
+		    this.getMapPane().setMapCmp(this.mainMapCtl);
+		}
 	    }
 	}
+	this.getMapPane().setLoading(false);
+    },
+
+    getDefaultMapType: function() {
+	var defType = Ext.getStore('SettingsStore').getAt(0).get('defMapType');
+	var result = google.maps.MapTypeId.ROADMAP;
+	switch (defType) {
+	case 'roadmap': result = google.maps.MapTypeId.ROADMAP;
+	case 'hybrid': result = google.maps.MapTypeId.HYBRID;
+	case 'satellite': result = google.maps.MapTypeId.SATELLITE;
+	case 'terrain': result = google.maps.MapTypeId.TERRAIN;}
+	return result;
+    },
+
+    getInitialMapType: function() {
+	if (this.mainMapCtl != null) {
+	    return this.mainMapCtl.getMapTypeId();
+	}
+	return this.getDefaultMapType();
     },
 
     geWinInitializeEmpty: function(dom) {
 	var myOptions = {
 	    zoom: 3,
-            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            mapTypeId: this.getInitialMapType(),
 	    center: new google.maps.LatLng(0, 0)
         };
-        var result = new google.maps.Map(dom, myOptions);
-	return result;
+	this.clearMarkers();
+	if (this.mainMapCtl == null) {
+	    return new google.maps.Map(dom, myOptions);
+	} else {  
+            Ext.apply(this.mainMapCtl, myOptions);
+	    return this.mainMapCtl;
+	}
     },
 
-    geWinInitializeSet: function(minLat, minLong, maxLat, maxLong, dom) {
+    geWinInitializeSet: function(minLat, minLong, maxLat, maxLong, dom, isPopup) {
  	//worry about lines, boxes etc, later
         var sw = new google.maps.LatLng(minLat, minLong);
 	var ne = new google.maps.LatLng(maxLat, maxLong);
 	var myOptions = {
 	    zoom: 0,
-            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            mapTypeId: this.getInitialMapType()
         };
 	var bounds = new google.maps.LatLngBounds(sw, ne);
+	
 
-        var result = new google.maps.Map(dom, myOptions);
-	result.fitBounds(bounds);
-	return result;
+        var result = this.mainMapCtl == null || isPopup ? new google.maps.Map(dom, myOptions)
+	    : this.mainMapCtl;
+	this.clearMarkers(); //don't necessarily have to do this???
+	if (!(this.fitToMap || this.forceFitToMap)) {
+	    //this.clearMarkers();
+	    result.fitBounds(bounds);
+	}	return result;
    },
 
-    geWinInitializeSingle: function (geoCoords, dom) {
+    geWinInitializeSingle: function (geoCoords, dom, isPopup) {
 	//worry about lines, boxes etc, later
         var point = new google.maps.LatLng(geoCoords[0], geoCoords[1]);
 
 	var myOptions = {
             zoom: 6,
-            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            mapTypeId: this.getInitialMapType(),
             center: point
         };
+	
+	this.clearMarkers();  //don't necessarily have to do this ???
+	if (isPopup || this.mainMapCtl == null) {
+	    return google.maps.Map(dom, myOptions);
+	} else {
+	    if (!(this.fitToMap || this.forceFitToMap)) {	    
+		//this.clearMarkers();
+		Ext.apply(this.mainMapCtl,myOptions);
+	    }	    
+	    return this.mainMapCtl;
+	}
+    },
 
-        return new google.maps.Map(dom, myOptions);
+    clearMarkers: function() {
+	for (var m=0; m < this.mapMarkers.length; m++){
+	    this.mapMarkers[m].setMap(null);
+	}
+	this.mapMarkers.length = 0;
+	//also clear listeners on markers
+	if (this.mainMapCtl != null) {
+	    google.maps.event.clearListeners(this.mainMapCtl, 'click');
+	}
     },
 
     addMarker: function (map, record, geoCoords, fldsOnMap, mapMarkTitleFld, isPopup){
@@ -267,7 +391,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	    if (record instanceof Array) {
 		var lineLen = 0;
 		titleTxt = '';
-		for (var r = 0; r < record.length; r++) {
+		for (var r = 0; r < record.length && r < 20; r++) {
 		    /*if (lineLen > 75) {
 			titleTxt += '<br>';
 			lineLen = 0;
@@ -279,6 +403,9 @@ Ext.define('SpWebPortal.controller.Mapper', {
 		    //lineLen += txt.length;
 		    titleTxt += txt;
 		}
+		if (r < record.length) {
+		    titleTxt += ' ...';
+		}
 	    } else {
 		titleTxt = mapMarkTitleFld[1] + ': ' + record[0].get(mapMarkTitleFld[0]);
 	    }
@@ -288,6 +415,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
             map: map,
             title: titleTxt
 	});
+	this.mapMarkers.push(marker);
 
 	if (isPopup) {
 	    google.maps.event.addListener(marker, 'click', function() {

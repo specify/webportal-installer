@@ -7,7 +7,8 @@ Ext.define('SpWebPortal.controller.Detailer', {
 
     requires: [
 	'SpWebPortal.view.DetailPanel',
-	'SpWebPortal.view.DetailsPanel'
+	'SpWebPortal.view.DetailsPanel',
+	'Ext.TaskManager'
     ],
 
     init: function() {
@@ -35,7 +36,8 @@ Ext.define('SpWebPortal.controller.Detailer', {
     },
 
     onGoogleMarkerClick: function(record) {
-	//console.info("Detailer.onGoogleMarkerClick");
+	console.info("Detailer.onGoogleMarkerClick");
+	//Ext.getCmp('spwpmainmappane').setLoading(true);
 	if (record instanceof Array) {
 	    if (record.length > 1) {
 		this.popupDetails(record, false);
@@ -45,6 +47,7 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	} else {
 	    this.popupDetail(record, false);
 	}
+	//Ext.getCmp('spwpmainmappane').setLoading(false);
     },
 
     onGridDetailClk: function(record, isDetailGrid, rowIndex) {
@@ -122,7 +125,9 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	    this.detailsPopupWin.setWidth(this.detailPopupWin.getWidth());
 	    this.detailPopupWin.hide();
 	}
+
 	this.detailsForm.loadRecords(records);
+	
 	this.detailsPopupWin.show();
 	this.detailsPopupWin.toFront();
     },

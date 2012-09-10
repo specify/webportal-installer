@@ -10,7 +10,9 @@ Ext.define('SpWebPortal.view.SettingsView', {
     //..localizable text
 
     isReadOnly: function(field) {
-	return field.name != 'solrPageSize';
+	return field.name != 'solrPageSize'
+	    && field.name != 'defInitialView'
+	    && field.name != 'defMapType';
     },
 
 	
