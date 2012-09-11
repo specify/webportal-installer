@@ -1,3 +1,4 @@
+
 Ext.define('SpWebPortal.controller.Image', {
     extend: 'Ext.app.Controller',
 
@@ -15,7 +16,7 @@ Ext.define('SpWebPortal.controller.Image', {
 	    'thumbnail': {
 		selectionchange: this.onSelectionChange
 	    },
-	    'tabpanel > pagingtoolbar': {
+	    '#spwpmainpagingtoolbar': {
 		change: this.onPageChange
 	    }
 	});
