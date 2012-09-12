@@ -24,13 +24,13 @@ Ext.define('SpWebPortal.controller.Mapper', {
 		click: this.onExpressSearch
 	    },
 	    'expressSrch textfield': {
-		specialkey: this.onExpressSearch
+		specialkey: this.onExpressSearchSpecialKey
 	    },
 	    'advSrch button[itemid="search-btn"]': {
 		click: this.onAdvancedSearch
 	    },
 	    'advSrch textfield': {
-		specialkey: this.onAdvancedSearch
+		specialkey: this.onAdvancedSearchSpecialKey
 	    },
 	    'spmaingrid': {
 	        mapsetsready: this.mapSettingsReady
@@ -71,9 +71,21 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	this.getMapPane().setLoading(true);
     },
 
+    onExpressSearchSpecialKey: function(field, e) {
+	if (e.getKey() == e.ENTER) {
+	    this.onExpressSearch();
+	}
+    },
+
     onAdvancedSearch: function() {
 	console.info("Mapper.onAdvancedSearch()");
 	this.forceFitToMap = false;
+    },
+
+    onAdvancedSearchSpecialKey: function(field, e) {
+	if (e.getKey() == e.ENTER) {
+	    this.onAdvancedSearch();
+	}
     },
 
     onMapSearchClk: function() {
