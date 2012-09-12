@@ -146,7 +146,11 @@ Ext.define('SpWebPortal.controller.Mapper', {
     },
     
     isMappable: function(geoCoord) {
-	return geoCoord != null;//&& geoCoord.trim() != "";
+	if (geoCoord == null) return false;
+ 
+	if (typeof geoCoord == "string") return geoCoord.trim() != "";
+
+	return true;
     },
 
     areMappable: function(geoCoords) {
