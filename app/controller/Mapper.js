@@ -366,7 +366,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	
 	this.clearMarkers();  //don't necessarily have to do this ???
 	if (isPopup || this.mainMapCtl == null) {
-	    return google.maps.Map(dom, myOptions);
+	    return new google.maps.Map(dom, myOptions);
 	} else {
 	    if (!(this.fitToMap || this.forceFitToMap)) {	    
 		//this.clearMarkers();
