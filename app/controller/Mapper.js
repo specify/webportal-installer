@@ -11,6 +11,8 @@ Ext.define('SpWebPortal.controller.Mapper', {
     mapMarkers: [],
     fitToMap: false,
     forceFitToMap: false,
+    mapStore: null,
+    
 
     //localizable text...
     mapTitle: 'Map',
@@ -92,6 +94,22 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	console.info("Mapper.onMapSearchClk()");
 	this.forceFitToMap = true;
 	this.getMapPane().setLoading(true);
+	/*var store = Ext.getStore('MainSolrStore');
+
+	if (this.mapStore == null) {
+	    this.mapStore = Ext.create('SpWebPortal.store.MainSolrStore', {
+		pageSize: 10000
+	    });
+	}
+	var pageSize = store.pageSize;
+	var url = store.getProxy().url.replace("rows="+pageSize, "rows="+this.mapStore.pageSize);
+	this.mapStore.getProxy().url = url;
+	this.mapStore.load({
+	    scope: this,
+	    callback: function(records) {
+		console.info("MapStore loaded with " + records.length + " records.");
+	    }
+	});*/
     },
 
     onGoogleMarkerClick: function(record) {
