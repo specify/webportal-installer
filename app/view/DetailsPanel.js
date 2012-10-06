@@ -18,7 +18,8 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
     config: {
 	currentRecIdx: 0,
 	count: 0,
-	showMap: false
+	showMap: false,
+	recStore: null
     },
 
     layout: 'fit',
@@ -26,7 +27,8 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
     initComponent: function() {
 	console.info("DetailsPanel.initComponent()");
 
-	var theStore = Ext.create('Ext.data.Store', {
+	Ext.define('SpWebPortal.view.DetailStore', {
+	    extend: 'Ext.data.Store', 
 	    model: 'SpWebPortal.model.MainModel',
 	    pageSize: 1,
 	    proxy: {
@@ -53,7 +55,22 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
 	    setGeoCoordFlds: function(geoCoordFlds) {
 	    }
 	});
+
+	var theStore = Ext.create('SpWebPortal.view.DetailStore');
 	
+	var theRecStore = Ext.create('Ext.data.Store', {
+	    model: "SpWebPortal.model.MainModel",
+	    pageSize: 1000,
+	    proxy: {
+		type: 'jsonp',
+		callbackKey: 'json.wrf',
+		reader: {
+		    root: 'response.docs',
+		    totalProperty: 'response.numFound'
+		}
+	    }
+	});
+	this.setRecStore(theRecStore);
 
 	var items = [];
 	items[0] = Ext.create('Ext.tab.Panel', {
@@ -70,17 +87,22 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
 		    xtype: 'panel',
 		    layout: 'fit',
 		    title: this.detailDetailTitle,
-		    bbar: Ext.create('Ext.toolbar.Paging', {
-			store: theStore,
-			displayInfo: true,
-			itemid: 'spwpdetailpager',
-			displayMsg: this.detailPagerDisplayMsg,
-			emptyMsg: this.detailPagerEmptyMsg
-		    }),
+		    bbar: [
+			Ext.create('Ext.toolbar.Paging', {
+			    store: theStore,
+			    displayInfo: true,
+			    itemid: 'spwpdetailpager',
+			    id: 'spwpdetailpagerid',
+			    displayMsg: this.detailPagerDisplayMsg,
+			    emptyMsg: this.detailPagerEmptyMsg
+			})
+		    ],
 
-		    items: Ext.create('SpWebPortal.view.DetailPanel', {
-			showMap: this.getShowMap()
-		    })
+		    items: [
+			Ext.create('SpWebPortal.view.DetailPanel', {
+			    showMap: this.getShowMap()
+			})
+		    ]
 		}
 	    ]
 	});
@@ -108,9 +130,19 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
 	return result;
     },
 
+    getAndLoadRecords: function(url) {
+	this.getRecStore().getProxy().url = url;
+	this.getRecStore().load({
+	    scope: this,
+	    callback: function(records) {
+		this.loadRecords(records);
+	    }
+	});
+    },
+	
     loadRecords: function(records) {
 	//console.info("DetailsPanel.loadRecords()");
-	var theStore = this.down('pagingtoolbar').getStore();
+	var theStore = Ext.getCmp('spwpdetailpagerid').getStore();
 	theStore.removeAll();
 	this.setCount(0);
 	if (false) {

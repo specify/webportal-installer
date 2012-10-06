@@ -33,6 +33,32 @@ Ext.define('SpWebPortal.view.Viewport', {
     initComponent: function () {
 	console.info("initializing viewport component");
 	//var pager =;
+	var mapBtn = Ext.create('Ext.button.Button', {
+	    xtype: 'button',
+	    tooltip: this.mapSearchBtnTip,
+	    itemid: 'mapsearchbtn',
+	    text: this.mapSearchBtn,
+	    region: 'west'
+	});
+	var loadingBtn = Ext.create('Ext.button.Button', {
+	    xtype: 'button',
+	    itemid: 'mapsearchbtn',
+	    id: 'spwpmainmaploadbtn',
+	    text: '           ',
+	    region: 'east',
+	    hidden: true
+	});
+	var mapProg = Ext.create('Ext.ProgressBar', {
+	    region: 'center',
+	    hidden: true,
+	    id: 'spwpmainmapprogbar'
+	});
+	var mapStatText = Ext.create('Ext.toolbar.TextItem', {
+	    region: 'center',
+	    hidden: true,
+	    id: 'spwpmainmapstatustext'
+	});
+	mapBtn.setVisible(false);
 	this.items = [
 	    {
 		xtype: 'panel',
@@ -44,6 +70,7 @@ Ext.define('SpWebPortal.view.Viewport', {
 			layout: 'fit',
 			id: 'spwpmaintabpanel',
 			bbar: [
+			    mapBtn,
 			    {
 				xtype: 'pagingtoolbar',
 				id: 'spwpmainpagingtoolbar',
@@ -53,12 +80,9 @@ Ext.define('SpWebPortal.view.Viewport', {
 				emptyMsg: this.pagerEmptyMsg,
 				region: 'center'
 			    },
-			    {
-				xtype: 'button',
-				itemid: 'mapsearchbtn',
-				text: this.mapSearchBtn,
-				region: 'east'
-			    }
+			    mapProg,
+			    mapStatText,
+			    loadingBtn
 			],
 			items: [
 			    {
@@ -119,7 +143,8 @@ Ext.define('SpWebPortal.view.Viewport', {
 				boxLabel: this.fitToMapCheckBox,
 				name: 'Map',
 				itemid: 'fit-to-map',
-				checked: false
+				checked: false,
+				hidden: true
 			    },
 			    {
 				xtype: 'button',
@@ -135,10 +160,12 @@ Ext.define('SpWebPortal.view.Viewport', {
 			layout: 'accordion',
 			items: [
 			    {
-				xtype: 'spexpresssrch'
+				xtype: 'spexpresssrch',
+				id: 'spwpmainexpresssrch'
 			    },
 			    {
-				xtype: 'spadvsrch'
+				xtype: 'spadvsrch',
+				id: 'spwpmainadvsrch'
 			    }
 			]
 		    }

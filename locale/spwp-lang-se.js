@@ -32,6 +32,8 @@ Ext.define("SpWebPortal.locale.se.view.ImageView", {
 
     previewTitle: 'Förhandsgranskning',
     selectedTitle: 'Valda bilden'
+    thumbPagerDisplayMsg: 'Displaying images {0} - {1} of {2}',
+    thumbPagerEmptyMsg: 'No images to display'
 });
 
 Ext.define("SpWebPortal.locale.se.view.MainGrid", {
@@ -64,9 +66,12 @@ Ext.define("SpWebPortal.locale.se.view.Viewport", {
     pagerDisplayMsg: 'Visar posterna {0} - {1} av {2}',
     pagerEmptyMsg: 'Inga poster att visa',
     searchToolsTitle: 'Sökverktyg',
-    mapsCheckBox: 'Karta',
+    mapsCheckBox: 'Geo Coords',
     imagesCheckBox: 'Bilder',
-    settingsBtnTip: 'Inställningar'
+    settingsBtnTip: 'Inställningar',
+    fitToMapCheckBox: 'Karta',
+    mapSearchBtn: 'Search',
+    mapSearchBtnTip: 'Apply current search criteria to map region'
 });
 
 
@@ -89,7 +94,10 @@ Ext.define("SpWebPortal.locale.se.controller.Image", {
 Ext.define("SpWebPortal.locale.se.controller.Mapper", {
     override: "SpWebPortal.controller.Mapper",
 
-    mapTitle: 'Karta'
+    mapTitle: 'Karta',
+    noGeoCoordMsg: 'Geo coords are not present for this record',
+    mapResultsText: 'Mapped {0} records at {1} points.'
+    mapProgressText:'{0} - {1} av {2}',
 });
 
 Ext.define("SpWebPortal.locale.se.controller.Settings", {

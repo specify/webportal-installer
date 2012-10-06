@@ -62,7 +62,9 @@ Ext.define('SpWebPortal.view.DetailPanel', {
 		    height: 300,
 		    collapsible: true,
 		    split: true,
-		    collapsed: !this.getShowMap()
+		    collapsed: !this.getShowMap(),
+		    //id: 'spwpdetailmappane',
+		    itemid: 'spdetailmappane'
 		},
 		{
 		    xtype: 'spimageview',
@@ -95,7 +97,7 @@ Ext.define('SpWebPortal.view.DetailPanel', {
 	    var imgs = Ext.JSON.decode(imgDef);
 	    for (var i = 0; i < imgs.length; i++) {
 		Ext.apply(imgs[i], {
-		    AttachedTo: record.get('id'),
+		    AttachedTo: record.get('spid'),
 		    AttachedToDescr: record.get('cn')
 		});
 	    }
@@ -120,6 +122,12 @@ Ext.define('SpWebPortal.view.DetailPanel', {
 	    //imgMapView.down('panel').setVisible(true);
 	    //imgMapView.toggleCollapse();
 	}
+	//if (this.getShowMap()) {
+	//    var aDom = Ext.getDom('spwpdetailmappane');
+	//    this.down('#spwpdetailmappane').fireEvent('maprequest', record, aDom);
+	//}
+	//var imgpager = this.down('pagingtoolbar');
+	this.down('pagingtoolbar').setVisible(false); //no paging yet
     }
 
 });

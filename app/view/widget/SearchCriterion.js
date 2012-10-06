@@ -63,7 +63,7 @@ Ext.define('SpWebPortal.view.widget.SearchCriterion', {
 	return result;
     },
 
-    solrFilter: function() {
+    solrFilter: function(matchAll) {
 	var entries = this.entries();
 	var result = '';
 	if (entries != null && entries.length > 0) {
@@ -88,7 +88,7 @@ Ext.define('SpWebPortal.view.widget.SearchCriterion', {
 	    } else if (op == 'in') {
 		var listItems = entries[0].split(" ");
 		var sep = " ";
-		if (this.getMatchAll()) {
+		if (matchAll) {
 		    sep += "OR ";
 		}
 		result = "(";

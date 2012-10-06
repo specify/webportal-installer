@@ -32,9 +32,11 @@ Ext.define('SpWebPortal.controller.ExpressSearch', {
     },
 
     onMapSearchClick: function() {
-	this.setForceFitToMap(true);
-	this.doSearch();
-	this.setForceFitToMap(false);
+	if (!Ext.getCmp('spwpmainexpresssrch').getCollapsed()) {
+	    this.setForceFitToMap(true);
+	    this.doSearch();
+	    this.setForceFitToMap(false);
+	}
     },
 
     doSearch: function() {
@@ -44,42 +46,20 @@ Ext.define('SpWebPortal.controller.ExpressSearch', {
 	var solr = this.getMainSolrStoreStore();
 	var images = this.getRequireImages();
 	var maps = this.getRequireGeoCoords();
-	var mainQ = control[0].value.toLowerCase();
+	var mainQ = (typeof control[0].value === "undefined" || control[0].value == null || control[0].value == '') 
+	    ? '*' 
+	    : control[0].value.toLowerCase();
 	var filterToMap = (this.getForceFitToMap() || this.getFitToMap()) && this.mapViewIsActive();
-	if (images || maps || filterToMap) {
-	    mainQ = '_query_:"' + mainQ + '"+AND+_query_:"';
-	}
-	var url = solr.urlTemplate + mainQ;
 
-	if (images) {
-	    url += solr.getImageRequirementFilter();
-	}
-	if (maps) {
-	    if (images) {
-		url += '+AND+';
-	    }
-	    url += solr.getGeoCoordRequirementFilter();
-	}
-	if (filterToMap) {
-	    if (images || maps) {
-		url += '+AND+';
-	    }
-	    url += solr.getMapFitFilter();
-	}
-	if (images || maps || filterToMap) {
-	    url += '"';
-	}
-	if (this.getMatchAll()) { 
-	    url += "&q.op=AND";
-	} 
+	var url = solr.getExpressSearchUrl(images, maps, mainQ, filterToMap, this.getMatchAll());
+
+	this.setForceFitToMap(false);
 
 	solr.getProxy().url = url; 
+	solr.setSearched(true);
+	solr.loadPage(1);
 
-	solr.loadPage(1, {
-	    callback: function() {
-		//Ext.getCmp('spwpmainpagingtoolbar').fireEvent('change');
-	    }
-	});
+	Ext.getCmp('spwpmaintabpanel').fireEvent('dosearch');
     }
 });
 

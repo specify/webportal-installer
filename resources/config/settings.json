@@ -1,7 +1,7 @@
 [{
-    "solrURL": "http://localhost",
+    "solrURL": "http://129.237.201.94",
     "solrPort": "8983",
-    "solrCore": "solr/core1",
+    "solrCore": "solr/core2",
     "solrPageSize": 50,
     "maxSolrPageSize": 5000,
     "imageBaseUrl": "http://www.nhm.ku.edu/fishes/Collectionimages"

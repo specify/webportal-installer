@@ -26,7 +26,13 @@ Ext.define('SpWebPortal.store.MainSolrStore', {
 	geoCoordFlds: [], //due to mysterious initialization behavior, this
 	                 //is not set until the MainGrid.js initComponent() is executed
 	maxPageSize: typeof maxPageSizeSetting === "undefined" ? 5000 : maxPageSizeSetting,
-	geoCoordVals: [] 
+	currentMapFitFilter: '',
+	images: false, 
+	maps: false, 
+	mainTerm: '', 
+	filterToMap: false, 
+	matchAll: false,
+	searched: false
     },
 
     autoLoad: false,
@@ -44,14 +50,28 @@ Ext.define('SpWebPortal.store.MainSolrStore', {
 	}
     },
 
+    roundNumber: function(rnum, rlength) { // Arguments: number to round, number of decimal places
+	return Math.round(rnum*Math.pow(10,rlength))/Math.pow(10,rlength);
+    },
+
     getLatLngFitFilter: function(lat, lng, sw, ne) {
-	var result = lat + ':[' + sw.lat() + ' TO ' + ne.lat() + ']+AND+';
+	var result = lat + ':[' + this.roundNumber(sw.lat(), 4) + ' TO ' + this.roundNumber(ne.lat(), 4) + ']+AND+';
 	if (sw.lng() > 0 && ne.lng() < 0) {
-	    result += 'NOT ' + lng + ':[' + ne.lng() + ' TO ' + sw.lng() + ']';
+	    result += 'NOT ' + lng + ':[' + this.roundNumber(ne.lng(), 4) + ' TO ' + this.roundNumber(sw.lng(), 4) + ']';
 	} else if (sw.lng() > 0 && ne.lng() > 0 && sw.lng() > ne.lng()) {
-	    result += lng + ':[' + ne.lng() + ' TO ' + sw.lng() + ']';
+	    result += lng + ':[' + this.roundNumber(ne.lng(), 4) + ' TO ' + this.roundNumber(sw.lng(), 4) + ']';
 	} else {
-	    result +=  lng + ':[' + sw.lng() + ' TO ' + ne.lng() + ']';
+	    result +=  lng + ':[' + this.roundNumber(sw.lng(), 4) + ' TO ' + this.roundNumber(ne.lng(), 4) + ']';
+	}
+	return result;
+    },
+
+
+    getLatLngFilter: function(geoCoords) {
+	var result = '';
+	for (var i = 0; i < geoCoords.length; i++) {
+	    if (i > 0) result += '+AND+';
+	    result += this.getGeoCoordFlds()[i] + ':\\"' + geoCoords[i] + ' \\"';
 	}
 	return result;
     },
@@ -104,9 +124,61 @@ Ext.define('SpWebPortal.store.MainSolrStore', {
 	    if (f > 0) {
 		result += '+AND+';
 	    }
-	    result += gFlds[f] + ':[\\"\\" TO ^]';
+	    //result += gFlds[f] + ':[\\"\\" TO ^]';
+	    result += gFlds[f] + ':[-180 TO 180]';
 	}
 	return result;
+    },
+
+    getExpSearchLatLngUrl: function(geoCoords) {
+	return this.getExpressSearchUrl(this.getImages(), this.getMaps(), this.getMainTerm(), 
+this.getFilterToMap(), this.getMatchAll(), geoCoords);
+    },
+
+    getExpressSearchUrl: function(images, maps, mainTerm, filterToMap, matchAll, geoCoords) {
+
+	this.setImages(images);
+	this.setMaps(maps);
+	this.setMainTerm(mainTerm);
+	this.setFilterToMap(filterToMap);
+	this.setMatchAll(matchAll);
+
+	var mainQ = mainTerm;
+	var mapFilter = filterToMap || typeof geoCoords !== "undefined";
+	if (images || maps || mapFilter) {
+	    mainQ = '_query_:"' + mainQ + '"+AND+_query_:"';
+	}
+	var url = this.urlTemplate + mainQ;
+
+	if (images) {
+	    url += this.getImageRequirementFilter();
+	}
+	if (maps) {
+	    if (images) {
+		url += '+AND+';
+	    }
+	    url += this.getGeoCoordRequirementFilter();
+	}
+	if (mapFilter) {
+	    var mapFitter = typeof geoCoords === "undefined"
+		? this.getMapFitFilter()
+		: this.getLatLngFilter(geoCoords);
+	    if (images || maps) {
+		url += '+AND+';
+	    }
+	    url += mapFitter;
+	    this.setCurrentMapFitFilter(mapFitter);
+	} else {
+	    this.setCurrentMapFitFilter('');
+	}
+	if (images || maps || mapFilter) {
+	    url += '"';
+	}
+	if (matchAll) { 
+	    url += "&q.op=AND";
+	} 
+	
+	return url;
     },
 
     listeners: {

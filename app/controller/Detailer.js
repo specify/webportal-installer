@@ -25,7 +25,8 @@ Ext.define('SpWebPortal.controller.Detailer', {
 		itemdblclick: this.onThumbDblClk
 	    },
 	    '#spwpmainmappane': {
-		googlemarkerclick: this.onGoogleMarkerClick
+		googlemarkerclick: this.onGoogleMarkerClick,
+		googlemarkerclick2: this.onGoogleMarkerClick2
 	    },
 	    'pagingtoolbar[itemid="spwpdetailpager"]': {
 		change: this.onDetailsPageChange
@@ -47,6 +48,13 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	} else {
 	    this.popupDetail(record, false);
 	}
+	//Ext.getCmp('spwpmainmappane').setLoading(false);
+    },
+
+    onGoogleMarkerClick2: function(url) {
+	console.info("Detailer.onGoogleMarkerClick2");
+	//Ext.getCmp('spwpmainmappane').setLoading(true);
+	this.popupDetails2(url);
 	//Ext.getCmp('spwpmainmappane').setLoading(false);
     },
 
@@ -75,14 +83,15 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	var attacheeIDs = [];
 	//var attacheeData = record.get('AttachedTo');
 	//when 'id' is re-named then use above. (See notes in app.js where MainModel is built.
-	var attacheeData = record.get('AttachedToDescr');
+	var attacheeData = record.get('AttachedTo'); 
 	//eventually attacheData will be json list of attachees,
 	//just one for now
 	attacheeIDs[0] = attacheeData;
 	var attachees = [attacheeIDs.length];
 	var theStore = Ext.getStore('MainSolrStore');
 	for (var a = 0; a < attachees.length; a++) {
-	    attachees[a] = theStore.getById(attacheeIDs[a]);
+	    //attachees[a] = theStore.getById(attacheeIDs[a]);
+	    attachees[a] = theStore.getAt(attacheeIDs[a]);
 	}
 	if (attachees.length > 0) {
 	    //this is lame. One popup func!
@@ -131,6 +140,39 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	this.detailsPopupWin.show();
 	this.detailsPopupWin.toFront();
     },
+
+    popupDetails2: function(url) {
+	if (this.detailsPopupWin == null) {
+	    this.detailsForm = Ext.widget('spdetailspanel', {
+		showMap: false
+	    });
+	    this.detailsPopupWin = Ext.create('Ext.window.Window', {
+		title: this.detailPopupTitle,
+		height: 600,
+		width: 800,
+		maximizable: false,
+		resizable: true,
+		closeAction: 'hide',
+		layout: 'fit',
+		items: [
+		    this.detailsForm
+		]
+	    });
+	    this.detailsPopupWin.setPosition(1,1);
+	}
+	if (this.detailPopupWin != null && this.detailPopupWin.isVisible()) {
+	    //probably can just put panels on same form!
+	    this.detailsPopupWin.setPosition(this.detailPopupWin.getPosition());
+	    this.detailsPopupWin.setHeight(this.detailPopupWin.getHeight());
+	    this.detailsPopupWin.setWidth(this.detailPopupWin.getWidth());
+	    this.detailPopupWin.hide();
+	}
+
+	this.detailsForm.getAndLoadRecords(url);
+	
+	this.detailsPopupWin.show();
+	this.detailsPopupWin.toFront();
+    },
 	
     popupDetail: function(record, showMap) {
 	if (this.detailPopupWin == null) {
@@ -160,6 +202,11 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	}
 	this.detailForm.loadRecord(record);
 	this.detailPopupWin.show();
+	if (showMap) {
+	    var mapPane = this.detailPopupWin.down('[itemid="spdetailmappane"]');
+	    var aDom = Ext.getDom(mapPane.getId());
+	    mapPane.fireEvent('maprequest', record, aDom);
+	}
 	this.detailPopupWin.toFront();
     },
 

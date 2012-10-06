@@ -24,6 +24,32 @@ Ext.define('SpWebPortal.view.DetailView', {
 	this.items = flds;
 
 	this.callParent(arguments);
+    },
+
+    loadRecord: function(record) {
+	console.info("DetailView.loadRecord in");
+	this.callParent(arguments);
+	var imgFld = this.getForm().findField('img');
+	if (imgFld != null) {
+	    var value = imgFld.getValue();
+	    if (value != null && value != '') {
+		var newValue = '';
+		var data = Ext.JSON.decode(value);
+		var store = Ext.create('Ext.data.Store', {
+		    model: 'SpWebPortal.model.AttachedImageModel',
+		    data: data
+		});
+			
+		for (var r = 0; r < store.getCount(); r++) {
+		    if (newValue != '') {
+			newValue += ', ';
+		    }
+		    newValue += store.getAt(r).get('Title');
+		}
+		imgFld.setValue(newValue);
+	    }
+	}	    
+	console.info("DetailView.loadRecord out");
     }
 
 });

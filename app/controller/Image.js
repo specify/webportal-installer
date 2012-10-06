@@ -58,8 +58,14 @@ Ext.define('SpWebPortal.controller.Image', {
 	imgView.setSrc('');
 	var pane = imgView.up('panel');
 	pane.setTitle(this.selectedImage);
-	var imgStore = thumb.getStore();
+	//var imgStore = thumb.getStore();
+	//imgStore.removeAll();
+	
+	var thbStore = thumb.getStore();
+	thbStore.removeAll();
+	var imgStore = pager.up('tabpanel').down('spimageview').getImageStore();
 	imgStore.removeAll();
+
 	for (var r = 0; r < store.getCount(); r++) {
 	    var rec = store.getAt(r);
 	    var imgDef = rec.get('img');
@@ -67,13 +73,16 @@ Ext.define('SpWebPortal.controller.Image', {
 		var imgs = Ext.JSON.decode(imgDef);
 		for (var i = 0; i < imgs.length; i++) {
 		    Ext.apply(imgs[i], {
-			AttachedTo: rec.get('id'),
+			//AttachedTo: rec.getId(),
+			AttachedTo: r,
 			AttachedToDescr: rec.get('cn')
 		    });
 		}
 		imgStore.add(imgs);
 	    }
 	}
+	pager.up('tabpanel').down('spimageview').down('pagingtoolbar').setVisible(imgStore.getTotalCount() > imgStore.pageSize);
+	thbStore.loadPage(1);
     }
 
 })

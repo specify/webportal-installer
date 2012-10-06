@@ -1,4 +1,5 @@
 Ext.Loader.setConfig({enabled:true});
+//Ext.tip.QuickTipManager.init();
 Ext.application({
     name: 'SpWebPortal', 
     appFolder: 'app',   
@@ -36,10 +37,7 @@ Ext.application({
 
 	Ext.define('SpWebPortal.model.MainModel', {
 	    extend: 'Ext.data.Model',
-	    //This should be 'id' instead of 'cn' but 'id' won't work in Extjs
-	    //Need to change solr build to use spid or some other fldname
-	    //Then Detailer.js.onThumbnailDblClick needs to be adjusted to stop using 'cn' lookup
-	    idProperty: 'cn',
+	    idProperty: 'spid',
 	    fields: dataFlds
 	});
 

@@ -14,7 +14,9 @@ Ext.define('SpWebPortal.view.MainGrid', {
 
     config: {
 	showMapAction: true,
-	isDetail: false
+	isDetail: false,
+	geoCoordFlds: [],
+	imgFld: null
     },
 
     isGeoCoordFld: function(coldef) {
@@ -92,9 +94,10 @@ Ext.define('SpWebPortal.view.MainGrid', {
 	var tblCols = [];
 	tblCols[0] = Ext.create('Ext.grid.RowNumberer', {width: 30, resizable: true});
 	var mapColPos = -1;
-	var geoCoordFlds = []; //Lat1,Long1,Lat2,Long2...
+	this.geoCoordFlds = []; //Lat1,Long1,Lat2,Long2...
 	var fldsOnMap = []; //flds displayed on popup labels in map view
 	var mapMarkerTitleFld = [];
+	var hasImages = false, hasMaps = false;
 	for (var r = 1; r < fieldStore.count(); r++) {
 	    var colDef = fieldStore.getAt(r);
 	    var col = Ext.create('Ext.grid.column.Column', {
@@ -105,6 +108,8 @@ Ext.define('SpWebPortal.view.MainGrid', {
 		width: 100
 	    });
 	    if (this.isImageCol(colDef)) {
+		hasImages = true;
+		this.imgCol = colDef.get('solrname');
 		col.renderer = function(value) {
 		    var result = '';
 		    if (value != null && value != '') {
@@ -126,7 +131,7 @@ Ext.define('SpWebPortal.view.MainGrid', {
 	    }
 	    if (this.getShowMapAction()) {
 		if (this.isGeoCoordFld(colDef)) {
-		    this.processGeoCoordFld(colDef, geoCoordFlds);
+		    this.processGeoCoordFld(colDef, this.geoCoordFlds);
 		    if (this.isGoodPlaceForMapBtn(colDef)) {
 			mapColPos = r+1;
 		    }
@@ -141,6 +146,8 @@ Ext.define('SpWebPortal.view.MainGrid', {
 	    }
 	    tblCols[r] = col;
 	}
+	//Dropping the map action item just indicating presence/absence of coords with icon, details btn displays map
+	hasMaps = mapColPos != -1;
 	if (mapColPos != -1) {
 	    if (fldsOnMap.length == 0) {
 		this.defaultFldsOnMap(fieldStore, fldsOnMap);
@@ -149,8 +156,9 @@ Ext.define('SpWebPortal.view.MainGrid', {
 		mapMarkerTitleFld = this.defaultMapMarkerTitle(fieldStore);
 		console.info("set map marker title to default: " + mapMarkerTitleFld);
 	    }
-	    this.fireEvent('mapsetsready', geoCoordFlds, fldsOnMap, mapMarkerTitleFld);
-	    var mapCol = Ext.create('Ext.grid.column.Action', {
+	    this.fireEvent('mapsetsready', this.geoCoordFlds, fldsOnMap, mapMarkerTitleFld);
+	    //Dropping the map action item just indicating presence/absence of coords with icon, details btn displays map
+	    /*var mapCol = Ext.create('Ext.grid.column.Action', {
 		//text: "Map",
 		sortable: false,
 		width: 25,
@@ -174,28 +182,90 @@ Ext.define('SpWebPortal.view.MainGrid', {
 		}]
 
 	    });
-	    tblCols.splice(mapColPos, 0, mapCol);
+	    tblCols.splice(mapColPos, 0, mapCol);*/
 	}
 	var isDet = this.getIsDetail();
 	var detailCol = Ext.create('Ext.grid.column.Action', {
 	    sortable: false,
 	    width: 25,
 	    itemid: 'detail-popup-ctl',
-	    items: [{
-		icon: 'resources/images/SearchBoxMac.gif',
-		tooltip: this.detailsBtnHint,
-		handler: function(grid, rowIndex) {
-		    this.fireEvent('clicked', grid.getStore().getAt(rowIndex), isDet, rowIndex);
-		}
-	    }]
+	    items: [
+		{
+		    icon: 'resources/images/SearchBoxMac.gif',
+		    tooltip: this.detailsBtnHint,
+		    handler: function(grid, rowIndex) {
+			this.fireEvent('clicked', grid.getStore().getAt(rowIndex), isDet, rowIndex);
+		    },
+		},
+	    ]
+	});
+	/*var geoCol = Ext.create('Ext.grid.column.Column', {
+	    renderer: this.renderGeoCol,
+	    width: 16
+	});
+	var imgPresCol = Ext.create('Ext.grid.column.Column', {
+	    renderer: this.renderImgPresCol,
+	    width: 16
+	});*/
+	var geoImgPresCol = Ext.create('Ext.grid.column.Column', {
+	    renderer: this.renderGeoImgPresCol,
+	    width: 32
 	});
 	tblCols.splice(1, 0, detailCol);
-
+	//tblCols.splice(2, 0, geoCol);
+	//tblCols.splice(3, 0, imgPresCol);
+	tblCols.splice(2, 0, geoImgPresCol);
 	this.columns = tblCols;
 
-	this.store.setGeoCoordFlds(geoCoordFlds); 
+	this.store.setGeoCoordFlds(this.geoCoordFlds); 
 
 	this.callParent(arguments);
+    },
+
+    hasGeo: function(value, grid, record) {
+	for (var i=0; i < this.geoCoordFlds.length; i++) {
+	    if (!this.isMappable(record.data[this.geoCoordFlds[i]])) {
+		return false;
+	    }
+	}
+	return true;
+    },
+
+    renderGeoCol: function(value, grid, record) {
+	if (this.hasGeo(value, grid, record)) {
+	    return '<img src="resources/images/GoogleEarth16x16.png" height="12" width="12">';
+	} else {
+	    return "";
+	}
+    },
+
+    isMappable: function(geoCoord) {
+	if (geoCoord == null) return false;
+	
+	if (typeof geoCoord == "string") return geoCoord.trim() != "";
+	
+	return true;
+    },
+
+    hasImg: function(value, grid, record) {
+	var val =  record.data[this.imgCol];
+	if (typeof val !== "undefined" && val != null && val.length > 0) {
+	    return true;
+	} else {
+	    return false;	
+	}
+    },
+    
+    renderImgPresCol: function(value, grid, record) {
+	if (this.hasImg(value, grid, record)) {
+	    return  '<img src="resources/images/ImageWindow20x20.png" height="12" width="12">';
+	} else {
+	    return "";
+	}
+    },
+
+    renderGeoImgPresCol: function(value, grid, record) {
+	return this.renderGeoCol(value, grid, record) + this.renderImgPresCol(value, grid, record);
     }
 
 });
