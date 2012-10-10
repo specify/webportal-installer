@@ -67,6 +67,9 @@ Ext.define('SpWebPortal.controller.AdvancedSearch', {
 	var images = this.getRequireImages();
 	var maps = this.getRequireGeoCoords();
 	var filterToMap = (this.getForceFitToMap() || this.getFitToMap()) && this.mapViewIsActive();
+	if (filterStr.length == 0) {
+	    filterStr = "*";
+	}
 	if (filterStr.length > 0 && filterStr != 'error') {
 	    if (!this.getSolr()) {
 		SpecStore.getProxy().url = urlStrTemplateInit + '?WHERE=' +  '[' + filterStr + ']';
