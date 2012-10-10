@@ -301,12 +301,9 @@ Ext.define('SpWebPortal.controller.Mapper', {
     },
 
     doMap: function() {
-	//this.getMapPane().setLoading(true);
-	//this.mapPage();
-
 	if (this.mainMapCtl == null) {
 	    //this.buildMap(recs, this.geoCoordFlds, this.fldsOnMap, this.mapMarkTitleFld, false);
-	    this.mainMapCtl = this.geWinInitializeEmpty(this.getDomForMap(false));
+	    this.mainMapCtl = this.geWinInitializeEmpty(this.getDomForMap(false), true);
 	    this.getMapPane().setMapCmp(this.mainMapCtl);
 	}
 
@@ -371,16 +368,6 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	}
     },
 
-    mapPage: function() {
-	var store = Ext.getStore('MainSolrStore');
-	var recs = [];
-	for (var r = 0; r < store.getCount(); r++) {
-	    recs[r] = store.getAt(r);
-	}
-	if (this.mainMapCtl == null) {
-	    this.buildMap(recs, this.geoCoordFlds, this.fldsOnMap, this.mapMarkTitleFld, false);
-	}
-    },
 
     mapSettingsReady: function(geoCoordFlds, fldsOnMap, mapMarkTitleFld) {
 	//console.info('Mapper.mapSettingsReady()');
@@ -391,27 +378,6 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	this.fldsOnMap = fldsOnMap;
 	this.mapMarkTitleFld = mapMarkTitleFld;
     },
-
-    /*onBeforePageChange: function(pager) {
-	console.info('Mapper.onBeforePageChange()');
-	var tabber = pager.up('tabpanel');
-	var tab = tabber.getActiveTab();
-	if (tab.id == 'spwpmainmappane') {
-	    this.getMapPane().setLoading(true);
-	}
-	return true;
-    },
-
-    onPageChange: function(pager) {
-	console.info('Mapper.onPageChange()');
-
-	var tabber = pager.up('tabpanel');
-	var tab = tabber.getActiveTab();
-	if (tab.id == 'spwpmainmappane') {
-	    //this.mapPage();
-	    this.onTabChange(tabber, tab);
-	}
-    },*/
 
     onDoSearch: function() {
 	var tabber = Ext.getCmp('spwpmaintabpanel');
@@ -486,7 +452,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
 		    alert(this.noGeoCoordMsg);
 		}
 	    } else if (!isPopup) {
-		mapCtl = this.geWinInitializeEmpty(Ext.getDom('spwpmainmappane'));
+		mapCtl = this.geWinInitializeEmpty(Ext.getDom('spwpmainmappane'), true);
 		setMapCtl = this.mainMapCtl == null;
 	    }
 	}
@@ -524,15 +490,19 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	    geoCoords = [];
 	    this.markMap(records, sortedCoords, mapCtl, fldsOnMap, mapMarkTitleFld, isPopup);
 	} else {
-	    if (records.length > 0) {
-		if (isPopup) {
-		    alert(this.noGeoCoordMsg);
-		}
+	    if (records.length > 0 && isPopup) {
+		alert(this.noGeoCoordMsg);
 	    } else if (!isPopup) {
-		mapCtl = this.geWinInitializeEmpty(Ext.getDom('spwpmainmappane'));
-		if (this.mainMapCtl == null) {
-		    this.mainMapCtl = mapCtl
-		    this.getMapPane().setMapCmp(this.mainMapCtl);
+		if (typeof aDom === "undefined") {
+		    mapCtl = this.geWinInitializeEmpty(Ext.getDom('spwpmainmappane'), true);
+		    if (this.mainMapCtl == null) {
+			this.mainMapCtl = mapCtl
+			this.getMapPane().setMapCmp(this.mainMapCtl);
+		    } 
+		} else {
+		    //Probably an unmappable detail view
+		    var map = this.geWinInitializeEmpty(aDom, false);
+		    map.setZoom(0);
 		}
 	    }
 	}
@@ -747,14 +717,14 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	return this.getDefaultMapType();
     },
 
-    geWinInitializeEmpty: function(dom) {
+    geWinInitializeEmpty: function(dom, isMain) {
 	var myOptions = {
 	    zoom: 3,
             mapTypeId: this.getInitialMapType(),
 	    center: new google.maps.LatLng(0, 0)
         };
 	this.clearMarkers();
-	if (this.mainMapCtl == null) {
+	if (this.mainMapCtl == null || !isMain) {
 	    return new google.maps.Map(dom, myOptions);
 	} else {  
             Ext.apply(this.mainMapCtl, myOptions);
