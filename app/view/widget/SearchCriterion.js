@@ -76,6 +76,15 @@ Ext.define('SpWebPortal.view.widget.SearchCriterion', {
 		result = '[' + result + ' TO *]';
 	    } else if (op == 'contains') {
 		result = '*' + result + '*';
+	    } else if (op == 'containsany') {
+		var terms = result.split(' ');
+		result = '';
+		for (var t = 0; t < terms.length; t++) {
+		    if (t > 0) {
+			result += ' OR ';
+		    }
+		    result += '*' + terms[t] + '*';
+		}   
 	    } else if (op == 'between') {
 		if (!(entries.length > 1)) {
 		    var fldName = this.down('textfield').getFieldLabel();
