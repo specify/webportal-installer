@@ -52,7 +52,7 @@ Ext.define('SpWebPortal.controller.AdvancedSearch', {
 	var connector = this.getSolr() ? ' +' : ', ';
 	var filterStr = '', c;
 	for (c = 0; c < ctrls.length; c++) {
-	    var filter = this.getSolr() ? ctrls[c].solrFilter(this.getMatchAll()) : ctrls[c].sqlPhpFilter();
+	    var filter = this.getSolr() ? ctrls[c].solrFilter(this.getMatchAll(), this) : ctrls[c].sqlPhpFilter();
 	    console.info(filter);
 	    if (filter == 'error') {
 		filterStr = 'error';

@@ -48,7 +48,7 @@ Ext.define('SpWebPortal.controller.ExpressSearch', {
 	var maps = this.getRequireGeoCoords();
 	var mainQ = (typeof control[0].value === "undefined" || control[0].value == null || control[0].value == '') 
 	    ? '*' 
-	    : control[0].value.toLowerCase();
+	    : this.escapeForSolr(control[0].value);
 	var filterToMap = (this.getForceFitToMap() || this.getFitToMap()) && this.mapViewIsActive();
 
 	var url = solr.getExpressSearchUrl(images, maps, mainQ, filterToMap, this.getMatchAll());

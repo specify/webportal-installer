@@ -56,6 +56,14 @@ Ext.define('SpWebPortal.controller.Search', {
 	//console.info("match all change!");
 	this.setMatchAll(!this.getMatchAll());
 	console.info("MatchAll = " + this.getMatchAll());
+    },
+
+    escapeForSolr: function(srchText) {
+	//assuming srchText is defined and non-null
+	var result = srchText.toLowerCase();
+	result = result.replace('&', '%26');
+	//etc...
+	return result;
     }
 });
 

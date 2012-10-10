@@ -63,13 +63,13 @@ Ext.define('SpWebPortal.view.widget.SearchCriterion', {
 	return result;
     },
 
-    solrFilter: function(matchAll) {
+    solrFilter: function(matchAll, searcher) {
 	var entries = this.entries();
 	var result = '';
 	if (entries != null && entries.length > 0) {
 	    var opId = '#' + this.itemid + '-op';
 	    var op = this.query(opId)[0].value;
-	    var result = entries[0].toLowerCase();
+	    var result = searcher.escapeForSolr(entries[0]);
 	    if (op == '<=') {
 		result = '[* TO ' + result + ']';
 	    } else if (op == '>=') {
