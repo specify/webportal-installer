@@ -55,7 +55,7 @@ Ext.define('SpWebPortal.view.AdvancedSearchView', {
 			Ext.create('SpWebPortal.view.widget.OpCombo', {
 			    flex: 2.0,
 			    id: fld.get('solrname') + '-op',
-			    store: Ext.getStore('StringOps'),
+			    store: this.getOps(fld),
 			    value: '='
 			}),
 			Ext.create('SpWebPortal.view.widget.SortButton', {
@@ -90,5 +90,18 @@ Ext.define('SpWebPortal.view.AdvancedSearchView', {
 
 	this.callParent(arguments);
 
-    }	
+    },	
+
+    getOps: function(fld) {
+	var solrType = fld.get('solrtype');
+	var spType = fld.get('type');
+	console.info("getOps: " + solrType + ", " + spType);
+	if (spType == 'java.util.Calendar') {
+	    return Ext.getStore('DateOps');
+	} else if (solrType == 'string') {
+	    return Ext.getStore('StringOps');
+	} else if (solrType == 'tdouble' || solrType == 'int') {
+	    return Ext.getStore('NumericOps');
+	}
+    }
 });
