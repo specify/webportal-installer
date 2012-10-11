@@ -30,36 +30,67 @@ Ext.define('SpWebPortal.view.AdvancedSearchView', {
 	    if (fld.get('advancedsearch')) {
 		var adv = Ext.create('SpWebPortal.view.widget.SearchCriterion', {
 		    layout: {
-			align: 'flex',
+			align: 'stretch',
 			type: 'hbox'
 		    },
+		    //layout: 'column',
 		    itemid: fld.get('solrname'),
 		    items: [
 			{
-			    xtype: 'textfield',
-			    flex: 8,
-			    fieldLabel: fld.get('title'),
-			    labelAlign: 'right',
-			    id: fld.get('solrname') + '-1'
+			    xtype: 'label',
+			    //text: fld.get('title'),
+			    html: '<div style="vertical-align:middle;padding:2px" align="right">' + fld.get('title') + ': </div>',
+			    flex: 4
 			},
 			{
-			    xtype: 'textfield',
+			    xtype: 'panel',
+			    border: false,
+			    layout: {
+				align: 'stretch',
+				type: 'hbox'
+			    },
 			    flex: 4,
-			    hidden: true,
-			    id: fld.get('solrname') + '-2'
+			    items: [
+				{
+				    xtype: 'textfield',
+				    
+				    flex: 4,
+				    //columnWidth: 0.6,
+				    
+				    fieldLabel: fld.get('title'),
+				    hideLabel: true,
+				    labelAlign: 'right',
+				    id: fld.get('solrname') + '-1'
+				},
+				{
+				    xtype: 'textfield',
+				    hideLabel: true,
+				    flex: 4,
+				    //columnWidth: 0.3,
+
+				    hidden: true,
+				    id: fld.get('solrname') + '-2'
+				}
+			    ]
 			},
-			Ext.create('SpWebPortal.view.widget.BangButton', {
-			    flex: 0.6,
-			    id: fld.get('solrname') + '-not'
-			}),
 			Ext.create('SpWebPortal.view.widget.OpCombo', {
 			    flex: 2.0,
+			    //columnWidth: 0.1,
+
 			    id: fld.get('solrname') + '-op',
 			    store: this.getOps(fld),
 			    value: '='
 			}),
+			Ext.create('SpWebPortal.view.widget.BangButton', {
+			    //flex: 0.6,
+			    width: 16,
+
+			    id: fld.get('solrname') + '-not'
+			}),
 			Ext.create('SpWebPortal.view.widget.SortButton', {
-			    flex: 1,
+			    //flex: 1,
+			    width: 24,
+
 			    id: fld.get('solrname') + '-sort'
 			})	        
 		    ]
