@@ -39,7 +39,7 @@ Ext.define('SpWebPortal.view.AdvancedSearchView', {
 			{
 			    xtype: 'label',
 			    //text: fld.get('title'),
-			    html: '<div style="vertical-align:middle;padding:2px" align="right">' + fld.get('title') + ': </div>',
+			    html: '<div style="margin-right:2px; padding-top:5%;" align="right">' + fld.get('title') + ': </div>',
 			    flex: 4
 			},
 			{
