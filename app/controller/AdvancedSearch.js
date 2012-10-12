@@ -75,6 +75,14 @@ Ext.define('SpWebPortal.controller.AdvancedSearch', {
 		SpecStore.getProxy().url = urlStrTemplateInit + '?WHERE=' +  '[' + filterStr + ']';
 		SpecStore.setTree(null);
 		SpecStore.loadPage(1);
+		/*var resultsTab = Ext.getCmp('spwpmaintabpanel');
+		if (!resultsTab.isVisible()) {
+		    var background = Ext.getCmp('spwpmainbackground');
+		    background.setVisible(false);
+		    resultsTab.setVisible(true);
+		}
+		resultsTab.fireEvent('dosearch');*/
+		this.searchLaunched();
 	    } else {
 		var solr = this.getMainSolrStoreStore();
 				
@@ -86,7 +94,14 @@ Ext.define('SpWebPortal.controller.AdvancedSearch', {
 		solr.setSearched(true);
 		solr.loadPage(1);
 
-		Ext.getCmp('spwpmaintabpanel').fireEvent('dosearch');
+		/*var resultsTab = Ext.getCmp('spwpmaintabpanel');
+		if (!resultsTab.isVisible()) {
+		    var background = Ext.getCmp('spwpmainbackground');
+		    background.setVisible(false);
+		    resultsTab.setVisible(true);
+		}
+		resultsTab.fireEvent('dosearch');*/
+		this.searchLaunched();
 	    }
 	}
     }

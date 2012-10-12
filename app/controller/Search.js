@@ -64,7 +64,17 @@ Ext.define('SpWebPortal.controller.Search', {
 	result = result.replace('&', '%26');
 	//etc...
 	return result;
-    }
+    },
+
+    searchLaunched: function() {
+	var resultsTab = Ext.getCmp('spwpmaintabpanel');
+	if (!resultsTab.isVisible()) {
+	    var background = Ext.getCmp('spwpmainbackground');
+	    background.setVisible(false);
+	    resultsTab.setVisible(true);
+	}
+	resultsTab.fireEvent('dosearch');
+    }	
 });
 
     

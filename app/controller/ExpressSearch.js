@@ -41,7 +41,8 @@ Ext.define('SpWebPortal.controller.ExpressSearch', {
 
     doSearch: function() {
 	console.info("ExpressSearch doSearch()");
-    	var search = this.getSearch();
+
+	var search = this.getSearch();
 	var control = search.query('textfield[itemid="search-text"]');
 	var solr = this.getMainSolrStoreStore();
 	var images = this.getRequireImages();
@@ -59,7 +60,14 @@ Ext.define('SpWebPortal.controller.ExpressSearch', {
 	solr.setSearched(true);
 	solr.loadPage(1);
 
-	Ext.getCmp('spwpmaintabpanel').fireEvent('dosearch');
+	/*var resultsTab = Ext.getCmp('spwpmaintabpanel');
+	if (!resultsTab.isVisible()) {
+	    var background = Ext.getCmp('spwpmainbackground');
+	    background.setVisible(false);
+	    resultsTab.setVisible(true);
+	}
+	resultsTab.fireEvent('dosearch');*/
+	this.searchLaunched();
     }
 });
 

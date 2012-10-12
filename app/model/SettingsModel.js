@@ -8,7 +8,9 @@ Ext.define('SpWebPortal.model.SettingsModel', {
 	{name: 'maxSolrPageSize', type: 'int', defaultValue: 5000},
 	{name: 'imageBaseUrl', type: 'string'},
 	{name: 'defInitialView', type: 'string', defaultValue: 'grid'},
-	{name: 'defMapType', type: 'string', defaultValue: 'roadmap'}
+	{name: 'defMapType', type: 'string', defaultValue: 'roadmap'},
+	{name: 'backgroundURL', type: 'string', defaultValue: 'resources/images/specify128.png'},
+	{name: 'bannerURL', type: 'string', defaultValue: 'resources/images/fishskel.gif'}
     ],
 
     validations: [

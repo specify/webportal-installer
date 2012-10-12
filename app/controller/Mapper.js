@@ -93,7 +93,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
     onExpressSearch: function() {
 	console.info("Mapper.onExpressSearch()");
 	this.forceFitToMap = false;
-	this.getMapPane().setLoading(true);
+	//this.getMapPane().setLoading(true);
     },
 
     onExpressSearchSpecialKey: function(field, e) {
@@ -348,24 +348,38 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	    var url = store.getProxy().url.replace("rows="+pageSize, "rows="+this.lilMapStore.pageSize);
 	    url = url.replace("fl=*", "fl=cn,l1,l11");
 	    //XXX need to add sort on geocoords too
-	    this.recordsBeingMapped = [];
-	    this.lilMapStore.getProxy().url = url;
-	    this.loadMapStore(1);
+
+	    //Only remap if url/search has changed. This might not be completely
+	    //safe. Currently Searches will re-execute even url is UN-changed.
+	    //Technically, it would be better to track whether a search has been executed since last mapping.
+	    if (url != this.lilMapStore.getProxy().url) {
+		this.recordsBeingMapped = [];
+		this.lilMapStore.getProxy().url = url;
+		this.loadMapStore(1);
+	    } else {
+		Ext.getCmp('spwpmainmapprogbar').setVisible(false);
+	    }
 	}
     },
 
-    onTabChange: function(tabPanel, newCard) {
-	if (newCard.id == 'spwpmainmappane') {
+    setupToolbar: function(tabPanel, isMapTab) {
+	if (isMapTab) {
 	    Ext.getCmp('spwpmaintabpanel').down('button[itemid="mapsearchbtn"]').setVisible(true);
 	    Ext.getCmp('spwpmainpagingtoolbar').setVisible(false);
 	    Ext.getCmp('spwpmainmapprogbar').setVisible(true);
-	    this.doMap();
 	} else {
 	    tabPanel.down('button[itemid="mapsearchbtn"]').setVisible(false);
 	    Ext.getCmp('spwpmainpagingtoolbar').setVisible(true);
 	    Ext.getCmp('spwpmainmapprogbar').setVisible(false);
 	    Ext.getCmp('spwpmainmapstatustext').setVisible(false);
 	}
+    },
+
+    onTabChange: function(tabPanel, newCard) {
+	this.setupToolbar(tabPanel, newCard.id == 'spwpmainmappane');
+	if (newCard.id == 'spwpmainmappane') {
+	    this.doMap();
+	} 
     },
 
 

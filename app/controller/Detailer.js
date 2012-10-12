@@ -11,6 +11,11 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	'Ext.TaskManager'
     ],
 
+    detailsPopWin: null,
+    detailsForm: null,
+    detailPopupWin: null,
+    detailForm: null,
+
     init: function() {
 	console.info("Detailer.init");
 	this.control({
@@ -28,12 +33,33 @@ Ext.define('SpWebPortal.controller.Detailer', {
 		googlemarkerclick: this.onGoogleMarkerClick,
 		googlemarkerclick2: this.onGoogleMarkerClick2
 	    },
+	    '#spwpmaintabpanel': {
+		tabchange: this.onTabChange,
+		dosearch: this.onDoSearch
+	    },
 	    'pagingtoolbar[itemid="spwpdetailpager"]': {
 		change: this.onDetailsPageChange
 	    }
 	});
-
 	this.callParent(arguments);
+    },
+
+
+    onTabChange: function() {
+	this.closePopups();
+    },
+
+    onDoSearch: function() {
+	this.closePopups();
+    },
+
+    closePopups: function() {
+	if (this.detailsPopupWin != null && this.detailsPopupWin.isVisible()) {
+	    this.detailsPopupWin.hide();
+	}
+	if (this.detailPopupWin != null && this.detailPopupWin.isVisible()) {
+	    this.detailPopupWin.hide();
+	}
     },
 
     onGoogleMarkerClick: function(record) {
@@ -221,8 +247,5 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	    console.info("Detailer: unable to show detail form on a details popup because the details popup has evaporated.");
 	}
     },
-
-    detailPopupWin: null,
-    detailForm: null
 
 });

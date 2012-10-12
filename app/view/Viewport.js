@@ -30,6 +30,18 @@ Ext.define('SpWebPortal.view.Viewport', {
     ],
 
 
+    background: null,
+    resultsTab: null,
+
+    /*render: function() {
+	if (this.background != null && this.resultsTab != null && !this.resultsTab.isVisible()) {
+	    this.background.center();
+	    this.background.show();
+	}
+	
+	this.callParent(arguments);
+    },*/
+
     initComponent: function () {
 	console.info("initializing viewport component");
 	//var pager =;
@@ -58,51 +70,66 @@ Ext.define('SpWebPortal.view.Viewport', {
 	    hidden: true,
 	    id: 'spwpmainmapstatustext'
 	});
+	
 	mapBtn.setVisible(false);
+	
+	this.background = Ext.create('Ext.Img', {
+	    src: Ext.getStore('SettingsStore').getAt(0).get('backgroundURL'),
+	    id: 'spwpmainbackground'
+	    //maxHeight: 256,
+	    //maxWidth: 256,
+	    //style: "padding: 100px; max-height: 100%; max-width: 100%; vertical-align:middle;"
+	    //style: "display: block; margin-left: auto;	margin-right: auto;" 
+	    //floating: true
+	});
+
+	this.resultsTab = Ext.create('Ext.tab.Panel', {
+	    hidden: true,
+	    layout: 'fit',
+	    id: 'spwpmaintabpanel',
+	    bbar: [
+		mapBtn,
+		{
+		    xtype: 'pagingtoolbar',
+		    id: 'spwpmainpagingtoolbar',
+		    store: Ext.getStore('MainSolrStore'),
+		    displayInfo: true,
+		    displayMsg: this.pagerDisplayMsg,
+		    emptyMsg: this.pagerEmptyMsg,
+		    region: 'center'
+		},
+		mapProg,
+		mapStatText,
+		loadingBtn
+	    ],
+	    items: [
+		{
+		    xtype: 'spmaingrid',
+		    id: 'spwpmaingrid',
+		    title: this.recordsTitle,
+		    store: Ext.getStore('MainSolrStore'),
+		    invalidateScrollerOnRefresh: true
+		},
+		{
+		    xtype: 'spimageview',
+		    title: this.imagesTitle
+		},
+		{
+		    xtype: 'spmapview',
+		    title: this.mapsTitle,
+		    id: 'spwpmainmappane'
+		}
+	    ]
+	});
+	    
 	this.items = [
 	    {
 		xtype: 'panel',
 		region: 'center',
 		layout: 'fit',
 		items: [
-		    {
-			xtype: 'tabpanel',
-			layout: 'fit',
-			id: 'spwpmaintabpanel',
-			bbar: [
-			    mapBtn,
-			    {
-				xtype: 'pagingtoolbar',
-				id: 'spwpmainpagingtoolbar',
-				store: Ext.getStore('MainSolrStore'),
-				displayInfo: true,
-				displayMsg: this.pagerDisplayMsg,
-				emptyMsg: this.pagerEmptyMsg,
-				region: 'center'
-			    },
-			    mapProg,
-			    mapStatText,
-			    loadingBtn
-			],
-			items: [
-			    {
-				xtype: 'spmaingrid',
-				id: 'spwpmaingrid',
-				title: this.recordsTitle,
-				store: Ext.getStore('MainSolrStore'),
-				invalidateScrollerOnRefresh: true
-			    },
-			    {
-				xtype: 'spimageview',
-				title: this.imagesTitle
-			    },
-			    {
-				xtype: 'spmapview',
-				title: this.mapsTitle,
-				id: 'spwpmainmappane'
-			    }
-			]
-		    }
+		    this.background,
+		    this.resultsTab
 		]
 	    },
 	    {
@@ -120,7 +147,7 @@ Ext.define('SpWebPortal.view.Viewport', {
 		items: [
 		    {
 			xtype: 'panel',
-			region: 'south',
+			region: 'north',
 			layout: 'hbox',
 			height: 25,
 			items: [
