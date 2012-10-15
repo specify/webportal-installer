@@ -71,7 +71,9 @@ Ext.define("SpWebPortal.locale.se.view.Viewport", {
     settingsBtnTip: 'Inställningar',
     fitToMapCheckBox: 'Karta',
     mapSearchBtn: 'Search',
-    mapSearchBtnTip: 'Apply current search criteria to map region'
+    mapSearchBtnTip: 'Apply current search criteria to map region',
+    mapCancelBtn: 'Avbestalla',
+    mapCancelBtnTip: 'Stop plotting the current results',
 });
 
 
@@ -98,6 +100,7 @@ Ext.define("SpWebPortal.locale.se.controller.Mapper", {
     noGeoCoordMsg: 'Geo coords are not present for this record',
     mapResultsText: 'Mapped {0} records at {1} points.'
     mapProgressText:'{0} - {1} av {2}',
+    mapCancelledText: 'Mapping cancelled'
 });
 
 Ext.define("SpWebPortal.locale.se.controller.Settings", {
