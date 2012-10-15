@@ -671,6 +671,9 @@ Ext.define('SpWebPortal.controller.Mapper', {
 		if (this.areMappable(coords)) {
 		    //worry about lines, boxes etc, later
 		    var point = new google.maps.LatLng(coords[0], coords[1]).toString();
+		    //having the results sorted by geoCoord and checking for changes in the above if
+		    //should make looking up in mapMarkers unnecessary - right?
+		    //But it doesn't...
 		    if (!this.mapMarkers[point.toString()] && !added[point]) {
 			//XXX just need to add the point now
 			geoCoords[p] = [];
