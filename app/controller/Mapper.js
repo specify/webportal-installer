@@ -12,11 +12,6 @@ Ext.define('SpWebPortal.controller.Mapper', {
     fitToMap: false,
     forceFitToMap: false,
     mapStore: null,
-    /*lilMapStore: Ext.define('SpWebPortal.controller.LilMapStore', {
-	extend: 'SpWebPortal.store.MainSolrStore',
-	model: mapModel,
-	pageSize: 15000
-    });*/
     lilMapStore: null,
     markerPlacementStepSize: 500,
     markerTask: null,
@@ -290,10 +285,6 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	console.info("Mapper.onGoogleMarkerClick2");
 	//console.info(arguments);
 	var store = Ext.getStore('MainSolrStore');
-	/*var url = store.getProxy().url;
-	var gcUrl = store.getLatLngFilter(geoCoords);
-	var mapFitter = store.getCurrentMapFitFilter();
-	url = url.replace(mapFitter, gcUrl);*/
 	var url = store.getExpSearchLatLngUrl(geoCoords);
 	var mappane = this.getMapPane();
 	//mappane.setLoading(true);
@@ -315,7 +306,6 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	    this.maxMappedLng = -180.0;
 
 	    if (this.lilMapStore == null) {
-		//var mapModel = this.buildMapStoreModel(store);
 		Ext.define('SpWebPortal.MapModel', {
 		    extend: 'Ext.data.Model',
 		    fields: [
@@ -326,7 +316,6 @@ Ext.define('SpWebPortal.controller.Mapper', {
 		}),
 		this.lilMapStore = Ext.create('Ext.data.Store', {
 		    model: "SpWebPortal.MapModel",
-		    //model: mapModel;
 		    pageSize: 10000,
 		    proxy: {
 			type: 'jsonp',
@@ -339,18 +328,13 @@ Ext.define('SpWebPortal.controller.Mapper', {
 		    }
 		});
 	    }				 
-	    /*if (this.mapStore == null) {
-	      this.mapStore = Ext.create('SpWebPortal.store.MainSolrStore', {
-	      pageSize: 15000
-	      });
-	      }*/
 	    var pageSize = store.pageSize;
 	    var url = store.getProxy().url.replace("rows="+pageSize, "rows="+this.lilMapStore.pageSize);
 	    url = url.replace("fl=*", "fl=cn,l1,l11");
-	    //XXX need to add sort on geocoords too
+	    url = url + '&sort=l1+asc&l2+asc';
 
 	    //Only remap if url/search has changed. This might not be completely
-	    //safe. Currently Searches will re-execute even url is UN-changed.
+	    //safe. Currently Advanced and Express searches will re-execute even url is UN-changed.
 	    //Technically, it would be better to track whether a search has been executed since last mapping.
 	    if (url != this.lilMapStore.getProxy().url) {
 		this.recordsBeingMapped = [];
@@ -526,10 +510,8 @@ Ext.define('SpWebPortal.controller.Mapper', {
     buildMap2: function(records, geoCoordFlds, fldsOnMap, mapMarkTitleFld, isPopup, checkBounds, sortGeoCoords) {
 	//console.info('Mapper.buildMap. #Recs: ' + records.length);
 	var p = 0;
-	//var bnds = this.getMappedRecsWithBounds(records, geoCoordFlds, checkBounds);
 	var bnds = this.getNewPoints(records, geoCoordFlds, checkBounds);
 	var geoCoords = bnds;
-	//var minLat = bnds[1], maxLat = bnds[3], minLong = bnds[2], maxLong = bnds[4];
 	//worry about boxes and lines later...
 	//console.info('points plotted: ' + geoCoords.length);
 	var mapCtl = this.mainMapCtl == null ? this.getMapCtl(geoCoords, null, bnds, isPopup) : this.mainMapCtl; 
@@ -541,7 +523,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	    }
 	    this.markMap2(records, sortedCoords, mapCtl, fldsOnMap, mapMarkTitleFld, isPopup);
 	}	console.info("buildMap2 completing");
-	this.getMapPane().setLoading(false);
+	t//his.getMapPane().setLoading(false);
     },
 
     markMap: function(records, sortedCoords, mapCtl, fldsOnMap, mapMarkTitleFld, isPopup) {
@@ -644,30 +626,35 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	var p = 0;
 	var minLat = getBounds ? 90.0 : null, maxLat = getBounds ? -90.0 : null;
 	var minLng = getBounds ? 180.0 : null, maxLng = getBounds ? -180.0 : null;
+	var lastCoords = [];
 	for (var r = 0; r < records.length; r++) {
 	    var coords = [];
 	    coords[0] = records[r].get(geoCoordFlds[0]);
 	    coords[1] = records[r].get(geoCoordFlds[1]);
-	    if (this.areMappable(coords)) {
-		geoCoords[p] = [];
-		geoCoords[p][0] = coords[0];
-		geoCoords[p][1] = coords[1];
-		geoCoords[p][2] = r;
-		if (getBounds) {
-		    if (minLat > coords[0]) {
-			minLat = coords[0];
-		    } 
-		    if (maxLat < coords[0]) {
-			maxLat = coords[0];
+	    if (r == 0 || coords[0] != lastCoords[0] || coords[1] != lastCoords[1]) {
+		lastCoords[0] = coords[0];
+		lastCoords[1] = coords[1];
+		if (this.areMappable(coords)) {
+		    geoCoords[p] = [];
+		    geoCoords[p][0] = coords[0];
+		    geoCoords[p][1] = coords[1];
+		    //geoCoords[p][2] = r;
+		    if (getBounds) {
+			if (minLat > coords[0]) {
+			    minLat = coords[0];
+			} 
+			if (maxLat < coords[0]) {
+			    maxLat = coords[0];
+			}
+			if (minLng > coords[1]) {
+			    minLng = coords[1];
+			} 
+			if (maxLng < coords[1]) {
+			    maxLng = coords[1];
+			}
 		    }
-		    if (minLng > coords[1]) {
-			minLng = coords[1];
-		    } 
-		    if (maxLng < coords[1]) {
-			maxLng = coords[1];
-		    }
+		    p++;
 		}
-		p++;
 	    }
 	}
 	return [geoCoords, minLat, minLng, maxLat, maxLng];
@@ -677,35 +664,40 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	var geoCoords = [];
 	var p = 0;
 	var added = {};
+	var lastCoords = [];
 	for (var r = 0; r < records.length; r++) {
 	    var coords = [];
 	    coords[0] = records[r].get(geoCoordFlds[0]);
 	    coords[1] = records[r].get(geoCoordFlds[1]);
-	    if (this.areMappable(coords)) {
-		//worry about lines, boxes etc, later
-		var point = new google.maps.LatLng(coords[0], coords[1]).toString();
-		if (!this.mapMarkers[point] && !added[point]) {
-		    //XXX just need to add the point now
-		    geoCoords[p] = [];
-		    geoCoords[p][0] = coords[0];
-		    geoCoords[p][1] = coords[1];
-		    added[point] = 'y';
-		    if (checkBounds) {
-			if (this.minMappedLat > coords[0]) {
-			    this.minMappedLat = coords[0];
-			} 
-			if (this.maxMappedLat < coords[0]) {
-			    this.maxMappedLat = coords[0];
+	    if (r == 0 || coords[0] != lastCoords[0] || coords[1] != lastCoords[1]) {
+		lastCoords[0] = coords[0];
+		lastCoords[1] = coords[1];
+		if (this.areMappable(coords)) {
+		    //worry about lines, boxes etc, later
+		    var point = new google.maps.LatLng(coords[0], coords[1]).toString();
+		    if (!this.mapMarkers[point] && !added[point]) {
+			//XXX just need to add the point now
+			geoCoords[p] = [];
+			geoCoords[p][0] = coords[0];
+			geoCoords[p][1] = coords[1];
+			added[point] = 'y';
+			if (checkBounds) {
+			    if (this.minMappedLat > coords[0]) {
+				this.minMappedLat = coords[0];
+			    } 
+			    if (this.maxMappedLat < coords[0]) {
+				this.maxMappedLat = coords[0];
+			    }
+			    if (this.minMappedLng > coords[1]) {
+				this.minMappedLng = coords[1];
+			    } 
+			    if (this.maxMappedLng < coords[1]) {
+				this.maxMappedLng = coords[1];
+			    }
 			}
-			if (this.minMappedLng > coords[1]) {
-			    this.minMappedLng = coords[1];
-			} 
-			if (this.maxMappedLng < coords[1]) {
-			    this.maxMappedLng = coords[1];
-			}
-		    }
 
-		    p++;
+			p++;
+		    }
 		}
 	    }
 	}
