@@ -1,7 +1,6 @@
 Ext.define('SpWebPortal.controller.Mapper', {
     extend: 'Ext.app.Controller',
     xtype: 'mapcontroller',
-    //id: 'spwpmapcontroller',
 
     geoCoordFlds: [],
     fldsOnMap: [],
@@ -18,9 +17,12 @@ Ext.define('SpWebPortal.controller.Mapper', {
     recordsBeingMapped: [],
     progBar: null,
     statusTextCtl: null,
-    statusText: '',
     loadingBtn: null,
+    cancelBtn: null,
+    lastSearchCancelled: false,
     mapTaskPage: 0,
+    mapReadyTasks: [],
+    buildMapTask: null,
     
     minMappedLat: 90.0, 
     maxMappedLat:  -90.0,
@@ -32,6 +34,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
     noGeoCoordMsg: 'Geo coords are not present for this record',
     mapResultsText: 'Mapped {0} records at {1} points.',
     mapProgressText:'{0} - {1} of {2}',
+    mapCancelledText: 'Mapping cancelled',
     //...localizable text
 
     init: function() {
@@ -55,16 +58,15 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	    'actioncolumn[itemid="map-popup-ctl"]': {
 		clicked: this.onPopupClk
 	    },	
-	    //'#spwpmainpagingtoolbar': {
-	//	beforechange: this.onBeforePageChange,
-	//	change: this.onPageChange
-	  //  },
 	    '#spwpmaintabpanel': {
 		tabchange: this.onTabChange,
 		dosearch: this.onDoSearch
 	    },
 	    'button[itemid="mapsearchbtn"]': {
 		click: this.onMapSearchClk
+	    },
+	    'button[itemid="mapcancelbtn"]': {
+		click: this.cancelMapping
 	    },
 	    'checkbox[itemid="fit-to-map"]': {
 		change: this.fitToMapChange
@@ -117,62 +119,25 @@ Ext.define('SpWebPortal.controller.Mapper', {
     onMapSearchClk: function() {
 	console.info("Mapper.onMapSearchClk()");
 	this.forceFitToMap = true;
-	//this.getMapPane().setLoading(true);
-	/*var store = Ext.getStore('MainSolrStore');
-
-
-	if (this.lilMapStore == null) {
-	    //var mapModel = this.buildMapStoreModel(store);
-	    Ext.define('SpWebPortal.MapModel', {
-		extend: 'Ext.data.Model',
-		fields: [
-		    {name: 'spid', type: 'string'},
-		    {name: 'l1', type: 'tdouble'},
-		    {name: 'l11', type: 'tdouble'}
-		]
-	    }),
-	    this.lilMapStore = Ext.create('Ext.data.Store', {
-		model: "SpWebPortal.MapModel",
-		//model: mapModel;
-		pageSize: 10000,
-		proxy: {
-		    type: 'jsonp',
-		    callbackKey: 'json.wrf',
-		    url: store.solrUrlTemplate,
-		    reader: {
-			root: 'response.docs',
-			totalProperty: 'response.numFound'
-		    }
-		}
-	    });
-	}*/				 
-	/*if (this.mapStore == null) {
-	    this.mapStore = Ext.create('SpWebPortal.store.MainSolrStore', {
-		pageSize: 15000
-	    });
-	}*/
-	/*var pageSize = store.pageSize;
-	var url = store.getProxy().url.replace("rows="+pageSize, "rows="+this.lilMapStore.pageSize);
-	url = url.replace("fl=*,score", "fl=cn,l1,l11");
-	//XXX need to add sort on geocoords too
-	this.recordsBeingMapped = [];
-	this.lilMapStore.getProxy().url = url;
-	this.loadMapStore(1);*/
     },
 
     mapReadyTasked: function(records) {
-	console.info("mapReadyTasked");
-	if (typeof this.recordsBeingMapped  === "undefined" || this.recordsBeingMapped.length == 0) {
+	//console.info("mapReadyTasked");
+	if (!this.lastSearchCancelled 
+	    && (typeof this.recordsBeingMapped  === "undefined" || this.recordsBeingMapped.length == 0)) {
 	    this.recordsBeingMapped = records;
-	    var task = Ext.TaskManager.newTask({
+	    if (this.buildMapTask != null) {
+		this.buildMapTask.destroy();
+	    }
+	    this.buildMapTask = Ext.TaskManager.newTask({
 		run: this.buildMapTasked,
 		scope: this,
 		interval: 1
 	    });
 	    this.mapTaskPage = this.lilMapStore.currentPage;
-	    task.start();
+	    this.buildMapTask.start();
 	    if (this.lilMapStore.getTotalCount() > this.lilMapStore.currentPage * this.lilMapStore.pageSize) {
-		console.info("loading page " + (this.lilMapStore.currentPage+1) + " of map store.");
+		console.info("loading page " + this.lilMapStore.currentPage + " of map store.");
 		this.loadMapStore(this.lilMapStore.currentPage + 1);
 	    }
 	    return false;
@@ -181,6 +146,31 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	}
     },
 
+    cancelMapping: function() {
+	console.info('cancelMapping');
+	this.lastSearchCancelled = true;
+	this.mappingDone();
+	if (this.buildMapTask != null) {
+	    this.buildMapTask.stop();
+	    this.buildMapTask.destroy();
+	    this.buildMapTask = null;
+	}
+	//XXX clear points, status text, ...???
+	this.updateUIAfterMapping(this.mapCancelledText);	
+   },
+	
+	
+    mappingDone: function() {
+	console.info("mappingDone: stopping " + this.mapReadyTasks.length + " tasks");
+	for (var t = 0; t < this.mapReadyTasks.length; t++) {
+	    this.mapReadyTasks[t].stop();
+	    this.mapReadyTasks[t].destroy();
+	    this.mapReadyTasks = [];
+	}  
+	this.recordsBeingMapped = [];
+	this.mapTaskPage = 0;
+    },
+	
     loadMapStore: function(page) {
 	//UI update...
 	if (this.progBar == null) {
@@ -189,66 +179,66 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	    this.statusTextCtl = Ext.getCmp('spwpmainmapstatustext');
 	    this.statusTextCtl.setWidth(400);
 	    this.loadingBtn = Ext.getCmp('spwpmainmaploadbtn');
+	    this.cancelBtn = Ext.getCmp('spwpmainmapcancelbtn');
 	}
 
 	if (page == 1) {
 	    this.statusTextCtl.setVisible(false);
 	    this.progBar.setVisible(true);
 	    this.loadingBtn.setVisible(true);
+	    this.cancelBtn.setVisible(true);
 	}
-	//this.progBar.setLoading(true);
-	this.loadingBtn.setLoading(true);
 	//...UI update
 
-	this.lilMapStore.loadPage(page, {
-	    scope: this,
-	    callback: function(records) {
-		console.info("MapStore loaded " + page + " with " + records.length + " of " + this.lilMapStore.getTotalCount() + " records.");
-		if (page == 1) {
-		    this.clearMarkers2();
-		    this.progBar.updateProgress(0.0);
+	if (!this.lastSearchCancelled) {
+	    //UI update
+	    this.loadingBtn.setLoading(true);
+	    //...UI update
+	    this.lilMapStore.loadPage(page, {
+		scope: this,
+		callback: function(records) {
+		    console.info("MapStore loaded " + page + " with " + records.length + " of " + this.lilMapStore.getTotalCount() + " records.");
+		    if (page == 1) {
+			//this.clearMarkers2();
+			this.progBar.updateProgress(0.0);
+		    }
+		    this.loadingBtn.setLoading(false);
+		    if (!this.lastSearchCancelled) {
+			this.mapReadyTasks[this.mapReadyTasks.length] = Ext.TaskManager.newTask({
+			    run: this.mapReadyTasked,
+			    args: [records],
+			    scope: this,
+			    interval: 10
+			});
+			this.mapReadyTasks[this.mapReadyTasks.length - 1].start();
+		    }
 		}
-		//this.progBar.setLoading(false);
-		this.loadingBtn.setLoading(false);
-		//this.recordsBeingMapped = records;
-		var task = Ext.TaskManager.newTask({
-		    //run: this.buildMapTasked,
-		    run: this.mapReadyTasked,
-		    args: [records],
-		    scope: this,
-		    interval: 10
-		});
-		task.start();
-		//this.buildMap2(records, this.geoCoordFlds, this.fldsOnMap, this.mapMarkTitleFld, false, false, true/*until sort by geocoords is added*/);
-	    }
-	});
+	    });
+	}
     },
 
+    updateUIAfterMapping: function(statusText) {
+	this.progBar.reset();
+	this.progBar.updateText('');
+	this.progBar.setVisible(false);
+
+	this.statusTextCtl.setText(statusText);
+	this.statusTextCtl.setVisible(true);
+	this.loadingBtn.setVisible(false);
+	this.cancelBtn.setVisible(false);
+    },
+	
     buildMapTasked: function(invocations) {
 	var first = (invocations-1) * 1000;
 	var totalFirst = ((this.mapTaskPage-1)*this.lilMapStore.pageSize) + first;
 	if (first >= this.recordsBeingMapped.length) {
 	    this.recordsBeingMapped = [];
-	    //if (this.lilMapStore.getTotalCount() > this.lilMapStore.currentPage * this.lilMapStore.pageSize) {
-	//	console.info("loading page " + (this.lilMapStore.currentPage+1) + " of map store.");
-	//	this.loadMapStore(this.lilMapStore.currentPage + 1);
-	  //  }
-
 	    if (totalFirst >= this.lilMapStore.getTotalCount()) {
-		this.mapTaskPage = 0;
-
-		//UI update...
-		this.progBar.reset();
-		this.progBar.updateText('');
-		this.progBar.setVisible(false);
-
-		this.statusTextCtl.setText(Ext.String.format(this.mapResultsText,  
-							     this.lilMapStore.getTotalCount(), 
-							     _.size(this.mapMarkers)));
-		this.statusTextCtl.setVisible(true);
-		this.loadingBtn.setVisible(false);
-		//...UI update
-
+		this.mappingDone();
+		this.updateUIAfterMapping(Ext.String.format(this.mapResultsText,  
+							    this.lilMapStore.getTotalCount(), 
+							    _.size(this.mapMarkers)));
+		
 		if (!this.forceFitToMap) {
 		    var bounds = null;
 		    if (this.minMappedLat != null && this.minMappedLng != null && this.maxMappedLat != null && this.maxMappedLng != null) {
@@ -264,7 +254,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	    return false;
 	}
 	var last = Math.min(first + 1000, this.recordsBeingMapped.length);
-	console.info("mapping " + first + " to " + last);
+	//console.info("mapping " + first + " to " + last);
 	var totalLast = Math.min(totalFirst + 1000, totalFirst + this.recordsBeingMapped.length);
 	var progText = Ext.String.format(this.mapProgressText, totalFirst, totalLast, 
 					 this.lilMapStore.getTotalCount());
@@ -292,6 +282,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
     },
 
     doMap: function() {
+	console.info("Mapaper.doMap()");
 	if (this.mainMapCtl == null) {
 	    //this.buildMap(recs, this.geoCoordFlds, this.fldsOnMap, this.mapMarkTitleFld, false);
 	    this.mainMapCtl = this.geWinInitializeEmpty(this.getDomForMap(false), true);
@@ -336,12 +327,15 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	    //Only remap if url/search has changed. This might not be completely
 	    //safe. Currently Advanced and Express searches will re-execute even url is UN-changed.
 	    //Technically, it would be better to track whether a search has been executed since last mapping.
-	    if (url != this.lilMapStore.getProxy().url) {
+	    if (url != this.lilMapStore.getProxy().url || this.lastSearchCancelled) {
+		this.clearMarkers2();
+		this.lastSearchCancelled = false;
 		this.recordsBeingMapped = [];
 		this.lilMapStore.getProxy().url = url;
 		this.loadMapStore(1);
 	    } else {
-		Ext.getCmp('spwpmainmapprogbar').setVisible(false);
+ 		this.progBar.setVisible(false);
+		this.cancelBtn.setVisible(false);
 	    }
 	}
     },
@@ -356,6 +350,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	    Ext.getCmp('spwpmainpagingtoolbar').setVisible(true);
 	    Ext.getCmp('spwpmainmapprogbar').setVisible(false);
 	    Ext.getCmp('spwpmainmapstatustext').setVisible(false);
+	    Ext.getCmp('spwpmainmapcancelbtn').setVisible(false);
 	}
     },
 
@@ -522,8 +517,9 @@ Ext.define('SpWebPortal.controller.Mapper', {
 		geoCoords = [];
 	    }
 	    this.markMap2(records, sortedCoords, mapCtl, fldsOnMap, mapMarkTitleFld, isPopup);
-	}	console.info("buildMap2 completing");
-	t//his.getMapPane().setLoading(false);
+	}	
+	//console.info("buildMap2 completing");
+	//this.getMapPane().setLoading(false);
     },
 
     markMap: function(records, sortedCoords, mapCtl, fldsOnMap, mapMarkTitleFld, isPopup) {
@@ -675,7 +671,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
 		if (this.areMappable(coords)) {
 		    //worry about lines, boxes etc, later
 		    var point = new google.maps.LatLng(coords[0], coords[1]).toString();
-		    if (!this.mapMarkers[point] && !added[point]) {
+		    if (!this.mapMarkers[point.toString()] && !added[point]) {
 			//XXX just need to add the point now
 			geoCoords[p] = [];
 			geoCoords[p][0] = coords[0];
@@ -729,7 +725,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
             mapTypeId: this.getInitialMapType(),
 	    center: new google.maps.LatLng(0, 0)
         };
-	this.clearMarkers();
+	this.clearMarkers2();
 	if (this.mainMapCtl == null || !isMain) {
 	    return new google.maps.Map(dom, myOptions);
 	} else {  
@@ -754,7 +750,9 @@ Ext.define('SpWebPortal.controller.Mapper', {
         var result = this.mainMapCtl == null || isPopup ? new google.maps.Map(dom, myOptions)
 	    : this.mainMapCtl;
 
-	//this.clearMarkers(); //don't necessarily have to do this???
+	//if (!isPopup) {
+	//    this.clearMarkers2(); 
+	//}
 	if (bounds != null && !(this.fitToMap || this.forceFitToMap)) {
 	    result.fitBounds(bounds);
 	}	
@@ -775,36 +773,22 @@ Ext.define('SpWebPortal.controller.Mapper', {
     geWinInitializeSingle: function (geoCoords, dom, isPopup) {
 	var myOptions = this.getSinglePointMapInitialOptions(geoCoords);
 	
-	//this.clearMarkers();  //don't necessarily have to do this ???
-	//if (isPopup || this.mainMapCtl == null || dom != Ext.getDom(this.mainMapCtl.getId())) {
-	    return new google.maps.Map(dom, myOptions);
-	/*} else {
-	    if (!(this.fitToMap || this.forceFitToMap)) {	    
-		//this.clearMarkers();
-		Ext.apply(this.mainMapCtl,myOptions);
-	    }	    
-	    return this.mainMapCtl;
-	}*/
-    },
-
-    clearMarkers: function() {
-	for (var m=0; m < this.mapMarkers.length; m++){
-	    this.mapMarkers[m].setMap(null);
-	}
-	this.mapMarkers.length = 0;
-	//also clear listeners on markers
-	if (this.mainMapCtl != null) {
-	    google.maps.event.clearListeners(this.mainMapCtl, 'click');
-	}
+	//if (!isPopup) {
+	//    this.clearMarkers2(); 
+	//}
+	return new google.maps.Map(dom, myOptions);
     },
 
     clearMarkers2: function() {
-	_.each(this.mapMarkers, function(marker) {marker.setMap(null)});
-	this.mapMarkers = {};
-	//also clear listeners on markers
+	console.info("clearMarkers2");
 	if (this.mainMapCtl != null) {
 	    google.maps.event.clearListeners(this.mainMapCtl, 'click');
 	}
+	var cleared = 0;
+	_.each(this.mapMarkers, function(marker) {marker.setMap(null); cleared++});
+	this.mapMarkers = {};
+	console.info("   cleared " + cleared);
+	//also clear listeners on markers
     },
 
     getMarkerText: function(record, mapMarkTitleFld) {
@@ -864,8 +848,8 @@ Ext.define('SpWebPortal.controller.Mapper', {
             map: map,
             title: titleTxt
 	});
-	//this.mapMarkers.push(marker);
 	this.mapMarkers[point.toString()] = marker;
+	
 
 	if (isPopup) {
 	    this.addPopupMarkerListener(marker, map, fldsOnMap, geoCoords, record);
@@ -882,24 +866,28 @@ Ext.define('SpWebPortal.controller.Mapper', {
         var point = new google.maps.LatLng(geoCoords[0], geoCoords[1]);
 	//var titleTxt = this.getMarkerText(record, mapMarkTitleFld);
 
-        var marker = new google.maps.Marker({
-            position: point, 
-            map: map,
-            //title: "busted"
-	});
-	this.mapMarkers[point.toString()] = marker;
-
-	if (isPopup) {
-	    this.addPopupMarkerListener(marker, map, fldsOnMap, geoCoords, record);
+        if (this.mapMarkers[point.toString()]) {
+	    console.info("hey already marked: " + point.toString());
 	} else {
-	    var self = this;
-	    var ll = [];
-	    for (var i = 0; i < geoCoords.length; i++) {
-		ll[i] = geoCoords[i];
-	    }
-	    google.maps.event.addListener(marker, 'click', function() {
-		self.onGoogleMarkerClick2(ll);
+	    var marker = new google.maps.Marker({
+		position: point, 
+		map: map,
+		//title: "busted"
 	    });
+	    this.mapMarkers[point.toString()] = marker;
+
+	    if (isPopup) {
+		this.addPopupMarkerListener(marker, map, fldsOnMap, geoCoords, record);
+	    } else {
+		var self = this;
+		var ll = [];
+		for (var i = 0; i < geoCoords.length; i++) {
+		    ll[i] = geoCoords[i];
+		}
+		google.maps.event.addListener(marker, 'click', function() {
+		    self.onGoogleMarkerClick2(ll);
+		});
+	    }
 	}
     }
 

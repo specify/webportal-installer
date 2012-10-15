@@ -17,6 +17,8 @@ Ext.define('SpWebPortal.view.Viewport', {
     settingsBtnTip: 'Settings',
     mapSearchBtn: 'Search',
     mapSearchBtnTip: 'Apply current search criteria to map region',
+    mapCancelBtn: 'Cancel',
+    mapCancelBtnTip: 'Stop plotting the current results',
     //...localizable text
 
     requires: [
@@ -33,14 +35,6 @@ Ext.define('SpWebPortal.view.Viewport', {
     background: null,
     resultsTab: null,
 
-    /*render: function() {
-	if (this.background != null && this.resultsTab != null && !this.resultsTab.isVisible()) {
-	    this.background.center();
-	    this.background.show();
-	}
-	
-	this.callParent(arguments);
-    },*/
 
     initComponent: function () {
 	console.info("initializing viewport component");
@@ -49,29 +43,33 @@ Ext.define('SpWebPortal.view.Viewport', {
 	    xtype: 'button',
 	    tooltip: this.mapSearchBtnTip,
 	    itemid: 'mapsearchbtn',
-	    text: this.mapSearchBtn,
-	    region: 'west'
+	    text: this.mapSearchBtn
+	});
+	var mapCancelBtn = Ext.create('Ext.button.Button', {
+	    xtype: 'button',
+	    tooltip: this.mapCancelBtnTip,
+	    itemid: 'mapcancelbtn',
+	    id: 'spwpmainmapcancelbtn',
+	    text: this.mapCancelBtn
 	});
 	var loadingBtn = Ext.create('Ext.button.Button', {
 	    xtype: 'button',
 	    itemid: 'mapsearchbtn',
 	    id: 'spwpmainmaploadbtn',
-	    text: '           ',
-	    region: 'east',
+	    text: '  ',
 	    hidden: true
 	});
 	var mapProg = Ext.create('Ext.ProgressBar', {
-	    region: 'center',
 	    hidden: true,
 	    id: 'spwpmainmapprogbar'
 	});
 	var mapStatText = Ext.create('Ext.toolbar.TextItem', {
-	    region: 'center',
 	    hidden: true,
 	    id: 'spwpmainmapstatustext'
 	});
 	
 	mapBtn.setVisible(false);
+	mapCancelBtn.setVisible(false);
 	
 	this.background = Ext.create('Ext.Img', {
 	    src: Ext.getStore('SettingsStore').getAt(0).get('backgroundURL'),
@@ -88,7 +86,6 @@ Ext.define('SpWebPortal.view.Viewport', {
 	    layout: 'fit',
 	    id: 'spwpmaintabpanel',
 	    bbar: [
-		mapBtn,
 		{
 		    xtype: 'pagingtoolbar',
 		    id: 'spwpmainpagingtoolbar',
@@ -96,8 +93,9 @@ Ext.define('SpWebPortal.view.Viewport', {
 		    displayInfo: true,
 		    displayMsg: this.pagerDisplayMsg,
 		    emptyMsg: this.pagerEmptyMsg,
-		    region: 'center'
 		},
+		mapBtn,
+		mapCancelBtn,
 		mapProg,
 		mapStatText,
 		loadingBtn
