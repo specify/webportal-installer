@@ -15,7 +15,10 @@ Ext.define("SpWebPortal.locale.se.view.DetailsPanel", {
     detailPagerDisplayMsg: 'Visar postern {0} av {2}',
     detailPagerEmptyMsg: 'Inga poster att visa',
     detailDetailTitle: 'Utforlig',
-    detailGridTitle: 'Posterna'
+    detailGridTitle: 'Posterna',
+    pagerDisplayMsg: 'Visar posterna {0} - {1} av {2}',
+    pagerEmptyMsg: 'Inga poster att visa',
+    recordText: 'postern'
 });
 
 Ext.define("SpWebPortal.locale.se.view.ExpressSearchView", {

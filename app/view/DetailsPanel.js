@@ -8,6 +8,9 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
     detailPagerEmptyMsg: 'No records to display',
     detailDetailTitle: 'Detail',
     detailGridTitle:'Records',
+    pagerDisplayMsg: 'Displaying records {0} - {1} of {2}',
+    pagerEmptyMsg: 'No records to display',
+    recordText: 'Record',
     //...localizable text
     
     requires: [
@@ -60,7 +63,7 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
 	
 	var theRecStore = Ext.create('Ext.data.Store', {
 	    model: "SpWebPortal.model.MainModel",
-	    pageSize: 1000,
+	    pageSize: 100,
 	    proxy: {
 		type: 'jsonp',
 		callbackKey: 'json.wrf',
@@ -68,7 +71,8 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
 		    root: 'response.docs',
 		    totalProperty: 'response.numFound'
 		}
-	    }
+	    },
+	    setGeoCoordFlds: function() {}
 	});
 	this.setRecStore(theRecStore);
 
@@ -79,7 +83,7 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
 		{
 		    xtype: 'spmaingrid',
 		    title: this.detailGridTitle,
-		    store: theStore,
+		    store: this.getRecStore(),
 		    showMapAction: false,
 		    isDetail: true
 		},
@@ -94,7 +98,8 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
 			    itemid: 'spwpdetailpager',
 			    id: 'spwpdetailpagerid',
 			    displayMsg: this.detailPagerDisplayMsg,
-			    emptyMsg: this.detailPagerEmptyMsg
+			    emptyMsg: this.detailPagerEmptyMsg,
+			    beforePageText: this.recordText
 			})
 		    ],
 
@@ -103,6 +108,16 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
 			    showMap: this.getShowMap()
 			})
 		    ]
+		}
+	    ],
+	    bbar: [
+		{
+		    xtype: 'pagingtoolbar',
+		    id: 'spwpdetailpagingtoolbar',
+		    store: this.getRecStore(),
+		    displayInfo: true,
+		    displayMsg: this.pagerDisplayMsg,
+		    emptyMsg: this.pagerEmptyMsg
 		}
 	    ]
 	});
@@ -113,6 +128,7 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
     },
 
     fillStore: function(theStore, records, size) {
+	theStore.removeAll();
 	var start = theStore.data.items.length;
 	var r;
 	//console.log("filling records " + start + " to " + (start+size));
@@ -131,8 +147,11 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
     },
 
     getAndLoadRecords: function(url) {
-	this.getRecStore().getProxy().url = url;
-	this.getRecStore().load({
+	var rowStr = '&rows=' + Ext.getStore('MainSolrStore').pageSize;
+	var newRowStr = '&rows=' + this.getRecStore().pageSize;
+	var adjustedUrl = url.replace(rowStr, newRowStr);
+	this.getRecStore().getProxy().url = adjustedUrl;
+	this.getRecStore().loadPage(1, {
 	    scope: this,
 	    callback: function(records) {
 		this.loadRecords(records);
@@ -145,7 +164,7 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
 	var theStore = Ext.getCmp('spwpdetailpagerid').getStore();
 	theStore.removeAll();
 	this.setCount(0);
-	if (false) {
+	if (true) {
 	    theStore.add(records);
 	    //console.info("DetailsPanel.loadRecords(): filled store");
 	    this.setCount(records.length);

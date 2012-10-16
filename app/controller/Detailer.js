@@ -39,6 +39,9 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	    },
 	    'pagingtoolbar[itemid="spwpdetailpager"]': {
 		change: this.onDetailsPageChange
+	    },
+	    '#spwpdetailpagingtoolbar': {
+		change: this.onPageChange
 	    }
 	});
 	this.callParent(arguments);
@@ -132,6 +135,10 @@ Ext.define('SpWebPortal.controller.Detailer', {
     onDetailsPageChange: function() {
 	//console.info("Detailer.onDetailsPageChange()");
 	this.detailsForm.loadCurrentRecord();
+    },
+
+    onPageChange: function(pager, pageData) {
+	this.detailsForm.loadRecords(pager.getStore().data);
     },
 
     popupDetails: function(records, showMap) {

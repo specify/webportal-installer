@@ -49,7 +49,7 @@ Ext.define('SpWebPortal.controller.Image', {
 	}
     },
 
-    onPageChange: function(pager, pageData) {
+    onPageChange: function(pager) {
 	console.info('Image onPageChange()');
 	var store = pager.getStore();
 	var thumb = pager.up('tabpanel').down('spimageview').down('spthumbnail');
