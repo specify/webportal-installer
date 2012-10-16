@@ -23,6 +23,8 @@ Ext.define('SpWebPortal.controller.Mapper', {
     mapTaskPage: 0,
     mapReadyTasks: [],
     buildMapTask: null,
+    useFacets: true,
+    lastFacetUrl: '',
     
     minMappedLat: 90.0, 
     maxMappedLat:  -90.0,
@@ -34,7 +36,9 @@ Ext.define('SpWebPortal.controller.Mapper', {
     noGeoCoordMsg: 'Geo coords are not present for this record',
     mapResultsText: 'Mapped {0} records at {1} points.',
     mapProgressText:'{0} - {1} of {2}',
+    simpleMapProgressText: 'Mapping {0} records',
     mapCancelledText: 'Mapping cancelled',
+    loadingGeoCoordsText: 'Loading geocoordinates',
     //...localizable text
 
     init: function() {
@@ -171,6 +175,17 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	this.mapTaskPage = 0;
     },
 	
+    initUICmps: function() {
+	if (this.progBar == null) {
+	    this.progBar = Ext.getCmp('spwpmainmapprogbar');
+	    this.progBar.setWidth(400);
+	    this.statusTextCtl = Ext.getCmp('spwpmainmapstatustext');
+	    this.statusTextCtl.setWidth(400);
+	    this.loadingBtn = Ext.getCmp('spwpmainmaploadbtn');
+	    this.cancelBtn = Ext.getCmp('spwpmainmapcancelbtn');
+	}
+    },
+
     loadMapStore: function(page) {
 	//UI update...
 	if (this.progBar == null) {
@@ -217,6 +232,64 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	}
     },
 
+
+    getDistinctPoints: function(url) {
+	//var url = 'http://stooge:8983/solr/core3/select/?q=*%3A*&version=2.2&start=0&rows=0&indent=on&qt=&wt=json&fl=cn,l1,l11&facet=on&facet.field=geoc&facet.limit=-1';
+        var me = this;
+	me.lastFacetUrl = '';
+	me.initUICmps();
+	me.getMapPane().setLoading(true);
+	me.progBar.setVisible(false);
+	me.statusTextCtl.setVisible(true);
+	me.statusTextCtl.setText(me.loadingGeoCoordsText);
+	$.ajax({url: url,
+                jsonp: 'json.wrf',
+                dataType: 'jsonp'
+	       }).done(function(data) {
+		   console.info("Mapper.getDistinctPoints() done");
+		   me.lastFacetUrl = url;
+		   var numFound = data.response.numFound;
+		   me.minMappedLat = 90.0; 
+		   me.maxMappedLat = -90.0;
+		   me.minMappedLng = 180.0; 
+		   me.maxMappedLng = -180.0;
+		   me.statusTextCtl.setText(Ext.String.format(me.simpleMapProgressText, numFound));
+		   var pts = me.createPointArrayFromFacets(data);
+		   var ptsMapped = pts.length;
+		   var text = Ext.String.format(me.mapResultsText, numFound, ptsMapped); 
+		   me.buildMap2(pts, me.geoCoordFlds, me.fldsOnMap, me.mapMarkTitleFld, false, !me.forceFitToMap, false);
+		   me.getMapPane().setLoading(false);
+		   if (!me.forceFitToMap) {
+		       var bounds = null;
+		       if (me.minMappedLat != null && me.minMappedLng != null && me.maxMappedLat != null && me.maxMappedLng != null) {
+			   var sw = new google.maps.LatLng(me.minMappedLat, me.minMappedLng);
+			   var ne = new google.maps.LatLng(me.maxMappedLat, me.maxMappedLng);
+			   bounds = new google.maps.LatLngBounds(sw, ne);
+		       }
+		       if (bounds != null) {
+			   me.mainMapCtl.fitBounds(bounds);
+		       }
+		   }
+		   
+		   me.statusTextCtl.setText(text);
+
+	       });
+    },
+
+    createPointArrayFromFacets: function(data) {
+	var facets = data.facet_counts.facet_fields.geoc;
+	var result = [];
+	for (var f = 0; f < facets.length; f += 2) {
+	    var ll = facets[f].split(' ');
+	    var pnt = [];
+	    pnt[0] = parseFloat(ll[0]);
+	    pnt[1] = parseFloat(ll[1]);
+	    //result[f/2] = facets[f].split(' ');
+	    result[f/2] = pnt;
+	}
+	return result;
+    },    
+	    
     updateUIAfterMapping: function(statusText) {
 	this.progBar.reset();
 	this.progBar.updateText('');
@@ -291,48 +364,59 @@ Ext.define('SpWebPortal.controller.Mapper', {
 
 	var store = Ext.getStore('MainSolrStore');
 	if (store.getSearched()) {
-	    this.minMappedLat = 90.0; 
-	    this.maxMappedLat = -90.0;
-	    this.minMappedLng = 180.0; 
-	    this.maxMappedLng = -180.0;
+		this.minMappedLat = 90.0; 
+		this.maxMappedLat = -90.0;
+		this.minMappedLng = 180.0; 
+		this.maxMappedLng = -180.0;
 
-	    if (this.lilMapStore == null) {
-		Ext.define('SpWebPortal.MapModel', {
-		    extend: 'Ext.data.Model',
-		    fields: [
-			{name: 'spid', type: 'string'},
-			{name: 'l1', type: 'tdouble'},
-			{name: 'l11', type: 'tdouble'}
-		    ]
-		}),
-		this.lilMapStore = Ext.create('Ext.data.Store', {
-		    model: "SpWebPortal.MapModel",
-		    pageSize: 10000,
-		    proxy: {
-			type: 'jsonp',
-			callbackKey: 'json.wrf',
-			url: store.solrUrlTemplate,
-			reader: {
-			    root: 'response.docs',
-			    totalProperty: 'response.numFound'
+		if (this.lilMapStore == null) {
+		    Ext.define('SpWebPortal.MapModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+			    {name: 'spid', type: 'string'},
+			    {name: 'l1', type: 'tdouble'},
+			    {name: 'l11', type: 'tdouble'}
+			]
+		    }),
+		    this.lilMapStore = Ext.create('Ext.data.Store', {
+			model: "SpWebPortal.MapModel",
+			pageSize: 10000,
+			proxy: {
+			    type: 'jsonp',
+			    callbackKey: 'json.wrf',
+			    url: store.solrUrlTemplate,
+			    reader: {
+				root: 'response.docs',
+				totalProperty: 'response.numFound'
+			    }
 			}
-		    }
-		});
-	    }				 
-	    var pageSize = store.pageSize;
-	    var url = store.getProxy().url.replace("rows="+pageSize, "rows="+this.lilMapStore.pageSize);
-	    url = url.replace("fl=*", "fl=cn,l1,l11");
-	    url = url + '&sort=l1+asc&l2+asc';
+		    });
+		}				 
+		var pageSize = store.pageSize;
+		var url = store.getProxy().url.replace("rows="+pageSize, "rows="+this.lilMapStore.pageSize);
+	    if (this.useFacets) {
+		url = url.replace("fl=*", "fl=l1,l11");
 
+		url += '&facet=on&facet.field=geoc&facet.limit=-1&facet.mincount=1';
+	    } else {
+		url = url.replace("fl=*", "fl=cn,l1,l11");
+		url = url + '&sort=l1+asc&l2+asc';
+	    }
 	    //Only remap if url/search has changed. This might not be completely
 	    //safe. Currently Advanced and Express searches will re-execute even url is UN-changed.
 	    //Technically, it would be better to track whether a search has been executed since last mapping.
-	    if (url != this.lilMapStore.getProxy().url || this.lastSearchCancelled) {
+	    //BUT With facets, currently, remapping always occurs
+	    if ((this.useFacets && this.lastFacetUrl != url) 
+		|| (!this.useFacets && (url != this.lilMapStore.getProxy().url || this.lastSearchCancelled))) {
 		this.clearMarkers2();
 		this.lastSearchCancelled = false;
 		this.recordsBeingMapped = [];
-		this.lilMapStore.getProxy().url = url;
-		this.loadMapStore(1);
+		if (this.useFacets) {
+		    this.getDistinctPoints(url);
+		} else {
+		    this.lilMapStore.getProxy().url = url;
+		    this.loadMapStore(1);
+		}
 	    } else {
  		this.progBar.setVisible(false);
 		this.cancelBtn.setVisible(false);
@@ -663,9 +747,14 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	var lastCoords = [];
 	for (var r = 0; r < records.length; r++) {
 	    var coords = [];
-	    coords[0] = records[r].get(geoCoordFlds[0]);
-	    coords[1] = records[r].get(geoCoordFlds[1]);
-	    if (r == 0 || coords[0] != lastCoords[0] || coords[1] != lastCoords[1]) {
+	    if (this.useFacets) {
+		coords[0] = records[r][0];
+		coords[1] = records[r][1];
+	    } else {
+		coords[0] = records[r].get(geoCoordFlds[0]);
+		coords[1] = records[r].get(geoCoordFlds[1]);
+	    }
+	    if (this.useFacets || r == 0 || coords[0] != lastCoords[0] || coords[1] != lastCoords[1]) {
 		lastCoords[0] = coords[0];
 		lastCoords[1] = coords[1];
 		if (this.areMappable(coords)) {
@@ -674,7 +763,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
 		    //having the results sorted by geoCoord and checking for changes in the above if
 		    //should make looking up in mapMarkers unnecessary - right?
 		    //But it doesn't...
-		    if (!this.mapMarkers[point.toString()] && !added[point]) {
+		    if (this.useFacets || (!this.mapMarkers[point.toString()] && !added[point])) {
 			//XXX just need to add the point now
 			geoCoords[p] = [];
 			geoCoords[p][0] = coords[0];
@@ -821,7 +910,11 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	}
 	return titleTxt;
     },
-	
+
+    addBoundsChangeListener: function(map, handler) {
+	google.maps.event.addListener(map, 'bounds_changed', handler);
+    },
+
     addPopupMarkerListener: function(marker, map, fldsOnMap, geoCoords, record) {
 	var contentStr = '';
 	for (var f = 0; f < fldsOnMap.length; f++) {

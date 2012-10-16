@@ -100,7 +100,9 @@ Ext.define("SpWebPortal.locale.se.controller.Mapper", {
     noGeoCoordMsg: 'Geo coords are not present for this record',
     mapResultsText: 'Mapped {0} records at {1} points.'
     mapProgressText:'{0} - {1} av {2}',
-    mapCancelledText: 'Mapping cancelled'
+    simpleMapProgressText: 'Mapping {0} records',
+    mapCancelledText: 'Mapping cancelled',
+    loadingGeoCoordsText: 'Loading geocoordinates',
 });
 
 Ext.define("SpWebPortal.locale.se.controller.Settings", {
