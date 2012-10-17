@@ -73,10 +73,10 @@ Ext.define('SpWebPortal.view.Viewport', {
 	
 	this.background = Ext.create('Ext.Img', {
 	    src: Ext.getStore('SettingsStore').getAt(0).get('backgroundURL'),
-	    id: 'spwpmainbackground'
-	    //maxHeight: 256,
-	    //maxWidth: 256,
-	    //style: "padding: 100px; max-height: 100%; max-width: 100%; vertical-align:middle;"
+	    id: 'spwpmainbackground',
+	    maxHeight: 256,
+	    maxWidth: 256,
+	    style: "padding: 50px"
 	    //style: "display: block; margin-left: auto;	margin-right: auto;" 
 	    //floating: true
 	});
