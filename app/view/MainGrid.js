@@ -13,7 +13,7 @@ Ext.define('SpWebPortal.view.MainGrid', {
     ],
 
     config: {
-	showMapAction: true,
+	showMapAction: true, //Dropping the map action item just indicating presence/absence of coords with icon, details btn displays map
 	isDetail: false,
 	geoCoordFlds: [],
 	imgFld: null
@@ -97,7 +97,6 @@ Ext.define('SpWebPortal.view.MainGrid', {
 	this.geoCoordFlds = []; //Lat1,Long1,Lat2,Long2...
 	var fldsOnMap = []; //flds displayed on popup labels in map view
 	var mapMarkerTitleFld = [];
-	var hasImages = false, hasMaps = false;
 	for (var r = 1; r < fieldStore.count(); r++) {
 	    var colDef = fieldStore.getAt(r);
 	    var col = Ext.create('Ext.grid.column.Column', {
@@ -108,7 +107,6 @@ Ext.define('SpWebPortal.view.MainGrid', {
 		width: 100
 	    });
 	    if (this.isImageCol(colDef)) {
-		hasImages = true;
 		this.imgCol = colDef.get('solrname');
 		col.renderer = function(value) {
 		    var result = '';
@@ -129,41 +127,38 @@ Ext.define('SpWebPortal.view.MainGrid', {
 		    return result;
 		}
 	    }
-	    if (this.getShowMapAction()) {
-		if (this.isGeoCoordFld(colDef)) {
-		    this.processGeoCoordFld(colDef, this.geoCoordFlds);
-		    if (this.isGoodPlaceForMapBtn(colDef)) {
-			mapColPos = r+1;
-		    }
+	    if (this.isGeoCoordFld(colDef)) {
+		this.processGeoCoordFld(colDef, this.geoCoordFlds);
+		if (this.getShowMapAction() && this.isGoodPlaceForMapBtn(colDef)) {
+		    mapColPos = r+1;
 		}
-		if (colDef.get('displayinmap') || colDef.get('mapmarkertitle')) {
-		    fldsOnMap[fldsOnMap.length] = [colDef.get('solrname'), colDef.get('title')];
-		    if (colDef.get('mapmarkertitle') && mapMarkerTitleFld.length == 0) {
-			mapMarkerTitleFld =  [colDef.get('solrname'), colDef.get('title')];
-			console.info("set map marker title: " + mapMarkerTitleFld);
-		    }
+	    }
+	    if (colDef.get('displayinmap') || colDef.get('mapmarkertitle')) {
+		fldsOnMap[fldsOnMap.length] = [colDef.get('solrname'), colDef.get('title')];
+		if (colDef.get('mapmarkertitle') && mapMarkerTitleFld.length == 0) {
+		    mapMarkerTitleFld =  [colDef.get('solrname'), colDef.get('title')];
+		    console.info("set map marker title: " + mapMarkerTitleFld);
 		}
 	    }
 	    tblCols[r] = col;
 	}
-	//Dropping the map action item just indicating presence/absence of coords with icon, details btn displays map
-	hasMaps = mapColPos != -1;
+	
+	if (fldsOnMap.length == 0) {
+	    this.defaultFldsOnMap(fieldStore, fldsOnMap);
+	}
+	if (mapMarkerTitleFld.length == 0) {
+	    mapMarkerTitleFld = this.defaultMapMarkerTitle(fieldStore);
+	    console.info("set map marker title to default: " + mapMarkerTitleFld);
+	}
+	this.fireEvent('mapsetsready', this.geoCoordFlds, fldsOnMap, mapMarkerTitleFld);
+
 	if (mapColPos != -1) {
-	    if (fldsOnMap.length == 0) {
-		this.defaultFldsOnMap(fieldStore, fldsOnMap);
-	    }
-	    if (mapMarkerTitleFld.length == 0) {
-		mapMarkerTitleFld = this.defaultMapMarkerTitle(fieldStore);
-		console.info("set map marker title to default: " + mapMarkerTitleFld);
-	    }
-	    this.fireEvent('mapsetsready', this.geoCoordFlds, fldsOnMap, mapMarkerTitleFld);
-	    //Dropping the map action item just indicating presence/absence of coords with icon, details btn displays map
-	    /*var mapCol = Ext.create('Ext.grid.column.Action', {
+	    var mapCol = Ext.create('Ext.grid.column.Action', {
 		//text: "Map",
 		sortable: false,
 		width: 25,
 		itemid: 'map-popup-ctl',
-		geoCoordFlds: geoCoordFlds,
+		geoCoordFlds: this.geoCoordFlds,
 		fldsOnMap: fldsOnMap,
 		mapMarkTitleFld: mapMarkerTitleFld,
 		items: [{
@@ -172,17 +167,11 @@ Ext.define('SpWebPortal.view.MainGrid', {
 		    handler: function(grid, rowIndex) {
 			var record = grid.getStore().getAt(rowIndex);
 			this.fireEvent('clicked', record, this.geoCoordFlds, this.fldsOnMap, this.mapMarkTitleFld);
-			//testing page map display...
-			//var records = [];
-			//for (var r = 0; r < 10; r++) {
-			//    records[r] = grid.getStore().getAt(rowIndex + r);
-		//	}
-			//this.fireEvent('clicked', records, this.geoCoordFlds, this.fldsOnMap, this.mapMarkTitleFld);
 		    }
 		}]
 
 	    });
-	    tblCols.splice(mapColPos, 0, mapCol);*/
+	    tblCols.splice(mapColPos, 0, mapCol);
 	}
 	var isDet = this.getIsDetail();
 	var detailCol = Ext.create('Ext.grid.column.Action', {
@@ -199,25 +188,17 @@ Ext.define('SpWebPortal.view.MainGrid', {
 		},
 	    ]
 	});
-	/*var geoCol = Ext.create('Ext.grid.column.Column', {
-	    renderer: this.renderGeoCol,
-	    width: 16
-	});
-	var imgPresCol = Ext.create('Ext.grid.column.Column', {
-	    renderer: this.renderImgPresCol,
-	    width: 16
-	});*/
 	var geoImgPresCol = Ext.create('Ext.grid.column.Column', {
 	    renderer: this.renderGeoImgPresCol,
 	    width: 32
 	});
 	tblCols.splice(1, 0, detailCol);
-	//tblCols.splice(2, 0, geoCol);
-	//tblCols.splice(3, 0, imgPresCol);
 	tblCols.splice(2, 0, geoImgPresCol);
 	this.columns = tblCols;
 
-	this.store.setGeoCoordFlds(this.geoCoordFlds); 
+	if (!this.getIsDetail()) {
+	    this.store.setGeoCoordFlds(this.geoCoordFlds); 
+	}
 
 	this.callParent(arguments);
     },

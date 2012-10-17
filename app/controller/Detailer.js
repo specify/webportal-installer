@@ -138,7 +138,7 @@ Ext.define('SpWebPortal.controller.Detailer', {
     },
 
     onPageChange: function(pager, pageData) {
-	this.detailsForm.loadRecords(pager.getStore().data);
+	this.detailsForm.loadRecords(pager.getStore().data.items);
     },
 
     popupDetails: function(records, showMap) {

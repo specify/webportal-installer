@@ -54,8 +54,6 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
 	    },
 	    getCount: function() {
 		//console.info("DetailsPanel store getCount " + this.detailer.getCount());
-	    },
-	    setGeoCoordFlds: function(geoCoordFlds) {
 	    }
 	});
 
@@ -63,7 +61,8 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
 	
 	var theRecStore = Ext.create('Ext.data.Store', {
 	    model: "SpWebPortal.model.MainModel",
-	    pageSize: 100,
+	    pageSize: 50,
+	    remoteSort: true,
 	    proxy: {
 		type: 'jsonp',
 		callbackKey: 'json.wrf',
@@ -72,20 +71,55 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
 		    totalProperty: 'response.numFound'
 		}
 	    },
-	    setGeoCoordFlds: function() {}
+	    setGeoCoordFlds: function() {},
+	    //The listener is copied straight from MainSolrStore
+	    listeners: {
+		'beforeload': function(store, operation) {
+		    //alert('beforeload: ' + store.getProxy().url);
+		    if (store.sorters.getCount() > 0) {
+			var url = store.getProxy().url;
+			var sortIdx = url.lastIndexOf('&sort=');
+			if (sortIdx != -1) {
+			    url = url.substring(0, sortIdx);
+			}
+			var sortStr = '';
+			for (var s = 0; s < store.sorters.getCount(); s++) {
+			    var sorter = store.sorters.getAt(s);
+			    if (s > 0) sortStr += ',';
+			    sortStr += sorter.property + '+' + sorter.direction.toLowerCase();
+			}
+			if (sortStr != '') {
+			    sortStr = 'sort=' + sortStr;
+			    store.getProxy().url = url + '&' + sortStr;
+			}
+		    }
+		}
+	    }
 	});
+
 	this.setRecStore(theRecStore);
 
 	var items = [];
 	items[0] = Ext.create('Ext.tab.Panel', {
 	    layout: 'fit',
+	    bbar: [
+		{
+		    xtype: 'pagingtoolbar',
+		    id: 'spwpdetailpagingtoolbar',
+		    store: this.getRecStore(),
+		    displayInfo: true,
+		    displayMsg: this.pagerDisplayMsg,
+		    emptyMsg: this.pagerEmptyMsg
+		}
+	    ],
 	    items: [
 		{
 		    xtype: 'spmaingrid',
 		    title: this.detailGridTitle,
 		    store: this.getRecStore(),
 		    showMapAction: false,
-		    isDetail: true
+		    isDetail: true,
+		    //invalidateScrollerOnRefresh: true
 		},
 		{
 		    xtype: 'panel',
@@ -108,16 +142,6 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
 			    showMap: this.getShowMap()
 			})
 		    ]
-		}
-	    ],
-	    bbar: [
-		{
-		    xtype: 'pagingtoolbar',
-		    id: 'spwpdetailpagingtoolbar',
-		    store: this.getRecStore(),
-		    displayInfo: true,
-		    displayMsg: this.pagerDisplayMsg,
-		    emptyMsg: this.pagerEmptyMsg
 		}
 	    ]
 	});
