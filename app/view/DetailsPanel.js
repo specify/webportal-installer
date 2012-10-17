@@ -22,7 +22,8 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
 	currentRecIdx: 0,
 	count: 0,
 	showMap: false,
-	recStore: null
+	recStore: null,
+	mainBBar: null
     },
 
     layout: 'fit',
@@ -98,19 +99,18 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
 	});
 
 	this.setRecStore(theRecStore);
-
+	this.setMainBBar(Ext.create('Ext.toolbar.Paging', {
+	    id: 'spwpdetailpagingtoolbar',
+	    store: this.getRecStore(),
+	    displayInfo: true,
+	    displayMsg: this.pagerDisplayMsg,
+	    emptyMsg: this.pagerEmptyMsg
+	}));
 	var items = [];
 	items[0] = Ext.create('Ext.tab.Panel', {
 	    layout: 'fit',
 	    bbar: [
-		{
-		    xtype: 'pagingtoolbar',
-		    id: 'spwpdetailpagingtoolbar',
-		    store: this.getRecStore(),
-		    displayInfo: true,
-		    displayMsg: this.pagerDisplayMsg,
-		    emptyMsg: this.pagerEmptyMsg
-		}
+		this.getMainBBar()
 	    ],
 	    items: [
 		{
@@ -177,6 +177,7 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
 	this.getRecStore().loadPage(1, {
 	    scope: this,
 	    callback: function(records) {
+		this.getMainBBar().setVisible(this.getRecStore().getTotalCount() > this.getRecStore().pageSize);
 		this.loadRecords(records);
 	    }
 	});
