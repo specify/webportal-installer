@@ -118,8 +118,7 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
 		    title: this.detailGridTitle,
 		    store: this.getRecStore(),
 		    showMapAction: false,
-		    isDetail: true,
-		    //invalidateScrollerOnRefresh: true
+		    isDetail: true
 		},
 		{
 		    xtype: 'panel',

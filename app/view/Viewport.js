@@ -105,8 +105,7 @@ Ext.define('SpWebPortal.view.Viewport', {
 		    xtype: 'spmaingrid',
 		    id: 'spwpmaingrid',
 		    title: this.recordsTitle,
-		    store: Ext.getStore('MainSolrStore'),
-		    //invalidateScrollerOnRefresh: true
+		    store: Ext.getStore('MainSolrStore')
 		},
 		{
 		    xtype: 'spimageview',
