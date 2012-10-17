@@ -13,7 +13,7 @@ Ext.define('SpWebPortal.view.MainGrid', {
     ],
 
     config: {
-	showMapAction: true, //Dropping the map action item just indicating presence/absence of coords with icon, details btn displays map
+	showMapAction: false, //Dropping the map action item just indicating presence/absence of coords with icon, details btn displays map
 	isDetail: false,
 	geoCoordFlds: [],
 	imgFld: null

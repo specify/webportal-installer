@@ -194,6 +194,7 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
 	    this.setCount(records.length);
 	    theStore.loadPage(1);
 	    this.down('tabpanel').getActiveTab().setLoading(false);
+	    Ext.getCmp('spwpdetailpagerid').setVisible(theStore.getTotalCount() > 1);
 	} else {
 	    var task = Ext.TaskManager.newTask({
 		run: this.fillStore,
