@@ -122,9 +122,6 @@ Ext.define('SpWebPortal.view.Viewport', {
 		layout: 'fit',
 		items: [
 		    this.background,
-		    /*{
-			html: '<table id="deadcenter"> <tr><td><img src='+  Ext.getStore('SettingsStore').getAt(0).get('backgroundURL') + '></td></tr></table>',
-		    },*/
 		    this.resultsTab
 		]
 	    },
