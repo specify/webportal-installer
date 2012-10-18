@@ -71,14 +71,10 @@ Ext.define('SpWebPortal.view.Viewport', {
 	mapBtn.setVisible(false);
 	mapCancelBtn.setVisible(false);
 	
-	this.background = Ext.create('Ext.Img', {
-	    src: Ext.getStore('SettingsStore').getAt(0).get('backgroundURL'),
-	    id: 'spwpmainbackground',
-	    maxHeight: 256,
-	    maxWidth: 256,
-	    style: "padding: 50px"
-	    //style: "display: block; margin-left: auto;	margin-right: auto;" 
-	    //floating: true
+
+	this.background = Ext.create('Ext.panel.Panel', {
+	    html: '<table id="deadcenter"> <tr><td><img src='+  Ext.getStore('SettingsStore').getAt(0).get('backgroundURL') + '></td></tr></table>',
+	    id: 'spwpmainbackground'
 	});
 
 	this.resultsTab = Ext.create('Ext.tab.Panel', {
@@ -126,6 +122,9 @@ Ext.define('SpWebPortal.view.Viewport', {
 		layout: 'fit',
 		items: [
 		    this.background,
+		    /*{
+			html: '<table id="deadcenter"> <tr><td><img src='+  Ext.getStore('SettingsStore').getAt(0).get('backgroundURL') + '></td></tr></table>',
+		    },*/
 		    this.resultsTab
 		]
 	    },
