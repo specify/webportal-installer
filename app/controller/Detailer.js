@@ -119,8 +119,8 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	var attachees = [attacheeIDs.length];
 	var theStore = Ext.getStore('MainSolrStore');
 	for (var a = 0; a < attachees.length; a++) {
-	    //attachees[a] = theStore.getById(attacheeIDs[a]);
-	    attachees[a] = theStore.getAt(attacheeIDs[a]);
+	    attachees[a] = theStore.getById(attacheeIDs[a]);
+	    //attachees[a] = theStore.getAt(attacheeIDs[a]);
 	}
 	if (attachees.length > 0) {
 	    //this is lame. One popup func!

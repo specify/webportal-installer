@@ -544,7 +544,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	console.info('Mapper.buildMap. #Recs: ' + records.length);
 	//console.info(arguments);
 	var p = 0;
-	var bnds = this.getMappedRecsWithBounds(records, geoCoordFlds, true);
+	var bnds = this.getMappedRecsWithBounds(records, geoCoordFlds, true, true);
 	var geoCoords = bnds[0];
 	var minLat = bnds[1], maxLat = bnds[3], minLong = bnds[2], maxLong = bnds[4];
 	//worry about boxes and lines later...
@@ -701,7 +701,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
 						     });*/
     },
 	
-    getMappedRecsWithBounds: function(records, geoCoordFlds, getBounds) {
+    getMappedRecsWithBounds: function(records, geoCoordFlds, getBounds, associateRecordsWithPoints) {
 	var geoCoords = [];
 	var p = 0;
 	var minLat = getBounds ? 90.0 : null, maxLat = getBounds ? -90.0 : null;
@@ -718,7 +718,9 @@ Ext.define('SpWebPortal.controller.Mapper', {
 		    geoCoords[p] = [];
 		    geoCoords[p][0] = coords[0];
 		    geoCoords[p][1] = coords[1];
-		    //geoCoords[p][2] = r;
+		    if (associateRecordsWithPoints) {
+			geoCoords[p][2] = r;
+		    }
 		    if (getBounds) {
 			if (minLat > coords[0]) {
 			    minLat = coords[0];

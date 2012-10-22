@@ -84,14 +84,15 @@ Ext.define('SpWebPortal.view.DetailPanel', {
 	this.down('spdetailview').loadRecord(record);
 
 	//set up image view
-	var thumb = this.down('spimageview').down('spthumbnail');
-	var img = this.down('spimageview').down('image');
-	img.setSrc('');
-	img.up('panel').setTitle('Image');
-	var imgStore = thumb.getStore();
+	var imgView = this.down('spimageview');
+	//var thumb = this.down('spimageview').down('spthumbnail');
+	//var img = this.down('spimageview').down('image');
+	//img.setSrc('');
+	//img.up('panel').setTitle('Image');
+	var imgStore = imgView.getImageStore();
 	imgStore.removeAll();
-
-	var imgDef = record.get('img');
+	var imagesPresent = imgView.addImgForSpecRec(record) > 0;
+	/*var imgDef = record.get('img');
 	var imagesPresent = imgDef != null && imgDef != '';
 	if (imagesPresent) {
 	    var imgs = Ext.JSON.decode(imgDef);
@@ -102,7 +103,7 @@ Ext.define('SpWebPortal.view.DetailPanel', {
 		});
 	    }
 	    imgStore.add(imgs);
-	}
+	}*/
 	var imgMapView = this.down('[itemid="img-and-map-view"]');
 	if (!imagesPresent && !this.getShowMap()) {
 	    imgMapView.setTitle('');
@@ -127,7 +128,7 @@ Ext.define('SpWebPortal.view.DetailPanel', {
 	//    this.down('#spwpdetailmappane').fireEvent('maprequest', record, aDom);
 	//}
 	//var imgpager = this.down('pagingtoolbar');
-	this.down('pagingtoolbar').setVisible(false); //no paging yet
+	//this.down('pagingtoolbar').setVisible(false); //no paging yet
     }
 
 });

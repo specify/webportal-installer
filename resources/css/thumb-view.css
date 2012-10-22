@@ -3,13 +3,14 @@
     font: 11px Arial, Helvetica, sans-serif;
 }
 *.tv-thumb{
-    background: #dddddd;
-    padding: 0px;
-    padding-bottom: 0;
-    height: 100px;
-    width: 100px;
-    line-height: 100px;
+    /*background: #dddddd;*/
+    padding: 0;
+    /*height: 200px;
+    width: 200px;*/
+    line-height: 0px;
     text-align: center;
+    margin: 0;
+    border: 0;
 }
 
 *.tv-thumb::after {
@@ -18,21 +19,24 @@
 }
 
 .x-quirks .tv-thumb {
-    padding-bottom: 3px;
+    /*padding-bottom: 3px;*/
 }
 
-*.tv-thumb img{
-    max-height: 100%;
-    max-width: 100%;
+*.tv-thumb td{
+    /*max-height: 100%;
+    max-width: 100%;*/
+
     /*display: block;
     margin: auto;*/
+
     vertical-align: middle;
+    text-align: center;
     /*position: absolute;*/
 }
 
 *.tv-thumb-wrap{
     float: left;
-    margin: 4px;
+    /*margin: 4px;*/
     margin-right: 0;
     padding: 5px;
 }

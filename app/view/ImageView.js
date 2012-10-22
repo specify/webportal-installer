@@ -19,15 +19,18 @@ Ext.define('SpWebPortal.view.ImageView', {
     ],
 
     config: {
-	imageStore: null
+	imageStore: null,
+   	baseUrl: '',
+	previewScale: 200,
+	imgServerResponse: null,
+	imgServerError: null,
     },
 
     initComponent: function() {
 
-
-	var thumbStore = Ext.create('Ext.data.Store', {
+	/*var thumbStore = Ext.create('Ext.data.Store', {
 	    model: 'SpWebPortal.model.AttachedImageModel',
-	    pageSize: 10,
+	    pageSize: 1000,
 	    imageviewer: this,
 	    loadPage: function(page) {
 		console.info("ThumbStore store load page " + page);
@@ -50,7 +53,7 @@ Ext.define('SpWebPortal.view.ImageView', {
 		//console.info("DetailsPanel store getTotalCount " + this.detailer.getCount());
 		return this.imageviewer.getImageStore().getTotalCount();
 	    },
-	});
+	});*/
 
 	this.setImageStore(Ext.create('Ext.data.Store', {
 	    model: 'SpWebPortal.model.AttachedImageModel',
@@ -74,24 +77,25 @@ Ext.define('SpWebPortal.view.ImageView', {
 	    //titleCollapse: true,
 	    split: true,
 
-	    region: 'west',
-	    width: 300,
+	    region: 'center',
+	    //width: 300,
 	    autoScroll: true,
 	    items: Ext.create('SpWebPortal.view.ThumbnailView', {
-		store: thumbStore
+		//store: thumbStore
+		store: this.getImageStore()
 	    })
 	});
 
-	cmps[1] = Ext.create('Ext.panel.Panel', {
+	/*cmps[1] = Ext.create('Ext.panel.Panel', {
 	    region: 'center',
 	    autoScroll: true,
 	    title: this.selectedTitle,
 	    items: {
 		xtype: 'image'
 	    }
-	});
+	});*/
 
-	dcmps = [];
+	/*dcmps = [];
 	dcmps[0] = Ext.create('Ext.toolbar.Toolbar', {
 	    dock: 'top',
 	    items: [
@@ -105,11 +109,111 @@ Ext.define('SpWebPortal.view.ImageView', {
 		    emptyMsg: this.thumbPagerEmptyMsg
 		})
 	    ]
-	});
+	});*/
 
 	this.items = cmps;
-	this.dockedItems = dcmps;
+	//this.dockedItems = dcmps;
+
+	var settingsStore =  Ext.getStore('SettingsStore');
+	var settings = settingsStore.getAt(0);
+	this.setBaseUrl(settings.get('imageBaseUrl'));
+	this.setPreviewScale(settings.get('imagePreviewScale'));
 
 	this.callParent(arguments);
-    }
+    },
+
+    getDescription: function(record) {
+	//XXX use configged fields to build description
+	return record.get('cn');
+    },
+
+    addImgForSpecRec: function(record) {
+	var imgJson = record.get('img');
+	if (imgJson != null && imgJson != '') {
+	    var attachedTo = record.get('spid');
+	    var attachedToDescr = this.getDescription(record);
+	    return this.addImg(imgJson, attachedTo, attachedToDescr);
+	} else {
+	    return 0;
+	}
+    },
+
+    addImg: function(imgJson, attachedTo, attachedToDescr) {
+	if (imgJson != null && imgJson != '') {
+	    var imgs = Ext.JSON.decode(imgJson);
+	    for (var i = 0; i < imgs.length; i++) {
+		Ext.apply(imgs[i], {
+		    AttachedTo: attachedTo,
+		    AttachedToDescr: attachedToDescr,
+		    ThumbSrc: this.getImgSrc(imgs[i]['AttachmentLocation'], this.getPreviewScale(), 'KUFishvoucher'),
+		    Src: this.getImgSrc(imgs[i]['AttachmentLocation'], null, 'KUFishvoucher')
+		});
+	    }
+	    this.getImageStore().add(imgs);
+	    return imgs.length;
+	} else {
+	    return 0;
+	}
+    },
+
+    getImgSrc: function(fileName, scale, coll) {
+	//var url = this.getBaseUrl() + '/getfileref.php?coll=' + coll + '&type=O&filename=' + fileName + '&scale=' + scale;
+	var url = this.getBaseUrl() + '/getfileref.php';
+	this.imgServerResponse = null;
+	this.imgServerError = null;
+	/*$.ajax({url: url,
+		type: "GET",
+		params:  {
+		    coll: coll,
+		    type: 0,
+		    filename: fileName,
+		    scale: scale
+		}
+
+	       }).done(function(data) {
+		   console.info("boxleyed");
+	       });
+	*/
+	Ext.Ajax.method = 'GET';
+	var params;
+	if (scale != null) {
+	    params =  {
+		coll: coll,
+		type: 0,
+		filename: fileName,
+		scale: scale
+	    };
+	} else {
+	    params =  {
+		coll: coll,
+		type: 0,
+		filename: fileName
+	    };
+	}
+
+	var req = Ext.Ajax.request({
+	    url: url,
+	    cors: true,
+	    params: params,
+	    //headers: 'Access-Control-Allow-Origin: *',
+	    scope: this,
+	    success: function(response) {
+		this.imgServerResponse = response.responseText;
+		this.imgServerError = null;
+	    },
+	    failure: function(response) {
+		this.imgServerError = response.status;
+		this.imgServerResponse = null;
+	    }
+	});
+	//while (Ext.Ajax.isLoading(req));
+	//return this.imgServerResponse;
+	if (scale != null) {
+	    return "http://boxley.nhm.ku.edu/specifyassets/Ichthyology/originals/" + fileName.replace('.jpg', '_' + scale + '.jpg');
+	} else {
+	    return "http://boxley.nhm.ku.edu/specifyassets/Ichthyology/originals/" + fileName;
+	}
+
+    },
+
 });

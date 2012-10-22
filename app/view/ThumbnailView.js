@@ -22,6 +22,8 @@ Ext.define('SpWebPortal.view.ThumbnailView', {
 	return data;
     },
 
+	
+
     initComponent: function() {
 	var settingsStore =  Ext.getStore('SettingsStore');
 	var settings = settingsStore.getAt(0);
@@ -29,7 +31,9 @@ Ext.define('SpWebPortal.view.ThumbnailView', {
 	    tpl: [
 		'<tpl for=".">',
 		'<div class="tv-thumb-wrap" id="{AttachmentID}">',
-		'<div class="tv-thumb"><img src="' + settings.get('imageBaseUrl') + '/{AttachmentLocation}" title="{AttachedToDescr} - {Title}"></div>',
+		//'<div class="tv-thumb"><img src="' + settings.get('imageBaseUrl') + '/{AttachmentLocation}" title="{AttachedToDescr} - {Title}"></div>',
+		//'<div class="tv-thumb"><img src="{ThumbSrc}" title="{AttachedToDescr} - {Title}"></div>',
+		'<table class="tv-thumb"><tr><td><img src="{ThumbSrc}" title="{AttachedToDescr} - {Title}"></td></tr></table>',
 		'<span class="x-editable">{shortName}</span></div>',
 		'</tpl>',
 		'<div class="x-clear"></div>'
