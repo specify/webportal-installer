@@ -21,7 +21,8 @@ Ext.define('SpWebPortal.view.ImageView', {
     config: {
 	imageStore: null,
    	baseUrl: '',
-	previewScale: 200,
+	previewSize: 200,
+	viewSize: 500,
 	imgServerResponse: null,
 	imgServerError: null,
     },
@@ -95,7 +96,7 @@ Ext.define('SpWebPortal.view.ImageView', {
 	    }
 	});*/
 
-	/*dcmps = [];
+	/*var dcmps = [];
 	dcmps[0] = Ext.create('Ext.toolbar.Toolbar', {
 	    dock: 'top',
 	    items: [
@@ -117,8 +118,8 @@ Ext.define('SpWebPortal.view.ImageView', {
 	var settingsStore =  Ext.getStore('SettingsStore');
 	var settings = settingsStore.getAt(0);
 	this.setBaseUrl(settings.get('imageBaseUrl'));
-	this.setPreviewScale(settings.get('imagePreviewScale'));
-
+	this.setPreviewSize(settings.get('imagePreviewSize'));
+	this.setViewSize(settings.get('imageViewSize'));
 	this.callParent(arguments);
     },
 
@@ -145,7 +146,7 @@ Ext.define('SpWebPortal.view.ImageView', {
 		Ext.apply(imgs[i], {
 		    AttachedTo: attachedTo,
 		    AttachedToDescr: attachedToDescr,
-		    ThumbSrc: this.getImgSrc(imgs[i]['AttachmentLocation'], this.getPreviewScale(), 'KUFishvoucher'),
+		    ThumbSrc: this.getImgSrc(imgs[i]['AttachmentLocation'], this.getPreviewSize(), 'KUFishvoucher'),
 		    Src: this.getImgSrc(imgs[i]['AttachmentLocation'], null, 'KUFishvoucher')
 		});
 	    }
@@ -176,7 +177,7 @@ Ext.define('SpWebPortal.view.ImageView', {
 	*/
 	Ext.Ajax.method = 'GET';
 	var params;
-	if (scale != null) {
+	if (scale != null && scale > 0) {
 	    params =  {
 		coll: coll,
 		type: 0,

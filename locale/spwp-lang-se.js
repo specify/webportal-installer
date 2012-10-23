@@ -39,6 +39,19 @@ Ext.define("SpWebPortal.locale.se.view.ImageView", {
     thumbPagerEmptyMsg: 'No images to display'
 });
 
+Ext.define("SpWebPortal.locale.se.view.ImageSingleView", {
+    override: "SpWebPortal.view.ImageSingleView",
+
+    specimenBtnTxt: 'Associated Specimens',
+    specimenBtnTip: 'View specimen(s) associated with this image',
+    imageDetailBtnTxt: 'Image Details',
+    imageDetailBtnTip: 'View image details',
+    viewActualBtnText: 'Actual size',
+    viewStdBtnText: 'Standard size',
+    viewActualBtnTip: 'Click to view standard size',
+    viewStdBtnTip: 'Click to view actual size'
+});
+
 Ext.define("SpWebPortal.locale.se.view.MainGrid", {
     override: "SpWebPortal.view.MainGrid",
 

@@ -7,6 +7,7 @@ Ext.define('SpWebPortal.model.AttachedImageModel', {
 	{name: 'AttachedToDescr', type: 'string'},
 	{name: 'AttachmentLocation', type: 'string'},
 	{name: 'ThumbSrc', type: 'string'},
+	{name: 'StdSrc', type: 'string'},
 	{name: 'Src', type: 'string'},
 	{name: 'Title', type: 'string'},
 	{name: 'Height', type: 'int'},

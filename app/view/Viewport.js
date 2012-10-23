@@ -73,7 +73,7 @@ Ext.define('SpWebPortal.view.Viewport', {
 	
 
 	this.background = Ext.create('Ext.panel.Panel', {
-	    html: '<table id="deadcenter"> <tr><td><img src='+  Ext.getStore('SettingsStore').getAt(0).get('backgroundURL') + '></td></tr></table>',
+	    html: '<table class="deadcenter"> <tr><td><img src='+  Ext.getStore('SettingsStore').getAt(0).get('backgroundURL') + '></td></tr></table>',
 	    id: 'spwpmainbackground'
 	});
 
@@ -105,6 +105,7 @@ Ext.define('SpWebPortal.view.Viewport', {
 		},
 		{
 		    xtype: 'spimageview',
+		    id: 'spwpmainimageview',
 		    title: this.imagesTitle
 		},
 		{
