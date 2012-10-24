@@ -52,7 +52,7 @@ Ext.define('SpWebPortal.controller.ExpressSearch', {
 	    : this.escapeForSolr(control[0].value);
 	var filterToMap = (this.getForceFitToMap() || this.getFitToMap()) && this.mapViewIsActive();
 
-	var url = solr.getExpressSearchUrl(images, maps, mainQ, filterToMap, this.getMatchAll());
+	var url = solr.getSearchUrl(images, maps, mainQ, filterToMap, this.getMatchAll());
 
 	this.setForceFitToMap(false);
 

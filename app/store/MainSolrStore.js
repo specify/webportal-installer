@@ -130,12 +130,43 @@ Ext.define('SpWebPortal.store.MainSolrStore', {
 	return result;
     },
 
-    getExpSearchLatLngUrl: function(geoCoords) {
-	return this.getExpressSearchUrl(this.getImages(), this.getMaps(), this.getMainTerm(), 
+    getSearchLatLngUrl: function(geoCoords) {
+	return this.getSearchUrl(this.getImages(), this.getMaps(), this.getMainTerm(), 
 this.getFilterToMap(), this.getMatchAll(), geoCoords);
     },
 
-    getExpressSearchUrl: function(images, maps, mainTerm, filterToMap, matchAll, geoCoords) {
+    getIdUrl: function(ids) {
+	var images = this.getImages();
+	var maps = this.getMaps();
+	var mainTerm = this.getMainTerm();
+	var filterToMap = this.getFilterToMap();
+	var matchAll = this.getMatchAll();
+
+	var idStr;
+	if (ids.length == 1) {
+	    idStr = ids[0];
+	} else {
+	    //not sure if this will work for thousands of ids??? As could happen for images for Ento CollEvents???
+	    for (var i = 0; i < ids.length; i++) {
+		if (i > 0) {
+		    idStr += ' OR ';
+		}
+		idStr += ids[i];
+	    }
+	    idStr = '(' + idStr + ')';
+	}
+	var result = this.getSearchUrl(false, false, 'spid:'+idStr, false, false);
+
+	this.setImages(images);
+	this.setMaps(maps);
+	this.setMainTerm(mainTerm);
+	this.setFilterToMap(filterToMap);
+	this.setMatchAll(matchAll);
+
+	return result;
+    },
+
+    getSearchUrl: function(images, maps, mainTerm, filterToMap, matchAll, geoCoords) {
 
 	this.setImages(images);
 	this.setMaps(maps);

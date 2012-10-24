@@ -48,6 +48,15 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
 		//return this.currentPage;
 		//return true;
 		this.fireEvent('load');
+		if (this.detailer.getShowMap()) {
+		    var mapPane = this.detailer.down('spdetailpanel').down('[itemid="spdetailmappane"]');
+		    var aDom = Ext.getDom(mapPane.getId());
+		    try {
+			mapPane.fireEvent('maprequest', record, aDom);
+		    } catch(e) {
+			//suppress error that occurs when aDom mapPane isn't ready
+		    }
+		}
 	    },
 	    getTotalCount: function() {
 		//console.info("DetailsPanel store getTotalCount " + this.detailer.getCount());

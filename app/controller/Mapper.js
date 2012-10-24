@@ -10,7 +10,6 @@ Ext.define('SpWebPortal.controller.Mapper', {
     mapMarkers: {},
     fitToMap: false,
     forceFitToMap: false,
-    mapStore: null,
     lilMapStore: null,
     markerPlacementStepSize: 500,
     markerTask: null,
@@ -348,7 +347,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	console.info("Mapper.onGoogleMarkerClick2");
 	//console.info(arguments);
 	var store = Ext.getStore('MainSolrStore');
-	var url = store.getExpSearchLatLngUrl(geoCoords);
+	var url = store.getSearchLatLngUrl(geoCoords);
 	var mappane = this.getMapPane();
 	//mappane.setLoading(true);
 	mappane.fireEvent('googlemarkerclick2', url);
@@ -364,36 +363,36 @@ Ext.define('SpWebPortal.controller.Mapper', {
 
 	var store = Ext.getStore('MainSolrStore');
 	if (store.getSearched()) {
-		this.minMappedLat = 90.0; 
-		this.maxMappedLat = -90.0;
-		this.minMappedLng = 180.0; 
-		this.maxMappedLng = -180.0;
+	    this.minMappedLat = 90.0; 
+	    this.maxMappedLat = -90.0;
+	    this.minMappedLng = 180.0; 
+	    this.maxMappedLng = -180.0;
 
-		if (this.lilMapStore == null) {
-		    Ext.define('SpWebPortal.MapModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-			    {name: 'spid', type: 'string'},
-			    {name: 'l1', type: 'tdouble'},
-			    {name: 'l11', type: 'tdouble'}
-			]
-		    }),
-		    this.lilMapStore = Ext.create('Ext.data.Store', {
-			model: "SpWebPortal.MapModel",
-			pageSize: 10000,
-			proxy: {
-			    type: 'jsonp',
-			    callbackKey: 'json.wrf',
-			    url: store.solrUrlTemplate,
-			    reader: {
-				root: 'response.docs',
-				totalProperty: 'response.numFound'
-			    }
+	    if (this.lilMapStore == null) {
+		Ext.define('SpWebPortal.MapModel', {
+		    extend: 'Ext.data.Model',
+		    fields: [
+			{name: 'spid', type: 'string'},
+			{name: 'l1', type: 'tdouble'},
+			{name: 'l11', type: 'tdouble'}
+		    ]
+		}),
+		this.lilMapStore = Ext.create('Ext.data.Store', {
+		    model: "SpWebPortal.MapModel",
+		    pageSize: 10000,
+		    proxy: {
+			type: 'jsonp',
+			callbackKey: 'json.wrf',
+			url: store.solrUrlTemplate,
+			reader: {
+			    root: 'response.docs',
+			    totalProperty: 'response.numFound'
 			}
-		    });
-		}				 
-		var pageSize = store.pageSize;
-		var url = store.getProxy().url.replace("rows="+pageSize, "rows="+this.lilMapStore.pageSize);
+		    }
+		});
+	    }				 
+	    var pageSize = store.pageSize;
+	    var url = store.getProxy().url.replace("rows="+pageSize, "rows="+this.lilMapStore.pageSize);
 	    if (this.useFacets) {
 		url = url.replace("fl=*", "fl=l1,l11");
 
@@ -424,14 +423,14 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	}
     },
 
-    setupToolbar: function(tabPanel, isMapTab) {
+    setupToolbar: function(tabPanel, isMapTab, isPagedTab) {
 	if (isMapTab) {
 	    Ext.getCmp('spwpmaintabpanel').down('button[itemid="mapsearchbtn"]').setVisible(true);
 	    Ext.getCmp('spwpmainpagingtoolbar').setVisible(false);
 	    Ext.getCmp('spwpmainmapprogbar').setVisible(true);
 	} else {
 	    tabPanel.down('button[itemid="mapsearchbtn"]').setVisible(false);
-	    Ext.getCmp('spwpmainpagingtoolbar').setVisible(true);
+	    Ext.getCmp('spwpmainpagingtoolbar').setVisible(isPagedTab);
 	    Ext.getCmp('spwpmainmapprogbar').setVisible(false);
 	    Ext.getCmp('spwpmainmapstatustext').setVisible(false);
 	    Ext.getCmp('spwpmainmapcancelbtn').setVisible(false);
@@ -439,7 +438,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
     },
 
     onTabChange: function(tabPanel, newCard) {
-	this.setupToolbar(tabPanel, newCard.id == 'spwpmainmappane');
+	this.setupToolbar(tabPanel, newCard.id == 'spwpmainmappane', newCard.id == 'spwpmaingrid');
 	if (newCard.id == 'spwpmainmappane') {
 	    this.doMap();
 	} 

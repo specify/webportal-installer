@@ -57,7 +57,9 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	    },
 	    '#spwp-img-single-viewsize-btn': {
 		click: this.onImageViewSizeClick
-	    }
+	    }, 
+	    //'spdetailpanel': {
+	//	afterlayout: this.mapDetailPanel
 	});
 	this.callParent(arguments);
     },
@@ -101,7 +103,7 @@ Ext.define('SpWebPortal.controller.Detailer', {
     onGoogleMarkerClick2: function(url) {
 	console.info("Detailer.onGoogleMarkerClick2");
 	//Ext.getCmp('spwpmainmappane').setLoading(true);
-	this.popupDetails2(url);
+	this.popupDetails2(url, false);
 	//Ext.getCmp('spwpmainmappane').setLoading(false);
     },
 
@@ -144,7 +146,11 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	//eventually attacheData will be json list of attachees,
 	//just one for now
 	attacheeIDs[0] = attacheeData;
-	var attachees = [attacheeIDs.length];
+	
+	var store = Ext.getStore('MainSolrStore');
+	this.popupDetails2(store.getIdUrl(attacheeIDs), true);
+
+	/*var attachees = [attacheeIDs.length];
 	var theStore = Ext.getStore('MainSolrStore');
 	for (var a = 0; a < attachees.length; a++) {
 	    attachees[a] = theStore.getById(attacheeIDs[a]);
@@ -157,7 +163,7 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	    } else {
 		this.popupDetails(attachees, true);
 	    }
-	}
+	}*/
     },
 
     onDetailsPageChange: function() {
@@ -277,10 +283,10 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	this.detailsPopWin.toFront();
     },
 
-    popupDetails2: function(url) {
+    popupDetails2: function(url, showMap) {
 	if (this.detailsPopWin == null) {
 	    this.detailsForm = Ext.widget('spdetailspanel', {
-		showMap: false
+		showMap: showMap
 	    });
 	    this.detailsPopWin = Ext.create('Ext.window.Window', {
 		title: this.detailPopupTitle,

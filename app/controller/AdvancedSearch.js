@@ -86,7 +86,7 @@ Ext.define('SpWebPortal.controller.AdvancedSearch', {
 	    } else {
 		var solr = this.getMainSolrStoreStore();
 				
-		var url = solr.getExpressSearchUrl(images, maps, filterStr, filterToMap, this.getMatchAll());
+		var url = solr.getSearchUrl(images, maps, filterStr, filterToMap, this.getMatchAll());
 		
 		this.setForceFitToMap(false);
 
