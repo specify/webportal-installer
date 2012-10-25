@@ -45,9 +45,6 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	    'pagingtoolbar[itemid="spwpdetailpager"]': {
 		change: this.onDetailsPageChange
 	    },
-	    '#spwpdetailpagingtoolbar': {
-		change: this.onPageChange
-	    },
 	    '#spwp-detail-image-popwin': {
 		beforeclose: this.onImagePopBeforeClose,
 		destroy: this.onImagePopDestroy
@@ -150,20 +147,6 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	var store = Ext.getStore('MainSolrStore');
 	this.popupDetails2(store.getIdUrl(attacheeIDs), true);
 
-	/*var attachees = [attacheeIDs.length];
-	var theStore = Ext.getStore('MainSolrStore');
-	for (var a = 0; a < attachees.length; a++) {
-	    attachees[a] = theStore.getById(attacheeIDs[a]);
-	    //attachees[a] = theStore.getAt(attacheeIDs[a]);
-	}
-	if (attachees.length > 0) {
-	    //this is lame. One popup func!
-	    if (attachees.length == 1) {
-		this.popupDetail(attachees[0], true);
-	    } else {
-		this.popupDetails(attachees, true);
-	    }
-	}*/
     },
 
     onDetailsPageChange: function() {
@@ -205,22 +188,56 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	this.popupImage(imgView.getImageRecord(), !imgView.getIsActualSize());
     },
 
+    popupImageSrcReady: function(imgRecord, isActualSize) {
+	//Always creating new ImagePop due to issues with changing images in already constructed ImageSingleView objects.
+	//only one ImagePopWin can be open at a time.
+	if (this.imagePopWin != null) {
+	    this.imagePopWin.close();
+	}
+	this.imageForm = Ext.widget('spimagesingleview', {
+	    imageRecord: imgRecord, 
+	    isActualSize: isActualSize
+	});
+	var imgSize = settings.get('imageViewSize');
+	this.imagePopWin = Ext.create('Ext.window.Window', {
+	    id: 'spwp-detail-image-popwin',
+	    title: imgRecord.get('Title'),
+	    height: imgSize + 70,
+	    width: imgSize + 25,
+	    maximizable: false,
+	    resizable: true,
+	    //closeAction: 'destroy',
+	    layout: 'fit',
+	    items: [
+		this.imageForm
+	    ]
+	});
+	this.imagePopWin.setPosition(this.imagePopWinPos);
+
+	
+	this.imagePopWin.show();
+	this.imagePopWin.toFront();
+    },
+	
     popupImage: function(imgRecord, isActualSize) {
 	var settings =  Ext.getStore('SettingsStore').getAt(0);
 	var imgSize = settings.get('imageViewSize');
 	var srcFld = 'StdSrc';
 	if (imgSize <= 0 || isActualSize) {
 	    srcFld = 'Src';
-	    if (imgSize == 0) {
+	    if (imgSize <= 0) {
 		imgSize = 500;
 	    }
 	}	
 	var srcVal = imgRecord.get(srcFld);
 	if (typeof srcVal  === "undefined" || srcVal.trim().length == 0) {
 	    var imgView = Ext.getCmp('spwpmainimageview');
-	    srcVal = imgView.getImgSrc(imgRecord.get('AttachmentLocation'), srcFld == 'Src' ? null : imgSize, 'KUFishvoucher');
-	    imgRecord.set(srcFld, srcVal);
+	    //srcVal = imgView.getImgSrc(imgRecord.get('AttachmentLocation'), srcFld == 'Src' ? null : imgSize, 'KUFishvoucher');
+	    //imgRecord.set(srcFld, srcVal);
+	    imgView.getImgSrc(imgRecord.get('AttachmentLocation'), srcFld == 'Src' ? null : imgSize, 'KUFishvoucher', srcFld, imgRecord, false, 
+			     this.popupImageSrcReady, isActualSize);
 	}
+	/*
 	//Always creating new ImagePop due to issues with changing images in already constructed ImageSingleView objects.
 	//only one ImagePopWin can be open at a time.
 	if (this.imagePopWin != null) {
@@ -248,6 +265,7 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	
 	this.imagePopWin.show();
 	this.imagePopWin.toFront();
+	*/
     },
 
     popupDetails: function(records, showMap) {

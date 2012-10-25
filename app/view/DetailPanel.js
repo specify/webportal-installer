@@ -85,25 +85,9 @@ Ext.define('SpWebPortal.view.DetailPanel', {
 
 	//set up image view
 	var imgView = this.down('spimageview');
-	//var thumb = this.down('spimageview').down('spthumbnail');
-	//var img = this.down('spimageview').down('image');
-	//img.setSrc('');
-	//img.up('panel').setTitle('Image');
 	var imgStore = imgView.getImageStore();
 	imgStore.removeAll();
 	var imagesPresent = imgView.addImgForSpecRec(record) > 0;
-	/*var imgDef = record.get('img');
-	var imagesPresent = imgDef != null && imgDef != '';
-	if (imagesPresent) {
-	    var imgs = Ext.JSON.decode(imgDef);
-	    for (var i = 0; i < imgs.length; i++) {
-		Ext.apply(imgs[i], {
-		    AttachedTo: record.get('spid'),
-		    AttachedToDescr: record.get('cn')
-		});
-	    }
-	    imgStore.add(imgs);
-	}*/
 	var imgMapView = this.down('[itemid="img-and-map-view"]');
 	if (!imagesPresent && !this.getShowMap()) {
 	    imgMapView.setTitle('');
@@ -111,24 +95,9 @@ Ext.define('SpWebPortal.view.DetailPanel', {
 		imgMapView.collapse();
 	    }
 	} else if (imgMapView.getCollapsed()) {
-	    //img.setVisible(true);
-	    //imgMapView.down('panel').setVisible(true);
-	    
-	    //auto-expanding kills the sub-elements in the imgMapView.
-	    //imgMapView.expand(true);
 	    //print msg in title for now
 	    imgMapView.setTitle("expand to view image(s)");
-	    //alert("The current record has associated image(s). Expand the right-hand section of the details form to view. Automatic expansion is not working at this time.");  
-	    //img.setVisible(true);
-	    //imgMapView.down('panel').setVisible(true);
-	    //imgMapView.toggleCollapse();
 	}
-	//if (this.getShowMap()) {
-	//    var aDom = Ext.getDom('spwpdetailmappane');
-	//    this.down('#spwpdetailmappane').fireEvent('maprequest', record, aDom);
-	//}
-	//var imgpager = this.down('pagingtoolbar');
-	//this.down('pagingtoolbar').setVisible(false); //no paging yet
     }
 
 });
