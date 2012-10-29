@@ -18,7 +18,9 @@ Ext.define('SpWebPortal.view.ImageSingleView', {
 
     config: {	
 	imageRecord: null,
-	isActualSize: false
+	isActualSize: false,
+	spOwner: null,
+	showSpecDetailBtn: true
     },
     
     initComponent: function() {
@@ -44,7 +46,8 @@ Ext.define('SpWebPortal.view.ImageSingleView', {
 		    xtype: 'button',
 		    text: this.specimenBtnTxt,
 		    tooltip: this.specimenBtnTip,
-		    id: 'spwp-img-single-specimenbtn'
+		    id: 'spwp-img-single-specimenbtn',
+		    hidden: !this.getShowSpecDetailBtn()
 		},
 		{
 		    xtype: 'button',
