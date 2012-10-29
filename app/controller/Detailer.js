@@ -236,6 +236,8 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	    //imgRecord.set(srcFld, srcVal);
 	    imgView.getImgSrc(imgRecord.get('AttachmentLocation'), srcFld == 'Src' ? null : imgSize, 'KUFishvoucher', srcFld, imgRecord, false, 
 			     this.popupImageSrcReady, isActualSize);
+	} else {
+	    this.popupImageSrcReady(imgRecord, isActualSize);
 	}
 	/*
 	//Always creating new ImagePop due to issues with changing images in already constructed ImageSingleView objects.
