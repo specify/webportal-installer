@@ -120,13 +120,43 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	}
     },
 
+    getOwnerForThumbnailer: function(thumbnailer) {
+	var result = thumbnailer.up('spimageview'); 
+	if (result != null) {
+	    if (result.getId() == 'spwpmainimageview') {
+		console.info("Detailer.getOwnerForThumbnailer(): spimageview");
+		return result;
+	    }
+	    result = result.up('spdetailpanel');
+	    if (result != null) {
+		console.info("Detailer.getOwnerForThumbnailer(): spdetailpanel");
+		return result;
+	    } 
+	    result = thumbnailer.up('spimageview').up('spdetailspanel');
+	    if (result != null) {
+		console.info("Detailer.getOwnerForThumbnailer(): sidetailspanel");
+		return result;
+	    } 
+	}
+	return null;
+    },
+
     onThumbDblClk: function(thumbnailer, record) {
 	console.info("thumb dbl-clicked");
 	console.info(arguments);
 	if (false) {
 	    this.popupSpecDetailsForImage(record);
 	} else {
-	    this.popupImage(record);
+	    //don't popup image view if the thumbnailer is on a detail popped from another image view...
+	    var owner = this.getOwnerForThumbnailer(thumbnailer);
+	    var popIt = true;
+	    if (owner != null && (owner.getXType() == 'spdetailpanel' || owner.getXType() == 'spdetailspanel')) {
+		var popWin = this.getImgFrm();
+		popIt =  popWin == null || popWin.getSpOwner() == owner;
+	    }
+	    if (popIt) {
+		this.popupImage(record, false, this.getOwnerForThumbnailer(thumbnailer));
+	    }
 	}
     },
 
@@ -159,15 +189,32 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	return Ext.getCmp('spwp-detail-image-popwin');
     },
 
+    getImgFrm: function() {
+	var imgPopWin = this.getImgPopWin();
+	if (imgPopWin != null) {
+	    return imgPopWin.down('spimagesingleview');
+	} else {
+	    return null;
+	}
+    },
+
     onImagePopBeforeClose: function() {
+	var killDetails = true;
 	if (this.getImgPopWin() != null) {
 	    this.imagePopWinPos = this.getImgPopWin().getPosition();
+	    var imgFrm = this.getImgFrm();
+	    if (imgFrm != null && imgFrm.getSpOwner() != null) {
+		killDetails = imgFrm.getSpOwner() != this.detailsForm 
+		    && imgFrm.getSpOwner() != this.detailForm;
+	    }
 	}
-	if (this.detailsPopWin != null) {
-	    this.detailsPopWin.hide();
-	}
-	if (this.detailPopWin != null)  {
-	    this.detailPopWin.hide();
+	if (killDetails) {
+	    if (this.detailsPopWin != null) {
+		this.detailsPopWin.hide();
+	    }
+	    if (this.detailPopWin != null)  {
+		this.detailPopWin.hide();
+	    }
 	}
     },
 
@@ -180,13 +227,15 @@ Ext.define('SpWebPortal.controller.Detailer', {
 
     onImageViewSizeClick: function(btn) {
 	var imgView = btn.up('spimagesingleview');
-	this.popupImage(imgView.getImageRecord(), !imgView.getIsActualSize());
+	this.popupImage(imgView.getImageRecord(), !imgView.getIsActualSize(), imgView.getSpOwner());
     },
 
-    popupImageSrcReady: function(imgRecord, isActualSize) {
+    popupImageSrcReady: function(imgRecord, args) {
 	//Always creating new ImagePop due to issues with changing images in already constructed ImageSingleView objects.
 	//only one ImagePopWin can be open at a time.
 	//if (this.imagePopWin != null) {
+	var isActualSize = args[0];
+	var imgWinOwner = args[1];
 	var imgPopWin = Ext.getCmp('spwp-detail-image-popwin');
 	if (imgPopWin != null) {
 	    console.info("Detailer.popupImageSrcReady: closing imagePopWin");
@@ -196,6 +245,10 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	    imgPopWin.close();
 	}
 	var imgSize = settings.get('imageViewSize');
+	var showSpecBtn = false;
+	if (typeof imgWinOwner !== "undefined" && imgWinOwner != null) {
+	    showSpecBtn = imgWinOwner.getXType() != 'spdetailpanel' && imgWinOwner.getXType() != 'spdetailspanel';
+	}
 	var imgPopWin = Ext.create('Ext.window.Window', {
 	    id: 'spwp-detail-image-popwin',
 	    title: imgRecord.get('Title'),
@@ -207,7 +260,9 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	    layout: 'fit',
 	    items:  Ext.widget('spimagesingleview', {
 		imageRecord: imgRecord, 
-		isActualSize: isActualSize
+		isActualSize: isActualSize,
+		spOwner: imgWinOwner,
+		showSpecDetailBtn: showSpecBtn
 	    })
 	});
 	imgPopWin.setPosition(this.imagePopWinPos);
@@ -217,7 +272,7 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	imgPopWin.toFront();
     },
 	
-    popupImage: function(imgRecord, isActualSize) {
+    popupImage: function(imgRecord, isActualSize, imgWinOwner) {
 	var settings =  Ext.getStore('SettingsStore').getAt(0);
 	var imgSize = settings.get('imageViewSize');
 	var srcFld = 'StdSrc';
@@ -233,39 +288,10 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	    //srcVal = imgView.getImgSrc(imgRecord.get('AttachmentLocation'), srcFld == 'Src' ? null : imgSize, 'KUFishvoucher');
 	    //imgRecord.set(srcFld, srcVal);
 	    imgView.getImgSrc(imgRecord.get('AttachmentLocation'), srcFld == 'Src' ? null : imgSize, 'KUFishvoucher', srcFld, imgRecord, false, 
-			     this.popupImageSrcReady, isActualSize);
+			     this.popupImageSrcReady, [isActualSize, imgWinOwner]);
 	} else {
-	    this.popupImageSrcReady(imgRecord, isActualSize);
+	    this.popupImageSrcReady(imgRecord, [isActualSize, imgWinOwner]);
 	}
-	/*
-	//Always creating new ImagePop due to issues with changing images in already constructed ImageSingleView objects.
-	//only one ImagePopWin can be open at a time.
-	if (this.imagePopWin != null) {
-	    this.imagePopWin.close();
-	}
-	this.imageForm = Ext.widget('spimagesingleview', {
-	    imageRecord: imgRecord, 
-	    isActualSize: isActualSize
-	});
-	this.imagePopWin = Ext.create('Ext.window.Window', {
-	    id: 'spwp-detail-image-popwin',
-	    title: imgRecord.get('Title'),
-	    height: imgSize + 70,
-	    width: imgSize + 25,
-	    maximizable: false,
-	    resizable: true,
-	    //closeAction: 'destroy',
-	    layout: 'fit',
-	    items: [
-		this.imageForm
-	    ]
-	});
-	this.imagePopWin.setPosition(this.imagePopWinPos);
-
-	
-	this.imagePopWin.show();
-	this.imagePopWin.toFront();
-	*/
     },
 
     popupDetails: function(records, showMap) {
