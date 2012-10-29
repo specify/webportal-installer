@@ -16,8 +16,6 @@ Ext.define('SpWebPortal.controller.Detailer', {
     detailsForm: null,
     detailPopWin: null,
     detailForm: null,
-    imageForm: null,
-    imagePopWin: null,
     imagePopWinPos: [1,1],
     imagePopWinYpos: 1,
 
@@ -46,8 +44,7 @@ Ext.define('SpWebPortal.controller.Detailer', {
 		change: this.onDetailsPageChange
 	    },
 	    '#spwp-detail-image-popwin': {
-		beforeclose: this.onImagePopBeforeClose,
-		destroy: this.onImagePopDestroy
+		beforeclose: this.onImagePopBeforeClose
 	    },
 	    '#spwp-img-single-specimenbtn': {
 		click: this.onImageViewSpecDetailsClick
@@ -77,8 +74,8 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	if (this.detailPopWin != null && this.detailPopWin.isVisible()) {
 	    this.detailPopWin.hide();
 	}
-	if (this.imagePopWin != null && this.imagePopWin.isVisible()) {
-	    this.imagePopWin.close();
+	if (this.getImgPopWin() != null && this.getImgPopWin().isVisible()) {
+	    this.getImgPopWin().close();
 	}
     },
 
@@ -158,9 +155,13 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	this.detailsForm.loadRecords(pager.getStore().data.items);
     },
 
+    getImgPopWin: function() {
+	return Ext.getCmp('spwp-detail-image-popwin');
+    },
+
     onImagePopBeforeClose: function() {
-	if (this.imagePopWin != null) {
-	    this.imagePopWinPos = this.imagePopWin.getPosition();
+	if (this.getImgPopWin() != null) {
+	    this.imagePopWinPos = this.getImgPopWin().getPosition();
 	}
 	if (this.detailsPopWin != null) {
 	    this.detailsPopWin.hide();
@@ -170,12 +171,6 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	}
     },
 
-
-    onImagePopDestroy: function() {
-	//console.info("onImagePopDestroy");
-	this.imagePopWin = null;
-	this.imageForm = null;
-    },
 
     onImageViewSpecDetailsClick: function(btn) {
 	//console.info("OnImageViewSpecDetailsClick()");
@@ -191,15 +186,17 @@ Ext.define('SpWebPortal.controller.Detailer', {
     popupImageSrcReady: function(imgRecord, isActualSize) {
 	//Always creating new ImagePop due to issues with changing images in already constructed ImageSingleView objects.
 	//only one ImagePopWin can be open at a time.
-	if (this.imagePopWin != null) {
-	    this.imagePopWin.close();
+	//if (this.imagePopWin != null) {
+	var imgPopWin = Ext.getCmp('spwp-detail-image-popwin');
+	if (imgPopWin != null) {
+	    console.info("Detailer.popupImageSrcReady: closing imagePopWin");
+	    //this.skipImagePopWinDestroy = true;
+	    //this.imagePopWin.close();
+
+	    imgPopWin.close();
 	}
-	this.imageForm = Ext.widget('spimagesingleview', {
-	    imageRecord: imgRecord, 
-	    isActualSize: isActualSize
-	});
 	var imgSize = settings.get('imageViewSize');
-	this.imagePopWin = Ext.create('Ext.window.Window', {
+	var imgPopWin = Ext.create('Ext.window.Window', {
 	    id: 'spwp-detail-image-popwin',
 	    title: imgRecord.get('Title'),
 	    height: imgSize + 70,
@@ -208,15 +205,16 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	    resizable: true,
 	    //closeAction: 'destroy',
 	    layout: 'fit',
-	    items: [
-		this.imageForm
-	    ]
+	    items:  Ext.widget('spimagesingleview', {
+		imageRecord: imgRecord, 
+		isActualSize: isActualSize
+	    })
 	});
-	this.imagePopWin.setPosition(this.imagePopWinPos);
+	imgPopWin.setPosition(this.imagePopWinPos);
 
 	
-	this.imagePopWin.show();
-	this.imagePopWin.toFront();
+	imgPopWin.show();
+	imgPopWin.toFront();
     },
 	
     popupImage: function(imgRecord, isActualSize) {
