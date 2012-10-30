@@ -12,7 +12,9 @@ Ext.define('SpWebPortal.model.SettingsModel', {
 	{name: 'defInitialView', type: 'string', defaultValue: 'grid'},
 	{name: 'defMapType', type: 'string', defaultValue: 'roadmap'},
 	{name: 'backgroundURL', type: 'string', defaultValue: 'resources/images/specify128.png'},
-	{name: 'bannerURL', type: 'string', defaultValue: 'resources/images/fishskel.gif'}
+	{name: 'bannerURL', type: 'string', defaultValue: 'resources/images/fishskel.gif'},
+	{name: 'bannerTitle', type: 'string', defaultValue: 'KU Fish Web Portal Demo'},
+	{name: 'bannerheight', type: 'int', defaultValue: 125}
     ],
 
     validations: [

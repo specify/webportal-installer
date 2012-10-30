@@ -32,6 +32,7 @@ Ext.define('SpWebPortal.view.Viewport', {
     ],
 
 
+    banner: null,
     background: null,
     resultsTab: null,
 
@@ -71,11 +72,20 @@ Ext.define('SpWebPortal.view.Viewport', {
 	mapBtn.setVisible(false);
 	mapCancelBtn.setVisible(false);
 	
+	var settings = Ext.getStore('SettingsStore').getAt(0);
+
+	this.banner = Ext.create('Ext.panel.Panel', {
+	    html: '<table class="deadcenter"> <tr><td><img src='+  settings.get('bannerURL') + '></td></tr></table>',
+	    id: 'spwpbannerpanel',
+	    height: settings.get('bannerHeight'),
+	    region: 'north'
+	});
 
 	this.background = Ext.create('Ext.panel.Panel', {
 	    html: '<table class="deadcenter"> <tr><td><img src='+  Ext.getStore('SettingsStore').getAt(0).get('backgroundURL') + '></td></tr></table>',
 	    id: 'spwpmainbackground'
 	});
+
 
 	this.resultsTab = Ext.create('Ext.tab.Panel', {
 	    hidden: true,
@@ -128,72 +138,78 @@ Ext.define('SpWebPortal.view.Viewport', {
 	    },
 	    {
 		xtype: 'panel',
-		title: this.searchToolsTitle,
+		layout: 'border',
 		region: 'west',
 		width: 275,
-
-		//resizable: true,
 		collapsible: true,
-		titleCollapse: true,
 		split: true,
+		title: settings.get('bannerTitle'),
 
-		layout: 'border',
 		items: [
+		    this.banner,
 		    {
 			xtype: 'panel',
-			region: 'north',
-			layout: 'hbox',
-			height: 25,
-			items: [
-			    {
-				xtype: 'checkbox',
-				boxLabel: this.mapsCheckBox,
-				name: 'Maps',
-				itemid: 'req-geo-ctl',
-				checked: false
-			    },
-			    {
-				xtype: 'checkbox',
-				boxLabel: this.imagesCheckBox,
-				name: 'Images',
-				itemid: 'req-img-ctl',
-				checked: false
-			    },
-			    {
-				xtype: 'checkbox',
-				boxLabel: this.fitToMapCheckBox,
-				name: 'Map',
-				itemid: 'fit-to-map',
-				checked: false,
-				hidden: true
-			    },
-			    {
-				xtype: 'button',
-				tooltip: this.settingsBtnTip,
-				icon: 'resources/images/system.png',
-				itemid: 'spwpsettingsbtn'
-			    }
-			]
-		    },
-		    {
-			xtype: 'panel',
+			title: this.searchToolsTitle,
 			region: 'center',
-			layout: 'accordion',
+
+			layout: 'border',
 			items: [
 			    {
-				xtype: 'spexpresssrch',
-				id: 'spwpmainexpresssrch'
+				xtype: 'panel',
+				region: 'north',
+				layout: 'hbox',
+				height: 25,
+				items: [
+				    {
+					xtype: 'checkbox',
+					boxLabel: this.mapsCheckBox,
+					name: 'Maps',
+					itemid: 'req-geo-ctl',
+					checked: false
+				    },
+				    {
+					xtype: 'checkbox',
+					boxLabel: this.imagesCheckBox,
+					name: 'Images',
+					itemid: 'req-img-ctl',
+					checked: false
+				    },
+				    {
+					xtype: 'checkbox',
+					boxLabel: this.fitToMapCheckBox,
+					name: 'Map',
+					itemid: 'fit-to-map',
+					checked: false,
+					hidden: true
+				    },
+				    {
+					xtype: 'button',
+					tooltip: this.settingsBtnTip,
+					icon: 'resources/images/system.png',
+					itemid: 'spwpsettingsbtn'
+				    }
+				]
 			    },
 			    {
-				xtype: 'spadvsrch',
-				id: 'spwpmainadvsrch'
+				xtype: 'panel',
+				region: 'center',
+				layout: 'accordion',
+				items: [
+				    {
+					xtype: 'spexpresssrch',
+					id: 'spwpmainexpresssrch'
+				    },
+				    {
+					xtype: 'spadvsrch',
+					id: 'spwpmainadvsrch'
+				    }
+				]
 			    }
 			]
 		    }
 		]
 	    }
 	];
-
 	this.callParent(arguments);
     }
 });
