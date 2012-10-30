@@ -127,14 +127,14 @@ Ext.define('SpWebPortal.controller.Detailer', {
 		console.info("Detailer.getOwnerForThumbnailer(): spimageview");
 		return result;
 	    }
-	    result = result.up('spdetailpanel');
+	    result = result.up('spdetailspanel');
 	    if (result != null) {
 		console.info("Detailer.getOwnerForThumbnailer(): spdetailpanel");
 		return result;
 	    } 
-	    result = thumbnailer.up('spimageview').up('spdetailspanel');
+	    result = thumbnailer.up('spimageview').up('spdetailpanel');
 	    if (result != null) {
-		console.info("Detailer.getOwnerForThumbnailer(): sidetailspanel");
+		console.info("Detailer.getOwnerForThumbnailer(): spdetailpanel");
 		return result;
 	    } 
 	}
