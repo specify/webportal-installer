@@ -267,7 +267,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
 		   var text = Ext.String.format(me.mapResultsText, numFound, ptsMapped); 
 		   me.buildMap2(pts, me.geoCoordFlds, me.fldsOnMap, me.mapMarkTitleFld, false, !me.forceFitToMap, false);
 		   me.getMapPane().setLoading(false);
-		   if (!me.forceFitToMap) {
+		   if (!(me.fitToMap || me.forceFitToMap)) {
 		       var bounds = null;
 		       if (me.minMappedLat != null && me.minMappedLng != null && me.maxMappedLat != null && me.maxMappedLng != null) {
 			   var sw = new google.maps.LatLng(me.minMappedLat, me.minMappedLng);
@@ -472,6 +472,10 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	if (newCard.id == 'spwpmainmappane') {
 	    this.doMap();
 	} 
+	var fitToMapCtl = Ext.getCmp('spwp-fit-to-map-chkbx');
+	if (fitToMapCtl != null) {
+	    fitToMapCtl.setVisible(newCard.id == 'spwpmainmappane');
+	}
     },
 
 

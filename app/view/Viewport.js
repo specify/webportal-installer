@@ -179,6 +179,7 @@ Ext.define('SpWebPortal.view.Viewport', {
 					boxLabel: this.fitToMapCheckBox,
 					name: 'Map',
 					itemid: 'fit-to-map',
+					id: 'spwp-fit-to-map-chkbx',
 					checked: false,
 					hidden: true
 				    },
