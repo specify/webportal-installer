@@ -65,6 +65,9 @@ Ext.define('SpWebPortal.controller.Mapper', {
 		tabchange: this.onTabChange,
 		dosearch: this.onDoSearch
 	    },
+	    '#spwpmainmappane': {
+		resize: this.onMainMapPaneResize
+	    },
 	    'button[itemid="mapsearchbtn"]': {
 		click: this.onMapSearchClk
 	    },
@@ -80,6 +83,12 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	});
 
 	this.callParent(arguments);
+    },
+
+    onMainMapPaneResize: function() {
+	if (this.mainMapCtl != null) {
+	    google.maps.event.trigger(this.mainMapCtl, 'resize');
+	}
     },
 
     getMapPane: function() {
@@ -267,12 +276,33 @@ Ext.define('SpWebPortal.controller.Mapper', {
 		       }
 		       if (bounds != null) {
 			   me.mainMapCtl.fitBounds(bounds);
+			   //me.mainMapCtl.fitBounds(me.balanceBounds(bounds));
 		       }
 		   }
 		   
 		   me.statusTextCtl.setText(text);
 
 	       });
+    },
+
+    balanceBounds: function(bounds) {
+	//Messing around with idea to adjust bounds to match the aspect ratio of the map pane, in hopes of preventing
+	//map from duplicating continents when lng bounds are wide
+	//Not easy, I don't think it's really possible for a general fix. It seems the problem is not with the bounds per se,
+	//but the zoom level required to show them. At low zooms duplicating continents is what Google does...
+	if (bounds == null) {
+	    return null;
+	} else {
+	    var latRat = (bounds.ca.f - bounds.ca.b)/180.0;
+	    var lngRat = (bounds.ea.f - bounds.ea.b)/360.0;
+	    var mapPane = this.getMapPane();
+	    var mapRat = mapPane.getWidth() / mapPane.getHeight();
+	    //var llRat =  (bounds.ea.f - bounds.ea.b)/(bounds.ca.f - bounds.ca.b);
+	    var llRat = lngRat / latRat;
+	    console.info("mapRat: " + mapRat + ", llRat: " + llRat + ", latRat: " + latRat + ", lngRat: " + lngRat);
+
+	    return bounds;
+	}
     },
 
     createPointArrayFromFacets: function(data) {
