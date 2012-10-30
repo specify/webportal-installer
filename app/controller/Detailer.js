@@ -49,14 +49,18 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	    '#spwp-detail-image-popwin': {
 		beforeclose: this.onImagePopBeforeClose
 	    },
+	    '#spwp-detail-pop-win-zero': {
+		beforeclose: this.onDetailPopBeforeClose
+	    },
+	    '#spwp-details-pop-win-zero': {
+		beforeclose: this.onDetailPopBeforeClose
+	    },
 	    '#spwp-img-single-specimenbtn': {
 		click: this.onImageViewSpecDetailsClick
 	    },
 	    '#spwp-img-single-viewsize-btn': {
 		click: this.onImageViewSizeClick
-	    }, 
-	    //'spdetailpanel': {
-	//	afterlayout: this.mapDetailPanel
+	    }
 	});
 	this.callParent(arguments);
     },
@@ -201,6 +205,18 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	}
     },
 
+    onDetailPopBeforeClose: function(window) {
+	if (this.getImgPopWin() != null && this.getImgPopWin().isVisible()) {
+	    var imgFrm = this.getImgFrm();
+	    if (imgFrm != null && imgFrm.getSpOwner() != null) {
+		if (imgFrm.getSpOwner() == this.detailsForm 
+		    || imgFrm.getSpOwner() == this.detailForm) {
+		    this.getImgPopWin().close();
+		}
+	    }
+	}
+    },
+
     onImagePopBeforeClose: function() {
 	var killDetails = true;
 	if (this.getImgPopWin() != null) {
@@ -337,6 +353,7 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	    });
 	    this.detailsPopWin = Ext.create('Ext.window.Window', {
 		title: this.detailPopupTitle,
+		id: 'spwp-details-pop-win-zero',
 		height: 600,
 		width: 800,
 		maximizable: false,
@@ -370,6 +387,7 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	    });
 	    this.detailPopWin = Ext.create('Ext.window.Window', {
 		title: this.detailPopupTitle,
+		id: 'spwp-detail-pop-win-zero',
 		height: 600,
 		width: 800,
 		maximizable: false,
