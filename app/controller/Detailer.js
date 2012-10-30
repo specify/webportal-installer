@@ -41,6 +41,9 @@ Ext.define('SpWebPortal.controller.Detailer', {
 		dosearch: this.onDoSearch
 	    },
 	    'pagingtoolbar[itemid="spwpdetailpager"]': {
+		change: this.onDetailsRecordChange
+	    },
+	    'pagingtoolbar[itemid="spwpdetailpagingtoolbar"]': {
 		change: this.onDetailsPageChange
 	    },
 	    '#spwp-detail-image-popwin': {
@@ -176,12 +179,12 @@ Ext.define('SpWebPortal.controller.Detailer', {
 
     },
 
-    onDetailsPageChange: function() {
+    onDetailsRecordChange: function() {
 	//console.info("Detailer.onDetailsPageChange()");
 	this.detailsForm.loadCurrentRecord();
     },
 
-    onPageChange: function(pager, pageData) {
+    onDetailsPageChange: function(pager, pageData) {
 	this.detailsForm.loadRecords(pager.getStore().data.items);
     },
 

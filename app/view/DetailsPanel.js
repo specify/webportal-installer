@@ -107,7 +107,7 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
 
 	this.setRecStore(theRecStore);
 	this.setMainBBar(Ext.create('Ext.toolbar.Paging', {
-	    id: 'spwpdetailpagingtoolbar',
+	    itemid: 'spwpdetailpagingtoolbar',
 	    store: this.getRecStore(),
 	    displayInfo: true,
 	    displayMsg: this.pagerDisplayMsg,
