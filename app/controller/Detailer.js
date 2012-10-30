@@ -60,12 +60,25 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	    },
 	    '#spwp-img-single-viewsize-btn': {
 		click: this.onImageViewSizeClick
+	    },
+	    'spdetailmappanel': {
+		resize: this.onDetailMapPaneResize
 	    }
 	});
 	this.callParent(arguments);
     },
 
 
+    onDetailMapPaneResize: function(panel) {
+	var map = panel.getMapCtl();
+	console.info("onDetailMapPaneResize");
+	if (map != null) {
+	    google.maps.event.trigger(map, 'resize');
+	} else {
+	    console.info("    no map");
+	}
+    },
+    
     onTabChange: function() {
 	this.closePopups();
     },
@@ -412,7 +425,7 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	if (showMap) {
 	    var mapPane = this.detailPopWin.down('[itemid="spdetailmappane"]');
 	    var aDom = Ext.getDom(mapPane.getId());
-	    mapPane.fireEvent('maprequest', record, aDom);
+	    mapPane.fireEvent('maprequest', record, aDom, mapPane);
 	}
 	this.detailPopWin.toFront();
     },

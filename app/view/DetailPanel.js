@@ -12,7 +12,8 @@ Ext.define('SpWebPortal.view.DetailPanel', {
     },
 
     requires: [
-	'SpWebPortal.view.DetailView', 'SpWebPortal.view.ImageView'
+	'SpWebPortal.view.DetailView', 'SpWebPortal.view.ImageView',
+	'SpWebPortal.view.DetailMapPanel'
     ],
 
     initComponent: function() {
@@ -24,29 +25,6 @@ Ext.define('SpWebPortal.view.DetailPanel', {
 	    region: 'center'
 	});
 
-	/*var subCmps = [];
-	var subIdx = 0;
-	if (this.getShowMap()) {
-	    subCmps[subIdx] = Ext.create('Ext.panel.Panel');
-	    if (this.getShowImages()) {
-		Ext.apply(subCmps[subIdx], {
-		    region: 'north',
-		    height: 300,
-		    collapsible: true,
-		    titleCollapse: true,
-		    split: true
-		});
-	    } else {
-		subCmps[subIdx].region = 'center';
-	    }
-	    subIdx++;
-	}
-	if (this.getShowImages()) {
-	    subCmps[subIdx] = Ext.create('SpWebPortal.view.ImageView', {
-		    region: 'center'
-	    });
-	    subIdx++;
-	}*/
 	cmps[1] = Ext.create('Ext.panel.Panel', {
 	    collapsible: true,
 	    header: false,
@@ -57,14 +35,12 @@ Ext.define('SpWebPortal.view.DetailPanel', {
 	    width: 300,
 	    items: [
 		{
-		    xtype: 'panel',
+		    xtype: 'spdetailmappanel',
 		    region: 'north',
 		    height: 300,
 		    collapsible: true,
 		    split: true,
 		    collapsed: !this.getShowMap(),
-		    //id: 'spwpdetailmappane',
-		    itemid: 'spdetailmappane'
 		},
 		{
 		    xtype: 'spimageview',
@@ -72,7 +48,6 @@ Ext.define('SpWebPortal.view.DetailPanel', {
 		}
 	    ]
 	});
-	//cmps[1].items = subCmps;
 	
 	this.items = cmps;
 

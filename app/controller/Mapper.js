@@ -501,10 +501,13 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	this.buildMap(rec, geoCoordFlds, fldsOnMap, mapMarkTitleFld, true);
     },
     
-    detailMapRequest: function(record, aDom) {
+    detailMapRequest: function(record, aDom, aMapPane) {
 	var rec = [];
 	rec[0] = record;
-	this.buildMap(rec, this.geoCoordFlds, this.fldsOnMap, this.mapMarkTitleFld, false, aDom); 
+	var map = this.buildMap(rec, this.geoCoordFlds, this.fldsOnMap, this.mapMarkTitleFld, false, aDom); 
+	if (typeof aMapPane !== "undefined" && aMapPane != null) {
+	    aMapPane.setMapCtl(map);
+	}
     },
 
     isMappable: function(geoCoord) {
@@ -578,9 +581,9 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	var minLat = bnds[1], maxLat = bnds[3], minLong = bnds[2], maxLong = bnds[4];
 	//worry about boxes and lines later...
 	//console.info('points plotted: ' + geoCoords.length);
+	var mapCtl = null;
 	if (geoCoords.length > 0) {
 	    var dom = typeof aDom === "undefined" ? this.getDomForMap(isPopup) : aDom;
-	    var mapCtl;
 	    if (geoCoords.length == 1) {
 		mapCtl = this.geWinInitializeSingle(geoCoords[0], dom, isPopup);
 	    } else {
@@ -607,12 +610,13 @@ Ext.define('SpWebPortal.controller.Mapper', {
 		    } 
 		} else {
 		    //Probably an unmappable detail view
-		    var map = this.geWinInitializeEmpty(aDom, false);
+		    mapCtl = this.geWinInitializeEmpty(aDom, false);
 		    map.setZoom(0);
 		}
 	    }
 	}
 	this.getMapPane().setLoading(false);
+	return mapCtl;
     },
 
     buildMap2: function(records, geoCoordFlds, fldsOnMap, mapMarkTitleFld, isPopup, checkBounds, sortGeoCoords) {
