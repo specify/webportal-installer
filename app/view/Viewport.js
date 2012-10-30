@@ -180,7 +180,7 @@ Ext.define('SpWebPortal.view.Viewport', {
 					name: 'Map',
 					itemid: 'fit-to-map',
 					checked: false,
-					hidden: true
+					hidden: false
 				    },
 				    {
 					xtype: 'button',
