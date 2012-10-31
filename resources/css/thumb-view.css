@@ -9,6 +9,7 @@
     width: 207px;
     line-height: 1px;
     text-align: center;
+    vertical-align: middle;
     margin: 0;
     border:1px solid #dddddd;
 }
@@ -19,45 +20,44 @@
 }
 
 .x-quirks .tv-thumb {
-    padding-bottom: 3px;
+    padding-bottom: 1px;
 }
 
 *.tv-thumb td{
     /*max-height: 100%;
-    max-width: 100%;*/
+    max-width: 100%;
 
     display: block;
-    margin: auto;
+    margin: auto;*/
 
     vertical-align: middle;
     text-align: center;
-    /*position: absolute;*/
 }
 
 *.tv-thumb-wrap{
     float: left;
     /*margin: 4px;*/
     margin-right: 0;
-    padding: 5px;
+    padding: 2px;
 }
 *.tv-thumb-wrap span {
     
     display: block;
     overflow: hidden;
     text-align: center;
-    width: 86px; /* for ie to ensure that the text is centered */
+    /*width: 86px; /* for ie to ensure that the text is centered */
 }
 
 *.tv-x-item-over{
     border:1px solid #dddddd;
     background: #efefef url(over.gif) repeat-x left top;
-    padding: 4px;
+    padding: 1px;
 }
 
 *.tv-x-item-selected{
     background: #eff5fb url(selected.gif) no-repeat right bottom;
     border:1px solid #99bbe8;
-    padding: 4px;
+    padding: 1px;
 }
 *tv-.x-item-selected .thumb{
     background:transparent;
