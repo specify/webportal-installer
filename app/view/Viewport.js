@@ -143,7 +143,7 @@ Ext.define('SpWebPortal.view.Viewport', {
 		xtype: 'panel',
 		layout: 'border',
 		region: 'west',
-		width: 275,
+		width: settings.get('bannerWidth'),
 		collapsible: true,
 		split: true,
 		title: settings.get('bannerTitle'),
