@@ -8,8 +8,15 @@ Ext.define('SpWebPortal.view.DetailPanel', {
     config: {
 	showMap: true,
 	showImages: true,
-	showFullImageView: true
+	showFullImageView: true,
+	tabbedLayout: true,
     },
+
+    //localizable text...
+    mapTabTitle: 'Map',
+    imgTabTitle: 'Image',
+    specTabTitle: 'Specimen',
+    //...localizable text
 
     requires: [
 	'SpWebPortal.view.DetailView', 'SpWebPortal.view.ImageView',
@@ -21,37 +28,66 @@ Ext.define('SpWebPortal.view.DetailPanel', {
 
 	var cmps = [];
 
-	cmps[0] = Ext.widget('spdetail', {
-	    region: 'center'
-	});
+	if (this.getTabbedLayout()) {
+	    cmps[0] = Ext.create('Ext.tab.Panel', {
+		layout: 'fit',
+		region: 'center',
+		itemid: 'spwp-detail-panel-tab',
+		items: [
+		    Ext.widget('spdetail', {title: this.specTabTitle}),
+		    {
+			xtype: 'spimageview',
+			title: this.imgTabTitle
+		    },
+		    {
+			xtype: 'spdetailmappanel',
+			title: this.mapTabTitle,
+			visible: this.getShowMap()
+		    }
+		]
+	    });
 
-	cmps[1] = Ext.create('Ext.panel.Panel', {
-	    collapsible: true,
-	    header: false,
-	    split: true,
-	    layout: 'border',
-	    region: 'east',
-	    itemid: 'img-and-map-view',
-	    width: 300,
-	    items: [
-		{
-		    xtype: 'spdetailmappanel',
-		    region: 'north',
-		    height: 300,
-		    collapsible: true,
-		    split: true,
-		    collapsed: !this.getShowMap(),
-		},
-		{
-		    xtype: 'spimageview',
-		    region: 'center'
-		}
-	    ]
-	});
-	
+	} else {
+	    cmps[0] = Ext.widget('spdetail', {
+		region: 'center'
+	    });
+
+	    cmps[1] = Ext.create('Ext.panel.Panel', {
+		collapsible: true,
+		header: false,
+		split: true,
+		layout: 'border',
+		region: 'east',
+		itemid: 'img-and-map-view',
+		width: 300,
+		items: [
+		    {
+			xtype: 'spdetailmappanel',
+			region: 'north',
+			height: 300,
+			collapsible: true,
+			split: true,
+			collapsed: !this.getShowMap(),
+		    },
+		    {
+			xtype: 'spimageview',
+			region: 'center'
+		    }
+		]
+	    });
+	}
+
 	this.items = cmps;
 
 	this.callParent(arguments);
+    },
+
+    isMapTabActive: function() {
+	result = false;
+	if (this.getTabbedLayout()) {
+	    result = this.down('tabpanel').getActiveTab().getXType() == 'spdetailmappanel';
+	}
+	return result;
     },
 
     loadRecord: function(record) {
@@ -63,16 +99,23 @@ Ext.define('SpWebPortal.view.DetailPanel', {
 	var imgStore = imgView.getImageStore();
 	imgStore.removeAll();
 	var imagesPresent = imgView.addImgForSpecRec(record) > 0;
-	var imgMapView = this.down('[itemid="img-and-map-view"]');
-	if (!imagesPresent && !this.getShowMap()) {
-	    imgMapView.setTitle('');
-	    if (!imgMapView.getCollapsed()) {
-		imgMapView.collapse();
+	if (this.getTabbedLayout()) {
+	} else {
+	    var imgMapView = this.down('[itemid="img-and-map-view"]');
+	    if (!imagesPresent && !this.getShowMap()) {
+		imgMapView.setTitle('');
+		if (!imgMapView.getCollapsed()) {
+		    imgMapView.collapse();
+		}
+	    } else if (imgMapView.getCollapsed()) {
+		//print msg in title for now
+		imgMapView.setTitle("expand to view image(s)");
 	    }
-	} else if (imgMapView.getCollapsed()) {
-	    //print msg in title for now
-	    imgMapView.setTitle("expand to view image(s)");
 	}
+    },
+    
+    getRecord: function() {
+	return this.down('spdetailview').getRecord();
     }
 
 });

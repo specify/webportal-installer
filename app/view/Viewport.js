@@ -7,7 +7,7 @@ Ext.define('SpWebPortal.view.Viewport', {
     viewportTitle: 'Web Portal',
     recordsTitle: 'Records',
     imagesTitle: 'Images',
-    mapsTitle: 'Maps',
+    mapsTitle: 'Map',
     pagerDisplayMsg: 'Displaying records {0} - {1} of {2}',
     pagerEmptyMsg: 'No records to display',
     searchToolsTitle: 'Search Tools',

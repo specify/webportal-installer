@@ -47,7 +47,7 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
 		this.currentPage = page;
 		this.fireEvent('load');
 		if (this.detailer.getShowMap()) {
-		    var mapPane = this.detailer.down('spdetailpanel').down('[itemid="spdetailmappane"]');
+		    var mapPane = this.detailer.down('[itemid="spdetailmappane"]');
 		    var aDom = Ext.getDom(mapPane.getId());
 		    try {
 			mapPane.fireEvent('maprequest', record, aDom);

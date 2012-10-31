@@ -63,6 +63,9 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	    },
 	    'spdetailmappanel': {
 		resize: this.onDetailMapPaneResize
+	    },
+	    'tabpanel[itemid="spwp-detail-panel-tab"]': {
+		tabchange: this.onDetailTabChange
 	    }
 	});
 	this.callParent(arguments);
@@ -79,6 +82,12 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	}
     },
     
+    onDetailTabChange: function(tabpanel, newCard) {
+	if (newCard.getXType() == 'spdetailmappanel' && this.detailForm != null) {
+	    this.fireMapRequest(this.detailForm.getRecord());
+	}
+    },
+
     onTabChange: function() {
 	this.closePopups();
     },
@@ -421,17 +430,28 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	    this.detailsPopWin.hide();
 	}
 	this.detailForm.loadRecord(record);
-	this.detailPopWin.show(null, function() {
-	    if (showMap) {
-		var mapPane = this.detailPopWin.down('[itemid="spdetailmappane"]');
-		var aDom = Ext.getDom(mapPane.getId());
-		mapPane.fireEvent('maprequest', record, aDom, mapPane);
-	    }
-	    this.detailPopWin.toFront();
-	}, this);
-	   
+	if (!this.detailPopWin.isVisible()) {
+	    this.detailPopWin.show(null, function() {
+		this.detailPopWinShown(record, showMap);
+	    }, this);
+	} else {
+	    this.detailPopWinShown(record, showMap);
+	}  
     },
 
+    detailPopWinShown:  function(record, showMap) {
+	if (showMap  && (!this.detailForm.getTabbedLayout() || this.detailForm.isMapTabActive())) {
+	    this.fireMapRequest(record);
+	}
+	this.detailPopWin.toFront();
+    },
+	
+    fireMapRequest: function(record) {
+	var mapPane = this.detailPopWin.down('[itemid="spdetailmappane"]');
+	var aDom = Ext.getDom(mapPane.getId());
+	mapPane.fireEvent('maprequest', record, aDom, mapPane);
+    },
+	
     showDetailForm: function(rowIndex) {
 	if (this.detailsPopWin != null && this.detailsPopWin.isVisible() && this.detailsForm != null) {
 	    var tab = this.detailsForm.down('tabpanel');
@@ -442,6 +462,6 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	    //something strange has happened
 	    console.info("Detailer: unable to show detail form on a details popup because the details popup has evaporated.");
 	}
-    },
+    }
 
 });
