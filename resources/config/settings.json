@@ -4,7 +4,7 @@
     "solrCore": "solr/core6",
     "solrPageSize": 50,
     "maxSolrPageSize": 5000,
-    "imagePreviewSize": 200, //when this setting is changed, the height and width for *.tv-thumb should be set to about 10 px greater than this setting in resources/css/thumb-view.css
+    "imagePreviewSize": 200, //when this setting is changed, the height and width for *.tv-thumb should be set to about 7 px greater than this setting in resources/css/thumb-view.css
     "imageViewSize": 600,
     //"imageBaseUrl": "http://www.nhm.ku.edu/fishes/Collectionimages"
     "imageBaseUrl": "http://boxley.nhm.ku.edu"
