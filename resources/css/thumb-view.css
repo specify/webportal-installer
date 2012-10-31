@@ -5,12 +5,12 @@
 *.tv-thumb{
     /*background: #dddddd;*/
     padding: 0;
-    /*height: 200px;
-    width: 200px;*/
-    line-height: 0px;
+    height: 210px;
+    width: 210px;
+    line-height: 1px;
     text-align: center;
     margin: 0;
-    border: 0;
+    border:1px solid #dddddd;
 }
 
 *.tv-thumb::after {
@@ -19,15 +19,15 @@
 }
 
 .x-quirks .tv-thumb {
-    /*padding-bottom: 3px;*/
+    padding-bottom: 3px;
 }
 
 *.tv-thumb td{
     /*max-height: 100%;
     max-width: 100%;*/
 
-    /*display: block;
-    margin: auto;*/
+    display: block;
+    margin: auto;
 
     vertical-align: middle;
     text-align: center;

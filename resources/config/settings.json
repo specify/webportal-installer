@@ -1,8 +1,11 @@
 [{
     "solrURL": "http://129.237.201.94",
     "solrPort": "8983",
-    "solrCore": "solr/core2",
+    "solrCore": "solr/core6",
     "solrPageSize": 50,
     "maxSolrPageSize": 5000,
-    "imageBaseUrl": "http://www.nhm.ku.edu/fishes/Collectionimages"
+    "imagePreviewSize": 200, //when this setting is changed, the height and width for *.tv-thumb should be set to about 10 px greater than this setting in resources/css/thumb-view.css
+    "imageViewSize": 600,
+    //"imageBaseUrl": "http://www.nhm.ku.edu/fishes/Collectionimages"
+    "imageBaseUrl": "http://boxley.nhm.ku.edu"
 }]

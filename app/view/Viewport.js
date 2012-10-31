@@ -12,11 +12,14 @@ Ext.define('SpWebPortal.view.Viewport', {
     pagerEmptyMsg: 'No records to display',
     searchToolsTitle: 'Search Tools',
     mapsCheckBox: 'Geo Coords',
+    mapsCheckBoxTip: 'Check to select only records with geo-coordinates',
     imagesCheckBox: 'Images',
+    imagesCheckBoxTip: 'Check to select only records with images',
     fitToMapCheckBox:'Fit to Map',
+    fitToMapCheckBoxTip: 'Check to apply search criteria within map region',
     settingsBtnTip: 'Settings',
     mapSearchBtn: 'Search',
-    mapSearchBtnTip: 'Apply current search criteria to map region',
+    mapSearchBtnTip: 'Apply search criteria to map region',
     mapCancelBtn: 'Cancel',
     mapCancelBtnTip: 'Stop plotting the current results',
     //...localizable text
@@ -163,6 +166,7 @@ Ext.define('SpWebPortal.view.Viewport', {
 				    {
 					xtype: 'checkbox',
 					boxLabel: this.mapsCheckBox,
+					//tooltip: this.mapsCheckBoxTip, //checkboxes don't have tooltip config
 					name: 'Maps',
 					itemid: 'req-geo-ctl',
 					checked: false
@@ -170,6 +174,7 @@ Ext.define('SpWebPortal.view.Viewport', {
 				    {
 					xtype: 'checkbox',
 					boxLabel: this.imagesCheckBox,
+					//tooltip: this.imagesCheckBoxTip, //checkboxes don't have tooltip config
 					name: 'Images',
 					itemid: 'req-img-ctl',
 					checked: false
@@ -177,6 +182,7 @@ Ext.define('SpWebPortal.view.Viewport', {
 				    {
 					xtype: 'checkbox',
 					boxLabel: this.fitToMapCheckBox,
+					//tooltip: this.fitToMapCheckBoxTip,  //checkboxes don't have tooltip config
 					name: 'Map',
 					itemid: 'fit-to-map',
 					id: 'spwp-fit-to-map-chkbx',
