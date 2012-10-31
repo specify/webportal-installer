@@ -421,13 +421,15 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	    this.detailsPopWin.hide();
 	}
 	this.detailForm.loadRecord(record);
-	this.detailPopWin.show();
-	if (showMap) {
-	    var mapPane = this.detailPopWin.down('[itemid="spdetailmappane"]');
-	    var aDom = Ext.getDom(mapPane.getId());
-	    mapPane.fireEvent('maprequest', record, aDom, mapPane);
-	}
-	this.detailPopWin.toFront();
+	this.detailPopWin.show(null, function() {
+	    if (showMap) {
+		var mapPane = this.detailPopWin.down('[itemid="spdetailmappane"]');
+		var aDom = Ext.getDom(mapPane.getId());
+		mapPane.fireEvent('maprequest', record, aDom, mapPane);
+	    }
+	    this.detailPopWin.toFront();
+	}, this);
+	   
     },
 
     showDetailForm: function(rowIndex) {
