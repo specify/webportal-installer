@@ -14,7 +14,7 @@ Ext.define('SpWebPortal.view.DetailPanel', {
 
     //localizable text...
     mapTabTitle: 'Map',
-    imgTabTitle: 'Image',
+    imgTabTitle: 'Images',
     specTabTitle: 'Specimen',
     //...localizable text
 
@@ -97,6 +97,10 @@ Ext.define('SpWebPortal.view.DetailPanel', {
 	return this.down('spdetailmappanel');
     },
 
+    isMapped: function(record) {
+	return Ext.getCmp('spwpmaingrid').hasGeo(null, null, record);
+    },
+
     loadRecord: function(record) {
 	var frm = this.down('spdetailview');
 	this.down('spdetailview').loadRecord(record);
@@ -108,7 +112,7 @@ Ext.define('SpWebPortal.view.DetailPanel', {
 	var imagesPresent = imgView.addImgForSpecRec(record) > 0;
 	if (this.getTabbedLayout()) {
 	    this.getImgTab().tab.setVisible(imagesPresent);
-	    this.getMapTab().tab.setVisible(this.getShowMap());
+	    this.getMapTab().tab.setVisible(this.getShowMap() && this.isMapped(record));
 	    var activeTab = this.down('tabpanel').getActiveTab();
 	    if (!activeTab.tab.isVisible()) {
 		this.down('tabpanel').setActiveTab(0);
