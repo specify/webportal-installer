@@ -11,7 +11,8 @@ Ext.define('SpWebPortal.view.widget.BangButton', {
 	    this.setIcon('');
 	} else {
 	    this.bang = true;
-	    this.setIcon('resources/images/reddot.gif');
+	    //this.setIcon('resources/images/reddot.gif');
+	    this.setIcon('resources/images/no.png');
 	}
     }
 });

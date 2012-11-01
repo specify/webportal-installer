@@ -73,6 +73,12 @@ Ext.define('SpWebPortal.view.AdvancedSearchView', {
 				}
 			    ]
 			},
+			Ext.create('SpWebPortal.view.widget.BangButton', {
+			    //flex: 0.6,
+			    width: 24,
+
+			    id: fld.get('solrname') + '-not'
+			}),
 			Ext.create('SpWebPortal.view.widget.OpCombo', {
 			    flex: 2.0,
 			    //columnWidth: 0.1,
@@ -81,16 +87,10 @@ Ext.define('SpWebPortal.view.AdvancedSearchView', {
 			    store: this.getOps(fld),
 			    value: '='
 			}),
-			Ext.create('SpWebPortal.view.widget.BangButton', {
-			    //flex: 0.6,
-			    width: 16,
-
-			    id: fld.get('solrname') + '-not'
-			}),
 			Ext.create('SpWebPortal.view.widget.SortButton', {
 			    //flex: 1,
 			    width: 24,
-
+			    hidden: true,
 			    id: fld.get('solrname') + '-sort'
 			})	        
 		    ]
