@@ -40,6 +40,9 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
 	    },
 	    detailer: this,
 	    loadPage: function(page) {
+		var basePage = (page / this.detailer.getRecStore().pageSize)|0 + 1;
+		var currBasePage = this.detailer.getRecStore().currentPage;
+		
 		console.info("DetailsPanel store load page " + page);
 		this.detailer.setCurrentRecIdx(page-1);
 		var record = this.getAt(page-1);
@@ -58,7 +61,10 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
 	    },
 	    getTotalCount: function() {
 		//console.info("DetailsPanel store getTotalCount " + this.detailer.getCount());
+		
 		return this.detailer.getCount();
+
+		//return this.detailer.getRecStore().getTotalCount();
 	    },
 	    getCount: function() {
 		//console.info("DetailsPanel store getCount " + this.detailer.getCount());
