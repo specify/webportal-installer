@@ -123,11 +123,13 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	//Ext.getCmp('spwpmainmappane').setLoading(false);
     },
 
-    onGoogleMarkerClick2: function(url) {
-	console.info("Detailer.onGoogleMarkerClick2");
-	//Ext.getCmp('spwpmainmappane').setLoading(true);
-	this.popupDetails2(url, false);
-	//Ext.getCmp('spwpmainmappane').setLoading(false);
+    onGoogleMarkerClick2: function(url, count) {
+	console.info("Detailer.onGoogleMarkerClick2" + " " + count + " " + url);
+	if (count > 1) {
+	    this.popupDetails2(url, false);
+	} else {
+	    this.popupDetailFromUrl(url, false);
+	}
     },
 
     onGridDetailClk: function(record, isDetailGrid, rowIndex) {
@@ -343,7 +345,7 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	    this.detailsPopWin = Ext.create('Ext.window.Window', {
 		title: this.detailPopupTitle,
 		height: 600,
-		width: 800,
+		width: 450,
 		maximizable: false,
 		resizable: true,
 		closeAction: 'hide',
@@ -377,7 +379,7 @@ Ext.define('SpWebPortal.controller.Detailer', {
 		title: this.detailPopupTitle,
 		id: 'spwp-details-pop-win-zero',
 		height: 600,
-		width: 800,
+		width: 450,
 		maximizable: false,
 		resizable: true,
 		closeAction: 'hide',
@@ -402,6 +404,29 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	this.detailsPopWin.toFront();
     },
 	
+    popupDetailFromUrl: function(url, showMap) {
+	var theRecStore = Ext.create('Ext.data.Store', {
+	    model: "SpWebPortal.model.MainModel",
+	    pageSize: 50,
+	    remoteSort: true,
+	    proxy: {
+		type: 'jsonp',
+		callbackKey: 'json.wrf',
+		reader: {
+		    root: 'response.docs',
+		    totalProperty: 'response.numFound'
+		}
+	    }
+	});
+	theRecStore.getProxy().url = url;
+	theRecStore.loadPage(1, {
+	    scope: this,
+	    callback: function(records) {
+		this.popupDetail(records[0], showMap);
+	    }
+	});
+    },
+
     popupDetail: function(record, showMap) {
 	if (this.detailPopWin == null) {
 	    this.detailForm = Ext.widget('spdetailpanel', {
@@ -411,7 +436,7 @@ Ext.define('SpWebPortal.controller.Detailer', {
 		title: this.detailPopupTitle,
 		id: 'spwp-detail-pop-win-zero',
 		height: 600,
-		width: 800,
+		width: 450,
 		maximizable: false,
 		resizable: true,
 		closeAction: 'hide',

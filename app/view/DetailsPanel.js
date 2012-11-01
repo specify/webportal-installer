@@ -7,7 +7,7 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
     detailPagerDisplayMsg: 'Displaying record {0} of {2}',
     detailPagerEmptyMsg: 'No records to display',
     detailDetailTitle: 'Detail',
-    detailGridTitle:'Records',
+    detailGridTitle:'Table',
     pagerDisplayMsg: 'Displaying records {0} - {1} of {2}',
     pagerEmptyMsg: 'No records to display',
     recordText: 'Record',
@@ -121,13 +121,6 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
 	    ],
 	    items: [
 		{
-		    xtype: 'spmaingrid',
-		    title: this.detailGridTitle,
-		    store: this.getRecStore(),
-		    showMapAction: false,
-		    isDetail: true
-		},
-		{
 		    xtype: 'panel',
 		    layout: 'fit',
 		    title: this.detailDetailTitle,
@@ -148,7 +141,14 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
 			    showMap: this.getShowMap()
 			})
 		    ]
-		}
+		},
+		{
+		    xtype: 'spmaingrid',
+		    title: this.detailGridTitle,
+		    store: this.getRecStore(),
+		    showMapAction: false,
+		    isDetail: true
+		},
 	    ]
 	});
 

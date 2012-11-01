@@ -294,7 +294,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	    return null;
 	} else {
 	    var latRat = (bounds.ca.f - bounds.ca.b)/180.0;
-	    var lngRat = (bounds.ea.f - bounds.ea.b)/360.0;
+	    var lngRat = (bounds.ea.f - bounds.ea.b)/360.0;s
 	    var mapPane = this.getMapPane();
 	    var mapRat = mapPane.getWidth() / mapPane.getHeight();
 	    //var llRat =  (bounds.ea.f - bounds.ea.b)/(bounds.ca.f - bounds.ca.b);
@@ -313,6 +313,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	    var pnt = [];
 	    pnt[0] = parseFloat(ll[0]);
 	    pnt[1] = parseFloat(ll[1]);
+	    pnt[2] = facets[f+1];
 	    //result[f/2] = facets[f].split(' ');
 	    result[f/2] = pnt;
 	}
@@ -373,14 +374,15 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	mappane.fireEvent('googlemarkerclick', record);
     },
 
-    onGoogleMarkerClick2: function(geoCoords) {
+    onGoogleMarkerClick2: function(geoCoords, count) {
 	console.info("Mapper.onGoogleMarkerClick2");
 	//console.info(arguments);
 	var store = Ext.getStore('MainSolrStore');
-	var url = store.getSearchLatLngUrl(geoCoords);
+	var ll = geoCoords.slice(0,this.geoCoordFlds.length-1);
+	var url = store.getSearchLatLngUrl(ll);
 	var mappane = this.getMapPane();
 	//mappane.setLoading(true);
-	mappane.fireEvent('googlemarkerclick2', url);
+	mappane.fireEvent('googlemarkerclick2', url, geoCoords[geoCoords.length-1]);
     },
 
     doMap: function() {
@@ -637,7 +639,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
 		sortedCoords = this.sortGeoCoords(geoCoords);
 		geoCoords = [];
 	    }
-	    this.markMap2(records, sortedCoords, mapCtl, fldsOnMap, mapMarkTitleFld, isPopup);
+	    this.markMap2(sortedCoords, mapCtl, fldsOnMap, mapMarkTitleFld, isPopup);
 	}	
 	//console.info("buildMap2 completing");
 	//this.getMapPane().setLoading(false);
@@ -675,13 +677,13 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	this.addMarker(mapCtl, markRecs, current, fldsOnMap, mapMarkTitleFld, isPopup);
     },
 
-    markMap2: function(records, sortedCoords, mapCtl, fldsOnMap, mapMarkTitleFld, isPopup) {
+    markMap2: function(sortedCoords, mapCtl, fldsOnMap, mapMarkTitleFld, isPopup) {
 	var current = [];
-	var recs = [];
 	//console.info("Mapper: marking " + sortedCoords.length + " points.");
 	for (var p = 0; p < sortedCoords.length; p++) {
 	    current[0] = sortedCoords[p][0];
 	    current[1] = sortedCoords[p][1];
+	    current[2] = sortedCoords[p][2];
 	    this.addMarker2(mapCtl, current, fldsOnMap, mapMarkTitleFld);
 	}
     },
@@ -780,6 +782,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
     },
 
     getNewPoints: function(records, geoCoordFlds, checkBounds) {
+	//XXX this really isn't necessary with Facets? 
 	var geoCoords = [];
 	var p = 0;
 	var added = {};
@@ -789,6 +792,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	    if (this.useFacets) {
 		coords[0] = records[r][0];
 		coords[1] = records[r][1];
+		coords[2] = records[r][2];
 	    } else {
 		coords[0] = records[r].get(geoCoordFlds[0]);
 		coords[1] = records[r].get(geoCoordFlds[1]);
@@ -807,6 +811,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
 			geoCoords[p] = [];
 			geoCoords[p][0] = coords[0];
 			geoCoords[p][1] = coords[1];
+			geoCoords[p][2] = coords[2];
 			added[point] = 'y';
 			if (checkBounds) {
 			    if (this.minMappedLat > coords[0]) {
@@ -822,7 +827,6 @@ Ext.define('SpWebPortal.controller.Mapper', {
 				this.maxMappedLng = coords[1];
 			    }
 			}
-
 			p++;
 		    }
 		}

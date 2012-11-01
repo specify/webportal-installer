@@ -42,7 +42,6 @@ Ext.define('SpWebPortal.view.DetailPanel', {
 		    {
 			xtype: 'spdetailmappanel',
 			title: this.mapTabTitle,
-			visible: this.getShowMap()
 		    }
 		]
 	    });
@@ -67,7 +66,7 @@ Ext.define('SpWebPortal.view.DetailPanel', {
 			height: 300,
 			collapsible: true,
 			split: true,
-			collapsed: !this.getShowMap(),
+			collapsed: !this.getShowMap()
 		    },
 		    {
 			xtype: 'spimageview',
@@ -90,6 +89,14 @@ Ext.define('SpWebPortal.view.DetailPanel', {
 	return result;
     },
 
+    getImgTab: function() {
+	return this.down('spimageview');
+    },
+
+    getMapTab: function() {
+	return this.down('spdetailmappanel');
+    },
+
     loadRecord: function(record) {
 	var frm = this.down('spdetailview');
 	this.down('spdetailview').loadRecord(record);
@@ -100,6 +107,12 @@ Ext.define('SpWebPortal.view.DetailPanel', {
 	imgStore.removeAll();
 	var imagesPresent = imgView.addImgForSpecRec(record) > 0;
 	if (this.getTabbedLayout()) {
+	    this.getImgTab().tab.setVisible(imagesPresent);
+	    this.getMapTab().tab.setVisible(this.getShowMap());
+	    var activeTab = this.down('tabpanel').getActiveTab();
+	    if (!activeTab.tab.isVisible()) {
+		this.down('tabpanel').setActiveTab(0);
+	    }
 	} else {
 	    var imgMapView = this.down('[itemid="img-and-map-view"]');
 	    if (!imagesPresent && !this.getShowMap()) {
