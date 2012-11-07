@@ -32,7 +32,8 @@ Ext.define('SpWebPortal.store.MainSolrStore', {
 	mainTerm: '', 
 	filterToMap: false, 
 	matchAll: false,
-	searched: false
+	searched: false,
+	treeLevels: null
     },
 
     autoLoad: false,
@@ -212,10 +213,98 @@ this.getFilterToMap(), this.getMatchAll(), geoCoords);
 	return url;
     },
 
+    setupTrees: function() {
+	this.treeLevels = [];
+	var fields = Ext.getStore('FieldDefStore');
+	for (var f = 0; f < fields.getCount(); f++) {
+	    var treeId = fields.getAt(f).get('treeid');
+	    if (typeof treeId !== "undefined" && treeId != null && treeId != '') {
+		var addIt = true;
+		for (var t = 0; t < this.treeLevels.length; t++) {
+		    if (this.treeLevels[t] == treeId) {
+			addIt = false;
+			break;
+		    }
+		}
+		if (addIt) {
+		    this.treeLevels.push([treeId]);
+		}
+	    }
+	}
+    },
+
+    setupTreeLevel: function(treeIdx) {
+	var tree = this.treeLevels[treeIdx];
+	var currTreeId = tree[0];
+	var fields = Ext.getStore('FieldDefStore');
+	var ranks = [];
+	for (var f = 0; f < fields.getCount(); f++) {
+	   var fld = fields.getAt(f);
+	   if (fld.get('treeid') == currTreeId) {
+	       ranks.push([fld.get('treerank'), fld.get('solrname')]);
+	   }   
+	} 	
+	ranks.sort(function(a,b){return a[0] - b[0];});
+	tree = tree.concat(ranks);
+	this.treeLevels[treeIdx] = tree;
+    },
+	
+    setupTreeLevels: function() {
+	this.setupTrees();
+	for (var t = 0; t < this.treeLevels.length; t++) {
+	    this.setupTreeLevel(t);
+	}
+    },
+	
+    getTreeLevelIdx: function(fld) {
+	var treeIdx = -1;
+	var fldIdx = -1;
+	for (var t = 0; t < this.treeLevels.length; t++) {
+	    var treeLevel = this.treeLevels[t];
+	    for (var f = 1; f < treeLevel.length; f++) {
+		if (treeLevel[f][1] == fld) {
+		    treeIdx = t;
+		    fldIdx = f;
+		    break;
+		}
+	    }
+	    if (treeIdx != -1) {
+		break;
+	    }
+	}
+	return [treeIdx, fldIdx];
+    },
+
+    getSortStr: function(sortSpec) {
+	var fld = sortSpec.property;
+	var dir = sortSpec.direction.toLowerCase();
+	var treePos = this.getTreeLevelIdx(fld);
+	var sorts = [[fld, dir]];
+	if (treePos[0] != -1 && treePos[1] != -1) {
+	    var grid = Ext.getCmp('spwpmaingrid');
+	    var treeLevel = this.treeLevels[treePos[0]];
+	    for (var l = treePos[1]+1; l < treeLevel.length; l++) {
+		if (!grid.isColumnHidden(treeLevel[l][1])) {
+		    sorts.push([treeLevel[l][1], dir]);
+		}
+	    } 
+	} 
+	var result = '';
+	for (var s = 0; s < sorts.length; s++) {
+	    if (s > 0) result += ',';
+	    result += sorts[s][0] + '+' + sorts[s][1];
+	}
+	return result;
+    },
+
     listeners: {
 	'beforeload': function(store, operation) {
 	    //alert('beforeload: ' + store.getProxy().url);
 	    if (store.sorters.getCount() > 0) {
+		if (this.treeLevels == null) {
+		    this.setupTreeLevels();
+		    console.info(this.treeLevels);
+		}
 		var url = store.getProxy().url;
 		var sortIdx = url.lastIndexOf('&sort=');
 		if (sortIdx != -1) {
@@ -225,7 +314,7 @@ this.getFilterToMap(), this.getMatchAll(), geoCoords);
 		for (var s = 0; s < store.sorters.getCount(); s++) {
 		    var sorter = store.sorters.getAt(s);
 		    if (s > 0) sortStr += ',';
-		    sortStr += sorter.property + '+' + sorter.direction.toLowerCase();
+		    sortStr += this.getSortStr(sorter);
 		}
 		if (sortStr != '') {
 		    sortStr = 'sort=' + sortStr;

@@ -247,6 +247,16 @@ Ext.define('SpWebPortal.view.MainGrid', {
 
     renderGeoImgPresCol: function(value, grid, record) {
 	return this.renderGeoCol(value, grid, record) + this.renderImgPresCol(value, grid, record);
+    },
+
+    isColumnHidden: function(solrname) {
+	for (var c = 0; c < this.columns.length; c++) {
+	    if (solrname == this.columns[c].dataIndex) {
+		return this.columns[c].isHidden();
+	    }
+	}
+	console.info("isColumnHidden: column " + solrname + " not found.");
+	return false;
     }
 
 });
