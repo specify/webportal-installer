@@ -3,7 +3,7 @@ Ext.Loader.setConfig({enabled:true});
 Ext.application({
     name: 'SpWebPortal', 
     appFolder: 'app',   
-
+    id: 'spwp-webportal-app-obj',
     autoCreateViewport: true,
 
     models: ['FieldDefModel','AttachedImageModel'],
@@ -14,6 +14,8 @@ Ext.application({
     
     init: function () {
 	Ext.getBody().setHTML("");
+
+	Ext.state.Manager.setProvider(new Ext.state.LocalStorageProvider());
 
 	//load the field definition store synchronously
 	//(It seems that extjs-4.1.1 autoloads synchronously so
@@ -40,15 +42,6 @@ Ext.application({
 	    idProperty: 'spid',
 	    fields: dataFlds
 	});
-
-
-	var settingsStore =  Ext.getStore('SettingsStore');
-	var settings = settingsStore.getAt(0);
-	var solrURL = settings.get('solrURL');
-	var solrPort = settings.get('solrPort');
-	var solrPageSize = settings.get('solrPageSize');
-	var solrCore = settings.get('solrCore');
-	var solrUrlTemplate = solrURL + solrPort + '/' + solrCore + '/select?indent=on&version=2.2&fq=&rows=' + solrPageSize + '&fl=*%2Cscore&qt=&wt=json&explainOther=&hl.fl=&q=';
 
     }
 });

@@ -52,7 +52,7 @@ Ext.define('SpWebPortal.view.SettingsView', {
 	    handler: function() {
 		var form = this.up('form').getForm();
 		if (form.isValid()) {
-		    var ok = this.fireEvent('savesettings', form);
+		    var ok = this.fireEvent('savesettingsform', form);
 		    if (ok) {
 			this.up('window').close();
 		    }

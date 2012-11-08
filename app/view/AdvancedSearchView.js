@@ -126,7 +126,7 @@ Ext.define('SpWebPortal.view.AdvancedSearchView', {
     getOps: function(fld) {
 	var solrType = fld.get('solrtype');
 	var spType = fld.get('type');
-	console.info("getOps: " + solrType + ", " + spType);
+//	console.info("getOps: " + solrType + ", " + spType);
 	if (spType == 'java.util.Calendar') {
 	    return Ext.getStore('DateOps');
 	} else if (solrType == 'string') {

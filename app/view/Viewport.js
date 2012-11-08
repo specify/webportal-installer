@@ -2,6 +2,7 @@ Ext.define('SpWebPortal.view.Viewport', {
     extend: 'Ext.container.Viewport',
     title: 'Web Portal',
     layout: 'border',
+    id: 'spwp-webportal-viewport',
 
     //localizable text...
     viewportTitle: 'Web Portal',
@@ -42,6 +43,9 @@ Ext.define('SpWebPortal.view.Viewport', {
 
     initComponent: function () {
 	console.info("initializing viewport component");
+
+	this.fireEvent('initsettings');
+
 	//var pager =;
 	var mapBtn = Ext.create('Ext.button.Button', {
 	    xtype: 'button',
@@ -71,7 +75,14 @@ Ext.define('SpWebPortal.view.Viewport', {
 	    hidden: true,
 	    id: 'spwpmainmapstatustext'
 	});
-	
+	var settingsBtn = Ext.create('Ext.button.Button', {
+	    xtype: 'button',
+	    tooltip: this.settingsBtnTip,
+	    icon: 'resources/images/system.png',
+	    itemid: 'spwpsettingsbtn',
+	    id: 'spwpsettingsbtn'
+	});
+
 	mapBtn.setVisible(false);
 	mapCancelBtn.setVisible(false);
 	
@@ -103,6 +114,7 @@ Ext.define('SpWebPortal.view.Viewport', {
 		    displayMsg: this.pagerDisplayMsg,
 		    emptyMsg: this.pagerEmptyMsg,
 		},
+		settingsBtn,
 		mapBtn,
 		mapCancelBtn,
 		mapProg,
@@ -188,12 +200,6 @@ Ext.define('SpWebPortal.view.Viewport', {
 					id: 'spwp-fit-to-map-chkbx',
 					checked: false,
 					hidden: true
-				    },
-				    {
-					xtype: 'button',
-					tooltip: this.settingsBtnTip,
-					icon: 'resources/images/system.png',
-					itemid: 'spwpsettingsbtn'
 				    }
 				]
 			    },

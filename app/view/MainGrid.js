@@ -104,7 +104,8 @@ Ext.define('SpWebPortal.view.MainGrid', {
 		dataIndex: colDef.get('solrname'),
 		hidden: colDef.get('hiddenbydefault'),
 		sortable: colDef.get('advancedsearch'),
-		width: 100
+		width: colDef.get('displaywidth'),
+		initialIdx: colDef.get('displaycolidx')
 	    });
 	    if (this.isImageCol(colDef)) {
 		this.imgCol = colDef.get('solrname');
@@ -192,6 +193,8 @@ Ext.define('SpWebPortal.view.MainGrid', {
 	    renderer: this.renderGeoImgPresCol,
 	    width: 32
 	});
+	tblCols.sort(function(a,b){return a.initialIdx-b.initialIdx;});
+
 	tblCols.splice(1, 0, detailCol);
 	tblCols.splice(2, 0, geoImgPresCol);
 	this.columns = tblCols;

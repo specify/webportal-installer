@@ -18,6 +18,7 @@ Ext.define('SpWebPortal.model.FieldDefModel', {
 	{name: 'colidx', type: 'int'},
 	{name: 'advancedsearch', type: 'boolean', defaultvalue: true},
 	{name: 'displaycolidx', type: 'int'},
+	{name: 'displaywidth', type: 'int', defaultvalue: 100},
 	{name: 'hiddenbydefault', type: 'boolean', defaultvalue: false},
 	{name: 'displayinmap', type: 'boolean', defaultvalue: true},
 	{name: 'mapmarkertitle', type: 'boolean', defaultvalue: false},

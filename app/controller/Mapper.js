@@ -460,12 +460,14 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	    Ext.getCmp('spwpmaintabpanel').down('button[itemid="mapsearchbtn"]').setVisible(true);
 	    Ext.getCmp('spwpmainpagingtoolbar').setVisible(false);
 	    Ext.getCmp('spwpmainmapprogbar').setVisible(true);
+	    Ext.getCmp('spwpsettingsbtn').setVisible(false);
 	} else {
 	    tabPanel.down('button[itemid="mapsearchbtn"]').setVisible(false);
 	    Ext.getCmp('spwpmainpagingtoolbar').setVisible(isPagedTab);
 	    Ext.getCmp('spwpmainmapprogbar').setVisible(false);
 	    Ext.getCmp('spwpmainmapstatustext').setVisible(false);
 	    Ext.getCmp('spwpmainmapcancelbtn').setVisible(false);
+	    Ext.getCmp('spwpsettingsbtn').setVisible(isPagedTab);
 	}
     },
 
@@ -840,18 +842,30 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	var defType = Ext.getStore('SettingsStore').getAt(0).get('defMapType');
 	var result = google.maps.MapTypeId.ROADMAP;
 	switch (defType) {
-	case 'roadmap': result = google.maps.MapTypeId.ROADMAP;
-	case 'hybrid': result = google.maps.MapTypeId.HYBRID;
-	case 'satellite': result = google.maps.MapTypeId.SATELLITE;
-	case 'terrain': result = google.maps.MapTypeId.TERRAIN;}
+	case 'roadmap': result = google.maps.MapTypeId.ROADMAP; break;
+	case 'hybrid': result = google.maps.MapTypeId.HYBRID; break;
+	case 'satellite': result = google.maps.MapTypeId.SATELLITE; break;
+	case 'terrain': result = google.maps.MapTypeId.TERRAIN; break;}
 	return result;
     },
 
     getInitialMapType: function() {
-	if (this.mainMapCtl != null) {
+	/*if (this.mainMapCtl != null) {
 	    return this.mainMapCtl.getMapTypeId();
-	}
+	}*/
 	return this.getDefaultMapType();
+    },
+
+    onMapTypeChanged: function(maptypeid) {
+	var newType = 'roadmap';
+	switch (maptypeid) {
+	case google.maps.MapTypeId.ROADMAP: newType = 'roadmap'; break;
+	case google.maps.MapTypeId.HYBRID: newType = 'hybrid'; break;
+	case google.maps.MapTypeId.SATELLITE: newType = 'satellite'; break;
+	case google.maps.MapTypeId.TERRAIN: newType = 'terrain'; break;}
+
+	var mappane = this.getMapPane();
+	mappane.fireEvent('maptypechanged', newType);
     },
 
     geWinInitializeEmpty: function(dom, isMain) {
@@ -862,7 +876,12 @@ Ext.define('SpWebPortal.controller.Mapper', {
         };
 	this.clearMarkers2();
 	if (this.mainMapCtl == null || !isMain) {
-	    return new google.maps.Map(dom, myOptions);
+	    var result = new google.maps.Map(dom, myOptions);
+	    var me = this;
+	    google.maps.event.addListener(result, 'maptypeid_changed', function() {
+		me.onMapTypeChanged(result.getMapTypeId());
+	    });	
+	    return result;
 	} else {  
             Ext.apply(this.mainMapCtl, myOptions);
 	    return this.mainMapCtl;
@@ -881,10 +900,16 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	    zoom: 0,
 	    mapTypeId: this.getInitialMapType()
         };
-
-        var result = this.mainMapCtl == null || isPopup ? new google.maps.Map(dom, myOptions)
+	
+	var newMap =  this.mainMapCtl == null || isPopup;
+        var result = newMap ? new google.maps.Map(dom, myOptions)
 	    : this.mainMapCtl;
-
+	if (newMap) {
+	    var me = this;
+	    google.maps.event.addListener(result, 'maptypeid_changed', function() {
+		me.onMapTypeChanged(result.getMapTypeId());
+	    });	
+	}
 	//if (!isPopup) {
 	//    this.clearMarkers2(); 
 	//}
@@ -911,7 +936,12 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	//if (!isPopup) {
 	//    this.clearMarkers2(); 
 	//}
-	return new google.maps.Map(dom, myOptions);
+	var result = new google.maps.Map(dom, myOptions);
+	var me = this;
+	google.maps.event.addListener(result, 'maptypeid_changed', function() {
+	    me.onMapTypeChanged(result.getMapTypeId());
+	});	
+	return result;
     },
 
     clearMarkers2: function() {
