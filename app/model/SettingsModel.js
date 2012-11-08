@@ -1,6 +1,7 @@
 Ext.define('SpWebPortal.model.SettingsModel', {
     extend: 'Ext.data.Model',
     fields: [
+	{name: 'portalInstance', type: 'string', defaultValue: 'spwp'},
 	{name: 'solrURL', type: 'string'},
 	{name: 'solrPort', type: 'string'},
 	{name: 'solrCore', type: 'string'},

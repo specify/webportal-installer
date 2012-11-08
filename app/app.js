@@ -15,7 +15,8 @@ Ext.application({
     init: function () {
 	Ext.getBody().setHTML("");
 
-	Ext.state.Manager.setProvider(new Ext.state.LocalStorageProvider());
+	Ext.state.Manager.setProvider(new Ext.state.LocalStorageProvider({
+	    prefix: Ext.getStore('SettingsStore').getAt(0).get('portalInstance')}));
 
 	//load the field definition store synchronously
 	//(It seems that extjs-4.1.1 autoloads synchronously so

@@ -104,9 +104,11 @@ Ext.define('SpWebPortal.view.MainGrid', {
 		dataIndex: colDef.get('solrname'),
 		hidden: colDef.get('hiddenbydefault'),
 		sortable: colDef.get('advancedsearch'),
-		width: colDef.get('displaywidth'),
+		width: colDef.get('displaywidth') == 0 ? 100 : colDef.get('displaywidth'),
+		minWidth: colDef.get('displaywidth') == 0 ? 100 : colDef.get('displaywidth'),
 		initialIdx: colDef.get('displaycolidx')
 	    });
+	    console.info(col);
 	    if (this.isImageCol(colDef)) {
 		this.imgCol = colDef.get('solrname');
 		col.renderer = function(value) {

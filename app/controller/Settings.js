@@ -135,6 +135,8 @@ invalidPageSizeErrMsg: 'Invalid page size: {0}. Pagesize must be a number betwee
 
     loadGridConfig: function(id) {
 	var gridConfig = Ext.state.Manager.get(id, null);
+	console.info("loading grid config:");
+	console.info(gridConfig);
 	if (gridConfig != null) {
 	    this.configGrid(gridConfig);
 	}
