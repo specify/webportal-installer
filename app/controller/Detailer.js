@@ -83,8 +83,11 @@ Ext.define('SpWebPortal.controller.Detailer', {
     },
     
     onDetailTabChange: function(tabpanel, newCard) {
-	if (newCard.getXType() == 'spdetailmappanel' && this.detailForm != null) {
-	    this.fireMapRequest(this.detailForm.getRecord());
+	if (newCard.getXType() == 'spdetailmappanel') {
+	    var pane = tabpanel.up('spdetailpanel')
+	    if (pane != null) {
+		this.fireMapRequest(pane.getRecord(), pane);
+	    }
 	}
     },
 
@@ -389,6 +392,8 @@ Ext.define('SpWebPortal.controller.Detailer', {
 		]
 	    });
 	    this.detailsPopWin.setPosition(1,1);
+	}else {
+	    this.detailsForm.setMapVisibility(showMap);
 	}
 	if (this.detailPopWin != null && this.detailPopWin.isVisible()) {
 	    //probably can just put panels on same form!
@@ -400,8 +405,13 @@ Ext.define('SpWebPortal.controller.Detailer', {
 
 	this.detailsForm.getAndLoadRecords(url);
 	
-	this.detailsPopWin.show();
-	this.detailsPopWin.toFront();
+	if (!this.detailsPopWin.isVisible()) {
+	    this.detailsPopWin.show(null, function() {
+		this.detailsPopWinShown(record, showMap);
+	    }, this);
+	} else {
+	    this.detailsPopWinShown(record, showMap);
+	}  
     },
 	
     popupDetailFromUrl: function(url, showMap) {
@@ -446,6 +456,8 @@ Ext.define('SpWebPortal.controller.Detailer', {
 		]
 	    });
 	    this.detailPopWin.setPosition(1,1);
+	} else {
+	    this.detailForm.setShowMap(showMap);
 	}
 	if (this.detailsPopWin != null && this.detailsPopWin.isVisible()) {
 	    //probably can just put panels on same form!
@@ -466,13 +478,21 @@ Ext.define('SpWebPortal.controller.Detailer', {
 
     detailPopWinShown:  function(record, showMap) {
 	if (showMap  && (!this.detailForm.getTabbedLayout() || this.detailForm.isMapTabActive())) {
-	    this.fireMapRequest(record);
+	    this.fireMapRequest(record, this.detailForm);
 	}
 	this.detailPopWin.toFront();
     },
+
+    detailsPopWinShown:  function(record, showMap) {
+	if (showMap  && (!this.detailsForm.getTabbedLayout() || this.detailsForm.isMapTabActive())) {
+	    this.fireMapRequest(record, this.detailsForm);
+	}
+	this.detailsPopWin.toFront();
+    },
+
 	
-    fireMapRequest: function(record) {
-	var mapPane = this.detailPopWin.down('[itemid="spdetailmappane"]');
+    fireMapRequest: function(record, win) {
+	var mapPane = win.down('[itemid="spdetailmappane"]');
 	var aDom = Ext.getDom(mapPane.getId());
 	mapPane.fireEvent('maprequest', record, aDom, mapPane);
     },

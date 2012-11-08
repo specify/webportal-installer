@@ -28,6 +28,19 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
 
     layout: 'fit',
 
+    setMapVisibility: function(value) {
+	this.setShowMap(value);
+	this.down('spdetailpanel').setShowMap(value);
+    },
+
+    getTabbedLayout: function() {
+	return this.down('spdetailpanel').getTabbedLayout();
+    },
+
+    isMapTabActive: function() {
+	return this.down('spdetailpanel').isMapTabActive();
+    },
+
     initComponent: function() {
 	console.info("DetailsPanel.initComponent()");
 
