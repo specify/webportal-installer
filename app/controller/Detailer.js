@@ -63,6 +63,9 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	    },
 	    'tabpanel[itemid="spwp-detail-panel-tab"]': {
 		tabchange: this.onDetailTabChange
+	    },
+	    'tabpanel[itemid="spwp-details-panel-tab"]': {
+		tabchange: this.onDetailsTabChange
 	    }
 	});
 	this.callParent(arguments);
@@ -84,6 +87,17 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	    var pane = tabpanel.up('spdetailpanel')
 	    if (pane != null) {
 		this.fireMapRequest(pane.getRecord(), pane);
+	    }
+	}
+    },
+
+    onDetailsTabChange: function(tabpanel, newCard) {
+	var isGridTab = newCard.getXType() == 'spmaingrid';
+	this.detailsForm.getMainBBar().setVisible(isGridTab);
+	if (isGridTab) {
+	    var detailsStore = this.detailsForm.getRecStore();
+	    if (detailsStore.getTotalCount() < detailsStore.pageSize) {
+		tabpanel.setLoading(false);
 	    }
 	}
     },
@@ -135,7 +149,9 @@ Ext.define('SpWebPortal.controller.Detailer', {
     onGridDetailClk: function(record, isDetailGrid, rowIndex) {
 	//console.info('grid detail clicked -- ' + arguments);
 	if (isDetailGrid) {
-	    this.showDetailForm(rowIndex);
+	    var store = this.detailsForm.getRecStore();
+	    var page = ((store.currentPage - 1) * store.pageSize) + rowIndex + 1;
+	    this.showDetailForm(page);
 	} else {
 	    this.popupDetail(record, true);
 	}
@@ -490,12 +506,12 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	mapPane.fireEvent('maprequest', record, aDom, mapPane);
     },
 	
-    showDetailForm: function(rowIndex) {
+    showDetailForm: function(page) {
 	if (this.detailsPopWin != null && this.detailsPopWin.isVisible() && this.detailsForm != null) {
 	    var tab = this.detailsForm.down('tabpanel');
 	    var detailPager = this.detailsForm.down('pagingtoolbar');
-	    detailPager.getStore().loadPage(rowIndex+1);
-	    tab.setActiveTab(1); 
+	    detailPager.getStore().loadPage(page);
+	    tab.setActiveTab(0); 
 	} else {
 	    //something strange has happened
 	    console.info("Detailer: unable to show detail form on a details popup because the details popup has evaporated.");

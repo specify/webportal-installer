@@ -25,6 +25,7 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
 	recStore: null,
 	mainBBar: null
     },
+    loadCalledByDetail: false,
 
     layout: 'fit',
 
@@ -52,32 +53,43 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
 		type: 'memory'
 	    },
 	    detailer: this,
+	    config: {
+		pageToLoad: 1
+	    },
 	    loadPage: function(page) {
-		var basePage = (page / this.detailer.getRecStore().pageSize)|0 + 1;
+		var actualPage = page % this.detailer.getRecStore().pageSize;
+		if (actualPage == 0) actualPage = this.detailer.getRecStore().pageSize;
+		var newBasePage = Math.floor((page - 1) / this.detailer.getRecStore().pageSize) + 1;
+
 		var currBasePage = this.detailer.getRecStore().currentPage;
-		
-		console.info("DetailsPanel store load page " + page);
-		this.detailer.setCurrentRecIdx(page-1);
-		var record = this.getAt(page-1);
-		this.detailer.down('spdetailpanel').loadRecord(this.getAt(page-1));
-		this.currentPage = page;
-		this.fireEvent('load');
-		if (this.detailer.getShowMap() && this.detailer.getMapTab().tab.isVisible()) {
-		    var mapPane = this.detailer.down('[itemid="spdetailmappane"]');
-		    var aDom = Ext.getDom(mapPane.getId());
-		    try {
-			mapPane.fireEvent('maprequest', record, aDom);
-		    } catch(e) {
-			//suppress error that occurs when aDom mapPane isn't ready
+		console.info("DetailsPanel store load page " + page + ", base page: " + newBasePage + ", currBasePage: " + currBasePage);
+
+		if (newBasePage != currBasePage) {
+		    this.pageToLoad = page;
+		    this.detailer.loadPageForDetail(newBasePage)
+		} else {
+		    this.detailer.setCurrentRecIdx(actualPage-1);
+		    var record = this.getAt(actualPage-1);
+		    this.detailer.down('spdetailpanel').loadRecord(this.getAt(actualPage-1));
+		    this.currentPage = page;
+		    this.fireEvent('load');
+		    if (this.detailer.getShowMap() && this.detailer.getMapTab().tab.isVisible()) {
+			var mapPane = this.detailer.down('[itemid="spdetailmappane"]');
+			var aDom = Ext.getDom(mapPane.getId());
+			try {
+			    mapPane.fireEvent('maprequest', record, aDom);
+			} catch(e) {
+			    //suppress error that occurs when aDom mapPane isn't ready
+			}
 		    }
 		}
 	    },
 	    getTotalCount: function() {
 		//console.info("DetailsPanel store getTotalCount " + this.detailer.getCount());
 		
-		return this.detailer.getCount();
+		//return this.detailer.getCount();
 
-		//return this.detailer.getRecStore().getTotalCount();
+		return this.detailer.getRecStore().getTotalCount();
 	    },
 	    getCount: function() {
 		//console.info("DetailsPanel store getCount " + this.detailer.getCount());
@@ -134,6 +146,7 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
 	}));
 	var items = [];
 	items[0] = Ext.create('Ext.tab.Panel', {
+	    itemid: 'spwp-details-panel-tab',
 	    layout: 'fit',
 	    bbar: [
 		this.getMainBBar()
@@ -176,6 +189,11 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
 	this.callParent(arguments);
     },
 
+    loadPageForDetail: function(newBasePage) {
+	this.loadCalledByDetail = true;
+	this.getRecStore().loadPage(newBasePage);
+    },
+
     fillStore: function(theStore, records, size) {
 	theStore.removeAll();
 	var start = theStore.data.items.length;
@@ -203,7 +221,10 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
 	this.getRecStore().loadPage(1, {
 	    scope: this,
 	    callback: function(records) {
-		this.getMainBBar().setVisible(this.getRecStore().getTotalCount() > this.getRecStore().pageSize);
+		var mainBBarVisibility = this.getRecStore().getTotalCount() > this.getRecStore().pageSize
+		    && this.down('tabpanel').getActiveTab().getXType() == 'spmaingrid';
+		this.getMainBBar().setVisible(mainBBarVisibility);
+		Ext.getCmp('spwpdetailpagerid').getStore().setPageToLoad(1);
 		this.loadRecords(records);
 	    }
 	});
@@ -218,7 +239,12 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
 	    theStore.add(records);
 	    //console.info("DetailsPanel.loadRecords(): filled store");
 	    this.setCount(records.length);
-	    theStore.loadPage(1);
+	    if (this.loadCalledByDetail) {
+		this.loadCalledByDetail = false;
+		theStore.loadPage(theStore.getPageToLoad());
+	    } else {
+		theStore.loadPage(((this.getRecStore().currentPage-1) * this.getRecStore().pageSize) + 1);
+	    }
 	    this.down('tabpanel').getActiveTab().setLoading(false);
 	    Ext.getCmp('spwpdetailpagerid').setVisible(theStore.getTotalCount() > 1);
 	} else {
@@ -241,4 +267,7 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
 	return this.down('spdetailpanel').getRecord();
     },
 
+    getMapTab: function() {
+	return this.down('spdetailpanel').getMapTab();
+    }
 });
