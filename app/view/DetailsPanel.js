@@ -121,11 +121,15 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
 			if (sortIdx != -1) {
 			    url = url.substring(0, sortIdx);
 			}
+			var mStore = Ext.getStore("MainSolrStore"); //pretty lame. Need it for its getSortStr method.
+			if (mStore.treeLevels == null) {
+			    mStore.setupTreeLevels();
+			}
 			var sortStr = '';
 			for (var s = 0; s < store.sorters.getCount(); s++) {
 			    var sorter = store.sorters.getAt(s);
 			    if (s > 0) sortStr += ',';
-			    sortStr += sorter.property + '+' + sorter.direction.toLowerCase();
+			    sortStr += mStore.getSortStr(sorter);
 			}
 			if (sortStr != '') {
 			    sortStr = 'sort=' + sortStr;
