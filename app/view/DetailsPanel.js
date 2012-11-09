@@ -237,10 +237,8 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
 	//this.down('spdetailpanel').loadRecord(record
     },
 
-    loadCurrentRecord: function() {
-	//var theStore = this.down('pagingtoolbar').getStore();
-	//var rec = theStore.getAt(this.getCurrentRecIdx());
-	//this.down('spdetailpanel').loadRecord(rec);
-    }
+    getCurrentRecord: function() {
+	return this.down('spdetailpanel').getRecord();
+    },
 
 });

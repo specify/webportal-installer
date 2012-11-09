@@ -40,9 +40,6 @@ Ext.define('SpWebPortal.controller.Detailer', {
 		tabchange: this.onTabChange,
 		dosearch: this.onDoSearch
 	    },
-	    'pagingtoolbar[itemid="spwpdetailpager"]': {
-		change: this.onDetailsRecordChange
-	    },
 	    'pagingtoolbar[itemid="spwpdetailpagingtoolbar"]': {
 		change: this.onDetailsPageChange
 	    },
@@ -208,11 +205,6 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	var store = Ext.getStore('MainSolrStore');
 	this.popupDetails2(store.getIdUrl(attacheeIDs), true);
 
-    },
-
-    onDetailsRecordChange: function() {
-	//console.info("Detailer.onDetailsPageChange()");
-	this.detailsForm.loadCurrentRecord();
     },
 
     onDetailsPageChange: function(pager, pageData) {
@@ -407,10 +399,10 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	
 	if (!this.detailsPopWin.isVisible()) {
 	    this.detailsPopWin.show(null, function() {
-		this.detailsPopWinShown(record, showMap);
+		this.detailsPopWinShown(showMap);
 	    }, this);
 	} else {
-	    this.detailsPopWinShown(record, showMap);
+	    this.detailsPopWinShown(showMap);
 	}  
     },
 	
@@ -483,8 +475,9 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	this.detailPopWin.toFront();
     },
 
-    detailsPopWinShown:  function(record, showMap) {
+    detailsPopWinShown:  function(showMap) {
 	if (showMap  && (!this.detailsForm.getTabbedLayout() || this.detailsForm.isMapTabActive())) {
+	    var record = this.detailsForm.
 	    this.fireMapRequest(record, this.detailsForm);
 	}
 	this.detailsPopWin.toFront();
