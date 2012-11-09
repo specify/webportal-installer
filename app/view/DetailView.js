@@ -18,9 +18,10 @@ Ext.define('SpWebPortal.view.DetailView', {
 		readOnly: true,
 		labelAlign: 'right',
 		anchor: '100%',
+		displaycolidx: fld.get('displaycolidx')
 	    });
 	}
-
+	flds.sort(function(a, b){return a.displaycolidx - b.displaycolidx;});
 	this.items = flds;
 
 	this.callParent(arguments);
