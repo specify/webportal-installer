@@ -1,3 +1,9 @@
+/*
+ * SpWebPortal.view.ThumbnailView
+ *
+ * Individual thumbnail view.
+ *
+ */
 Ext.define('SpWebPortal.view.ThumbnailView', {
     extend: 'Ext.view.View',
     xtype: 'spthumbnail',

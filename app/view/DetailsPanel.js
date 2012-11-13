@@ -1,3 +1,9 @@
+/*
+ * SpWebPortal.view.DetailsPanel
+ *
+ * Displays multiple records. Wraps loading and navigation around a DetailPanel.
+ *
+ */
 Ext.define('SpWebPortal.view.DetailsPanel', {
     extend: 'Ext.panel.Panel',
     xtype: 'spdetailspanel',

@@ -1,3 +1,9 @@
+/*
+ * SpWebPortal.view.DetailPanel
+ *
+ * Displays a single record. Consists of three tabs: form, image and map.
+ *
+ */
 Ext.define('SpWebPortal.view.DetailPanel', {
     extend: 'Ext.panel.Panel',
     xtype: 'spdetailpanel',

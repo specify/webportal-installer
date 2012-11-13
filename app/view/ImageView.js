@@ -1,3 +1,9 @@
+/*
+* SpWebPortal.view.ImageView
+*
+*Displays image thumbnails. Used on main images tab and image tab for details windows.
+*
+*/
 Ext.define('SpWebPortal.view.ImageView', {
     extend: 'Ext.panel.Panel',
     xtype: 'spimageview',
