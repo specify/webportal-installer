@@ -18,6 +18,7 @@ Ext.define('SpWebPortal.controller.Detailer', {
     detailForm: null,
     imagePopWinPos: [1,1],
     imagePopWinYpos: 1,
+    ignoreDetailsPageChange: true,
 
     init: function() {
 	console.info("Detailer.init");
@@ -224,7 +225,11 @@ Ext.define('SpWebPortal.controller.Detailer', {
     },
 
     onDetailsPageChange: function(pager, pageData) {
-	this.detailsForm.loadRecords(pager.getStore().data.items);
+	if (!this.ignoreDetailsPageChange) {
+	    this.detailsForm.loadRecords(pager.getStore().data.items);
+	} else {
+	    this.ignoreDetailsPageChange = false;
+	}
     },
 
     getImgPopWin: function() {
@@ -411,6 +416,7 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	    this.detailPopWin.hide();
 	}
 
+	this.ignoreDetailsPageChange = true;
 	this.detailsForm.getAndLoadRecords(url);
 	
 	if (!this.detailsPopWin.isVisible()) {
