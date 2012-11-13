@@ -9,6 +9,7 @@ Ext.define('SpWebPortal.controller.Image', {
  
     mainImgStore: null,
     imgView: null,
+    solrImgFl: null,
     thumb: null,
     lastSearchCancelled: false,
     mainImgRecords: [],
@@ -80,46 +81,6 @@ Ext.define('SpWebPortal.controller.Image', {
 	}
 
 	this.doImages();
-	//this.setupImgPreview(pager.getStore());
-
-//	var store = pager.getStore();
-//	var thumb = pager.up('tabpanel').down('spimageview').down('spthumbnail');
-//	thumb.up('panel').setTitle(Ext.String.format(this.previewTitle, store.currentPage, Math.ceil(store.getTotalCount()/store.pageSize)));
-	//var imgView = pager.up('tabpanel').down('spimageview').down('image'); 
-	//imgView.setSrc('');
-	//var pane = imgView.up('panel');
-	//pane.setTitle(this.selectedImage);
-	//var imgStore = thumb.getStore();
-	//imgStore.removeAll();
-	
-//	this.doImages();
-	
-//	var thbStore = thumb.getStore();
-//	thbStore.removeAll();
-//	var imgView = pager.up('tabpanel').down('spimageview');
-//	var imgStore = imgView.getImageStore();
-//	imgStore.removeAll();
-//	
-//	for (var r = 0; r < store.getCount(); r++) {
-//	    var rec = store.getAt(r);
-//	    imgView.addImgForSpecRec(rec);
-	    /*var imgDef = rec.get('img');
-	    if (imgDef != null && imgDef != '') {
-		var imgs = Ext.JSON.decode(imgDef);
-		for (var i = 0; i < imgs.length; i++) {
-		    Ext.apply(imgs[i], {
-			//AttachedTo: rec.getId(),
-			AttachedTo: r,
-			AttachedToDescr: rec.get('cn'),
-			ThumbSrc: this.getImgSrc(imgs[i]['AttachmentLocation'], this.getPreviewScale(), 'KUFishvoucher'),
-			Src: this.getImgSrc(imgs[i]['AttachmentLocation'], null, 'KUFishvoucher')
-		    });
-		}
-		imgStore.add(imgs);
-	    }*/
-//	}
-	//pager.up('tabpanel').down('spimageview').down('pagingtoolbar').setVisible(imgStore.getTotalCount() > imgStore.pageSize);
-	//thbStore.loadPage(1);
     },
 
     setupToolbar: function(tabPanel, isMyTab, isPagedTab) {
@@ -138,22 +99,32 @@ Ext.define('SpWebPortal.controller.Image', {
 	if (this.thumb == null) {
 	    this.thumb = tabPanel.down('spimageview').down('spthumbnail');
 	}
-	//if (newCard.id == 'spwpmainimageview') {
-	//    this.doImages();
-	//} 
     },
 
     doImages: function() {
 	var store = Ext.getStore('MainSolrStore');
 	if (store.getSearched()) {
+	    var fl = 'spid,';
 	    if (this.mainImgStore == null) {
+		var flds = [];
+		var fld = {};
+		Ext.apply(fld, {name: 'spid', type: 'string'});
+		flds.push(fld);
+		var imgDescFlds = this.imgView.getImgDescriptionFlds();
+		for (var df = 0; df < imgDescFlds.length; df++) {
+		    fld = {};
+		    Ext.apply(fld, {name: imgDescFlds[df][1], type: imgDescFlds[df][2]});
+		    flds.push(fld);
+		    fl += imgDescFlds[df][1] + ",";
+		}
+		fld = {};
+		Ext.apply(fld, {name: 'img', type: 'string'});
+		flds.push(fld);
+		fl += "img";
+		this.solrImgFl = fl;
 		Ext.define('SpWebPortal.MainImgModel', {
 		    extend: 'Ext.data.Model',
-		    fields: [
-			{name: 'spid', type: 'string'},
-			{name: 'cn', type: 'int'},  //XXX instead of cn need to add fields needed for customized image description settings;
-			{name: 'img', type: 'string'},
-		    ]
+		    fields: flds
 		}),
 		this.mainImgStore = Ext.create('Ext.data.Store', {
 		    model: "SpWebPortal.MainImgModel",
@@ -178,7 +149,7 @@ Ext.define('SpWebPortal.controller.Image', {
 		url = store.getProxy().url;
 	    }
 	    url = url.replace("rows="+pageSize, "rows="+this.mainImgStore.pageSize);
-	    url = url.replace("fl=*", "fl=spid,cn,img") //XXX instead of cn need to add fields needed for customized image description settings;
+	    url = url.replace("fl=*", "fl="+this.solrImgFl) //XXX instead of cn need to add fields needed for customized image description settings;
 	    
 	    //Only remap if url/search has changed. This might not be completely
 	    //safe. Currently Advanced and Express searches will re-execute even url is UN-changed.
@@ -206,13 +177,6 @@ Ext.define('SpWebPortal.controller.Image', {
 		    //this.loadingBtn.setLoading(false);
 		    if (!this.lastSearchCancelled) {
 			this.setupImgPreview(this.mainImgStore);
-			//this.mapReadyTasks[this.mapReadyTasks.length] = Ext.TaskManager.newTask({
-			//    run: this.mapReadyTasked,
-			//    args: [records],
-			//    scope: this,
-			//    interval: 10
-			//});
-			//this.mapReadyTasks[this.mapReadyTasks.length - 1].start();
 		    }
 		}
 	    });

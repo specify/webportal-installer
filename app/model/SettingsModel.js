@@ -16,7 +16,8 @@ Ext.define('SpWebPortal.model.SettingsModel', {
 	{name: 'bannerURL', type: 'string', defaultValue: 'resources/images/shark.jpg'},
 	{name: 'bannerTitle', type: 'string', defaultValue: 'KU Fish Web Portal Demo'},
 	{name: 'bannerHeight', type: 'int', defaultValue: 120},
-	{name: 'bannerWidth', type: 'int', defaultValue: 250}
+	{name: 'bannerWidth', type: 'int', defaultValue: 250},
+	{name: 'imageInfoFlds', type: 'string'}
     ],
 
     validations: [

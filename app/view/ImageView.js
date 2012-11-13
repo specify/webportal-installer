@@ -25,36 +25,10 @@ Ext.define('SpWebPortal.view.ImageView', {
 	viewSize: 500,
 	imgServerResponse: null,
 	imgServerError: null,
+	imgDescriptionFlds: null
     },
 
     initComponent: function() {
-
-	/*var thumbStore = Ext.create('Ext.data.Store', {
-	    model: 'SpWebPortal.model.AttachedImageModel',
-	    pageSize: 1000,
-	    imageviewer: this,
-	    loadPage: function(page) {
-		console.info("ThumbStore store load page " + page);
-		//this.detailer.setCurrentRecIdx(page-1);
-		this.removeAll();
-		var imgStore = this.imageviewer.getImageStore();
-		//var records = [];
-		var first = (page-1) * this.pageSize;
-		var last = Math.min(imgStore.getTotalCount(), first + this.pageSize);
-		for (var r = first; r < last; r++) {
-		    this.add(imgStore.getAt(r));
-		}
-		//this.detailer.down('spdetailpanel').loadRecord(this.getAt(page-1));
-		this.currentPage = page;
-		//return this.currentPage;
-		//return true;
-		this.fireEvent('load');
-	    },
-	    getTotalCount: function() {
-		//console.info("DetailsPanel store getTotalCount " + this.detailer.getCount());
-		return this.imageviewer.getImageStore().getTotalCount();
-	    },
-	});*/
 
 	this.setImageStore(Ext.create('Ext.data.Store', {
 	    model: 'SpWebPortal.model.AttachedImageModel',
@@ -87,45 +61,74 @@ Ext.define('SpWebPortal.view.ImageView', {
 	    })
 	});
 
-	/*cmps[1] = Ext.create('Ext.panel.Panel', {
-	    region: 'center',
-	    autoScroll: true,
-	    title: this.selectedTitle,
-	    items: {
-		xtype: 'image'
-	    }
-	});*/
-
-	/*var dcmps = [];
-	dcmps[0] = Ext.create('Ext.toolbar.Toolbar', {
-	    dock: 'top',
-	    items: [
-		Ext.create('Ext.toolbar.Paging', {
-		    store: thumbStore,
-		    //vertical: true,
-		    //shrinkWrap: 1,
-		    displayInfo: true,
-		    itemid: 'spwpthumbpager',
-		    displayMsg: this.thumbPagerDisplayMsg,
-		    emptyMsg: this.thumbPagerEmptyMsg
-		})
-	    ]
-	});*/
-
 	this.items = cmps;
-	//this.dockedItems = dcmps;
 
 	var settingsStore =  Ext.getStore('SettingsStore');
 	var settings = settingsStore.getAt(0);
+	this.setImgDescriptionFlds(this.initImgDescFlds(settings.get('imageInfoFlds')));
 	this.setBaseUrl(settings.get('imageBaseUrl'));
 	this.setPreviewSize(settings.get('imagePreviewSize'));
 	this.setViewSize(settings.get('imageViewSize'));
 	this.callParent(arguments);
     },
 
+    initImgDescFlds: function(fldStr) {
+	if (typeof fldStr === "undefined" || fldStr ==  null) {
+	    return getDefaultImgDescFlds();
+	} else {
+	    var result = [];
+	    var flds = fldStr.split(' ');
+	    var fldStore = Ext.getStore('FieldDefStore');
+	    for (var f = 0; f < flds.length; f++) {
+		var def4f = null;
+		for (var d = 0; d < fldStore.count(); d++) {
+		    if (fldStore.getAt(d).get('solrname') == flds[f]) {
+			def4f = fldStore.getAt(d);
+			break;
+		    }
+		}
+		if (def4f != null) {
+		    result.push([def4f.get('title'), flds[f], def4f.get('solrtype')]);
+		} else {
+		    console.info("error reading imageInfoFlds settings. Unable to locate '" + flds[f] + "'. Reverting to default.");
+		    result = this.getDefaultImgDescFlds();
+		    break;
+		}
+	    }
+	    return result;
+	}
+    },
+
+    getDefaultImgDescFlds: function() {
+	//Use catalognumber and taxon fullname, if possible
+	var result = [];
+	var fldStore = Ext.getStore('FieldDefStore');
+	for (var f = 0; f < fldStore.count(); f++) {
+	    var def = fldStore.getAt(f);
+	    var tbl = def.get('sptable');
+	    var fld = def.get('spfld');
+	    if ('collectionobject' == tbl && 'catalognumber' == fld) {
+		result.push([def.get('title'), def.get('solrname'), def.get('solrtype')]);
+	    } else if ('taxon' == tbl && 'fullname' == fld) {
+		result.push([def.get('title'), def.get('solrname'), def.get('solrtype')]);
+	    }
+	}
+	return result;
+    },
+
     getDescription: function(record) {
 	//XXX use configged fields to build description
-	return record.get('cn');
+	//return record.get('cn');
+	var result = '';
+	for (var f=0; f < this.getImgDescriptionFlds().length; f++) {
+	    var fld = this.getImgDescriptionFlds()[f];
+	    if (f > 0) {
+		result += "\n";
+	    }
+	    result += fld[0] + ": " + record.get(fld[1]);
+	}
+	console.info(result);
+	return result;
     },
 
     addImgForSpecRec: function(record) {
