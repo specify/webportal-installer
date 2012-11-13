@@ -135,6 +135,7 @@ Ext.define('SpWebPortal.view.MainGrid', {
 		if (this.getShowMapAction() && this.isGoodPlaceForMapBtn(colDef)) {
 		    mapColPos = r+1;
 		}
+		col.renderer = Ext.util.Format.numberRenderer(this.getGeoCoordFormat());
 	    }
 	    if (colDef.get('displayinmap') || colDef.get('mapmarkertitle')) {
 		fldsOnMap[fldsOnMap.length] = [colDef.get('solrname'), colDef.get('title')];
@@ -215,6 +216,10 @@ Ext.define('SpWebPortal.view.MainGrid', {
 	    }
 	}
 	return true;
+    },
+
+    getGeoCoordFormat: function() {
+	return '0.0000000';
     },
 
     renderGeoCol: function(value, grid, record) {
