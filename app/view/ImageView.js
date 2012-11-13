@@ -107,9 +107,9 @@ Ext.define('SpWebPortal.view.ImageView', {
 	    var def = fldStore.getAt(f);
 	    var tbl = def.get('sptable');
 	    var fld = def.get('spfld');
-	    if ('collectionobject' == tbl && 'catalognumber' == fld) {
+	    if ('collectionobject' == tbl && 'catalogNumber' == fld) {
 		result.push([def.get('title'), def.get('solrname'), def.get('solrtype')]);
-	    } else if ('taxon' == tbl && 'fullname' == fld) {
+	    } else if ('taxon' == tbl && 'fullName' == fld) {
 		result.push([def.get('title'), def.get('solrname'), def.get('solrtype')]);
 	    }
 	}
