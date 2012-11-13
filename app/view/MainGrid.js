@@ -89,7 +89,7 @@ Ext.define('SpWebPortal.view.MainGrid', {
     },
 
     initComponent: function() {
-	console.info('MainGrid initComponent()');
+	//console.info('MainGrid initComponent()');
 	var fieldStore = Ext.getStore('FieldDefStore');
 	var tblCols = [];
 	tblCols[0] = Ext.create('Ext.grid.RowNumberer', {width: 30, resizable: true});
@@ -108,7 +108,7 @@ Ext.define('SpWebPortal.view.MainGrid', {
 		minWidth: colDef.get('displaywidth') == 0 ? 100 : colDef.get('displaywidth'),
 		initialIdx: colDef.get('displaycolidx')
 	    });
-	    console.info(col);
+	    //console.info(col);
 	    if (this.isImageCol(colDef)) {
 		this.imgCol = colDef.get('solrname');
 		col.renderer = function(value) {
@@ -141,7 +141,7 @@ Ext.define('SpWebPortal.view.MainGrid', {
 		fldsOnMap[fldsOnMap.length] = [colDef.get('solrname'), colDef.get('title')];
 		if (colDef.get('mapmarkertitle') && mapMarkerTitleFld.length == 0) {
 		    mapMarkerTitleFld =  [colDef.get('solrname'), colDef.get('title')];
-		    console.info("set map marker title: " + mapMarkerTitleFld);
+		    //console.info("set map marker title: " + mapMarkerTitleFld);
 		}
 	    }
 	    tblCols[r] = col;
@@ -152,7 +152,7 @@ Ext.define('SpWebPortal.view.MainGrid', {
 	}
 	if (mapMarkerTitleFld.length == 0) {
 	    mapMarkerTitleFld = this.defaultMapMarkerTitle(fieldStore);
-	    console.info("set map marker title to default: " + mapMarkerTitleFld);
+	    //console.info("set map marker title to default: " + mapMarkerTitleFld);
 	}
 	this.fireEvent('mapsetsready', this.geoCoordFlds, fldsOnMap, mapMarkerTitleFld);
 
@@ -265,7 +265,7 @@ Ext.define('SpWebPortal.view.MainGrid', {
 		return this.columns[c].isHidden();
 	    }
 	}
-	console.info("isColumnHidden: column " + solrname + " not found.");
+	//console.info("isColumnHidden: column " + solrname + " not found.");
 	return false;
     }
 

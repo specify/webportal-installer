@@ -21,7 +21,7 @@ Ext.define('SpWebPortal.controller.Detailer', {
     ignoreDetailsPageChange: true,
 
     init: function() {
-	console.info("Detailer.init");
+	//console.info("Detailer.init");
 	this.control({
 	    'actioncolumn[itemid="detail-popup-ctl"]': {
 		clicked: this.onGridDetailClk
@@ -75,11 +75,11 @@ Ext.define('SpWebPortal.controller.Detailer', {
 
     onDetailMapPaneResize: function(panel) {
 	var map = panel.getMapCtl();
-	console.info("onDetailMapPaneResize");
+	//console.info("onDetailMapPaneResize");
 	if (map != null) {
 	    google.maps.event.trigger(map, 'resize');
 	} else {
-	    console.info("    no map");
+	    //console.info("    no map");
 	}
     },
     
@@ -124,7 +124,7 @@ Ext.define('SpWebPortal.controller.Detailer', {
     },
 
     onGoogleMarkerClick: function(record) {
-	console.info("Detailer.onGoogleMarkerClick");
+	//console.info("Detailer.onGoogleMarkerClick");
 	//Ext.getCmp('spwpmainmappane').setLoading(true);
 	if (record instanceof Array) {
 	    if (record.length > 1) {
@@ -139,7 +139,7 @@ Ext.define('SpWebPortal.controller.Detailer', {
     },
 
     onGoogleMarkerClick2: function(url, count) {
-	console.info("Detailer.onGoogleMarkerClick2" + " " + count + " " + url);
+	//console.info("Detailer.onGoogleMarkerClick2" + " " + count + " " + url);
 	if (count > 1) {
 	    this.popupDetails2(url, false);
 	} else {
@@ -172,17 +172,17 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	var result = thumbnailer.up('spimageview'); 
 	if (result != null) {
 	    if (result.getId() == 'spwpmainimageview') {
-		console.info("Detailer.getOwnerForThumbnailer(): spimageview");
+		//console.info("Detailer.getOwnerForThumbnailer(): spimageview");
 		return result;
 	    }
 	    result = result.up('spdetailspanel');
 	    if (result != null) {
-		console.info("Detailer.getOwnerForThumbnailer(): spdetailpanel");
+		//console.info("Detailer.getOwnerForThumbnailer(): spdetailpanel");
 		return result;
 	    } 
 	    result = thumbnailer.up('spimageview').up('spdetailpanel');
 	    if (result != null) {
-		console.info("Detailer.getOwnerForThumbnailer(): spdetailpanel");
+		//console.info("Detailer.getOwnerForThumbnailer(): spdetailpanel");
 		return result;
 	    } 
 	}
@@ -190,8 +190,8 @@ Ext.define('SpWebPortal.controller.Detailer', {
     },
 
     onThumbDblClk: function(thumbnailer, record) {
-	console.info("thumb dbl-clicked");
-	console.info(arguments);
+	//console.info("thumb dbl-clicked");
+	//console.info(arguments);
 	if (false) {
 	    this.popupSpecDetailsForImage(record);
 	} else {
@@ -209,8 +209,8 @@ Ext.define('SpWebPortal.controller.Detailer', {
     },
 
     popupSpecDetailsForImage: function(imgRecord) {
-	console.info("popupSpecDetailsForImage");
-	console.info(arguments);
+	//console.info("popupSpecDetailsForImage");
+	//console.info(arguments);
 	var attacheeIDs = [];
 	//var attacheeData = imgRecord.get('AttachedTo');
 	//when 'id' is re-named then use above. (See notes in app.js where MainModel is built.
@@ -297,7 +297,7 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	var imgWinOwner = args[1];
 	var imgPopWin = Ext.getCmp('spwp-detail-image-popwin');
 	if (imgPopWin != null) {
-	    console.info("Detailer.popupImageSrcReady: closing imagePopWin");
+	    //console.info("Detailer.popupImageSrcReady: closing imagePopWin");
 	    //this.skipImagePopWinDestroy = true;
 	    //this.imagePopWin.close();
 

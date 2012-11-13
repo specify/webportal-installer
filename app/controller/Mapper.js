@@ -100,7 +100,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
     },
 
     onExpressSearch: function() {
-	console.info("Mapper.onExpressSearch()");
+	//console.info("Mapper.onExpressSearch()");
 	this.forceFitToMap = false;
 	//this.getMapPane().setLoading(true);
     },
@@ -112,7 +112,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
     },
 
     onAdvancedSearch: function() {
-	console.info("Mapper.onAdvancedSearch()");
+	//console.info("Mapper.onAdvancedSearch()");
 	this.forceFitToMap = false;
     },
 
@@ -129,7 +129,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
     },
 
     onMapSearchClk: function() {
-	console.info("Mapper.onMapSearchClk()");
+	//console.info("Mapper.onMapSearchClk()");
 	this.forceFitToMap = true;
     },
 
@@ -149,7 +149,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	    this.mapTaskPage = this.lilMapStore.currentPage;
 	    this.buildMapTask.start();
 	    if (this.lilMapStore.getTotalCount() > this.lilMapStore.currentPage * this.lilMapStore.pageSize) {
-		console.info("loading page " + this.lilMapStore.currentPage + " of map store.");
+		//console.info("loading page " + this.lilMapStore.currentPage + " of map store.");
 		this.loadMapStore(this.lilMapStore.currentPage + 1);
 	    }
 	    return false;
@@ -159,7 +159,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
     },
 
     cancelMapping: function() {
-	console.info('cancelMapping');
+	//console.info('cancelMapping');
 	this.lastSearchCancelled = true;
 	this.mappingDone();
 	if (this.buildMapTask != null) {
@@ -173,7 +173,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	
 	
     mappingDone: function() {
-	console.info("mappingDone: stopping " + this.mapReadyTasks.length + " tasks");
+	//console.info("mappingDone: stopping " + this.mapReadyTasks.length + " tasks");
 	for (var t = 0; t < this.mapReadyTasks.length; t++) {
 	    this.mapReadyTasks[t].stop();
 	    this.mapReadyTasks[t].destroy();
@@ -220,7 +220,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	    this.lilMapStore.loadPage(page, {
 		scope: this,
 		callback: function(records) {
-		    console.info("MapStore loaded " + page + " with " + records.length + " of " + this.lilMapStore.getTotalCount() + " records.");
+		    //console.info("MapStore loaded " + page + " with " + records.length + " of " + this.lilMapStore.getTotalCount() + " records.");
 		    if (page == 1) {
 			//this.clearMarkers2();
 			this.progBar.updateProgress(0.0);
@@ -254,7 +254,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
                 jsonp: 'json.wrf',
                 dataType: 'jsonp'
 	       }).done(function(data) {
-		   console.info("Mapper.getDistinctPoints() done");
+		   //console.info("Mapper.getDistinctPoints() done");
 		   me.lastFacetUrl = url;
 		   var numFound = data.response.numFound;
 		   me.minMappedLat = 90.0; 
@@ -299,7 +299,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	    var mapRat = mapPane.getWidth() / mapPane.getHeight();
 	    //var llRat =  (bounds.ea.f - bounds.ea.b)/(bounds.ca.f - bounds.ca.b);
 	    var llRat = lngRat / latRat;
-	    console.info("mapRat: " + mapRat + ", llRat: " + llRat + ", latRat: " + latRat + ", lngRat: " + lngRat);
+	    //console.info("mapRat: " + mapRat + ", llRat: " + llRat + ", latRat: " + latRat + ", lngRat: " + lngRat);
 
 	    return bounds;
 	}
@@ -368,14 +368,14 @@ Ext.define('SpWebPortal.controller.Mapper', {
     },
     
     onGoogleMarkerClick: function(record) {
-	console.info("Mapper.onGoogleMarkerClick");
+	//console.info("Mapper.onGoogleMarkerClick");
 	var mappane = this.getMapPane();
 	//mappane.setLoading(true);
 	mappane.fireEvent('googlemarkerclick', record);
     },
 
     onGoogleMarkerClick2: function(geoCoords, count) {
-	console.info("Mapper.onGoogleMarkerClick2");
+	//console.info("Mapper.onGoogleMarkerClick2");
 	//console.info(arguments);
 	var store = Ext.getStore('MainSolrStore');
 	var ll = geoCoords.slice(0,this.geoCoordFlds.length-1);
@@ -386,7 +386,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
     },
 
     doMap: function() {
-	console.info("Mapaper.doMap()");
+	//console.info("Mapaper.doMap()");
 	if (this.mainMapCtl == null) {
 	    //this.buildMap(recs, this.geoCoordFlds, this.fldsOnMap, this.mapMarkTitleFld, false);
 	    this.mainMapCtl = this.geWinInitializeEmpty(this.getDomForMap(false), true);
@@ -581,7 +581,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
     },
 
     buildMap: function(records, geoCoordFlds, fldsOnMap, mapMarkTitleFld, isPopup, aDom) {
-	console.info('Mapper.buildMap. #Recs: ' + records.length);
+	//console.info('Mapper.buildMap. #Recs: ' + records.length);
 	//console.info(arguments);
 	var p = 0;
 	var bnds = this.getMappedRecsWithBounds(records, geoCoordFlds, true, true);
@@ -653,7 +653,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	current[0] = sortedCoords[0][0];
 	current[1] = sortedCoords[0][1];
 	recs = [sortedCoords[0][2]];
-	console.info("Mapper: marking " + sortedCoords.length + " points.");
+	//console.info("Mapper: marking " + sortedCoords.length + " points.");
 	for (var p = 1; p < sortedCoords.length; p++) {
 	    if (sortedCoords[p][0] == current[0] && sortedCoords[p][1] == current[1]) {
 		recs[recs.length] = sortedCoords[p][2];
@@ -945,14 +945,14 @@ Ext.define('SpWebPortal.controller.Mapper', {
     },
 
     clearMarkers2: function() {
-	console.info("clearMarkers2");
+	//console.info("clearMarkers2");
 	if (this.mainMapCtl != null) {
 	    google.maps.event.clearListeners(this.mainMapCtl, 'click');
 	}
 	var cleared = 0;
 	_.each(this.mapMarkers, function(marker) {marker.setMap(null); cleared++});
 	this.mapMarkers = {};
-	console.info("   cleared " + cleared);
+	//console.info("   cleared " + cleared);
 	//also clear listeners on markers
     },
 
@@ -1036,7 +1036,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	//var titleTxt = this.getMarkerText(record, mapMarkTitleFld);
 
         if (this.mapMarkers[point.toString()]) {
-	    console.info("hey already marked: " + point.toString());
+	    //console.info("hey already marked: " + point.toString());
 	} else {
 	    var marker = new google.maps.Marker({
 		position: point, 

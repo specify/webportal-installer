@@ -56,7 +56,7 @@ Ext.define('SpWebPortal.controller.Image', {
     },
 
     setupImgPreview: function(store) {
-	console.info('Image setUpImgPreview()');
+	//console.info('Image setUpImgPreview()');
 
 	this.thumb.up('panel').setTitle(Ext.String.format(this.previewTitle, store.currentPage, Math.ceil(store.getTotalCount()/store.pageSize)));
 	
@@ -72,7 +72,7 @@ Ext.define('SpWebPortal.controller.Image', {
     },	
     
     onPageChange: function(pager) {
-	console.info('Image onPageChange()');
+	//console.info('Image onPageChange()');
 	if (this.imgView == null) {
 	    this.imgView = pager.up('tabpanel').down('spimageview');
 	}
@@ -169,7 +169,7 @@ Ext.define('SpWebPortal.controller.Image', {
 	    this.mainImgStore.loadPage(page, {
 		scope: this,
 		callback: function(records) {
-		    console.info("MainImgStore loaded " + page + " with " + records.length + " of " + this.mainImgStore.getTotalCount() + " records.");
+		    //console.info("MainImgStore loaded " + page + " with " + records.length + " of " + this.mainImgStore.getTotalCount() + " records.");
 		    if (page == 1) {
 			//this.clearMarkers2();
 			//this.progBar.updateProgress(0.0);

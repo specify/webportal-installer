@@ -43,7 +43,7 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
     },
 
     initComponent: function() {
-	console.info("DetailsPanel.initComponent()");
+	//console.info("DetailsPanel.initComponent()");
 
 	Ext.define('SpWebPortal.view.DetailStore', {
 	    extend: 'Ext.data.Store', 
@@ -62,7 +62,7 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
 		var newBasePage = Math.floor((page - 1) / this.detailer.getRecStore().pageSize) + 1;
 
 		var currBasePage = this.detailer.getRecStore().currentPage;
-		console.info("DetailsPanel store load page " + page + ", base page: " + newBasePage + ", currBasePage: " + currBasePage);
+		//console.info("DetailsPanel store load page " + page + ", base page: " + newBasePage + ", currBasePage: " + currBasePage);
 
 		if (newBasePage != currBasePage) {
 		    this.pageToLoad = page;

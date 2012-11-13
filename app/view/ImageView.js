@@ -46,12 +46,6 @@ Ext.define('SpWebPortal.view.ImageView', {
 
 	cmps[0] = Ext.create('Ext.panel.Panel', {
 	    title: this.previewTitle,
-	    
-	    //resizable: true,
-	    collapsible: true,
-	    //titleCollapse: true,
-	    split: true,
-
 	    region: 'center',
 	    //width: 300,
 	    autoScroll: true,
@@ -69,12 +63,13 @@ Ext.define('SpWebPortal.view.ImageView', {
 	this.setBaseUrl(settings.get('imageBaseUrl'));
 	this.setPreviewSize(settings.get('imagePreviewSize'));
 	this.setViewSize(settings.get('imageViewSize'));
+
 	this.callParent(arguments);
     },
 
     initImgDescFlds: function(fldStr) {
-	if (typeof fldStr === "undefined" || fldStr ==  null) {
-	    return getDefaultImgDescFlds();
+	if (typeof fldStr === "undefined" || fldStr ==  null || fldStr == '') {
+	    return this.getDefaultImgDescFlds();
 	} else {
 	    var result = [];
 	    var flds = fldStr.split(' ');
@@ -127,7 +122,7 @@ Ext.define('SpWebPortal.view.ImageView', {
 	    }
 	    result += fld[0] + ": " + record.get(fld[1]);
 	}
-	console.info(result);
+	//console.info(result);
 	return result;
     },
 
@@ -214,7 +209,7 @@ Ext.define('SpWebPortal.view.ImageView', {
 		    this.imgServerResponse = null;
 		},
 		callback: function(object) {
-		    console.info("getImgSrc.callback happened");
+		    //console.info("getImgSrc.callback happened");
 		    var src = typeof object.params.scale === "undefined" ?
 			"http://boxley.nhm.ku.edu/specifyassets/Ichthyology/originals/" + fileName :
 			"http://boxley.nhm.ku.edu/specifyassets/Ichthyology/originals/" + fileName.replace('.jpg', '_' + scale + '.jpg');

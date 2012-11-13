@@ -28,7 +28,7 @@ Ext.define('SpWebPortal.view.DetailView', {
     },
 
     loadRecord: function(record) {
-	console.info("DetailView.loadRecord in");
+	//console.info("DetailView.loadRecord in");
 	this.callParent(arguments);
 	var imgFld = this.getForm().findField('img');
 	if (imgFld != null) {
@@ -50,7 +50,7 @@ Ext.define('SpWebPortal.view.DetailView', {
 		imgFld.setValue(newValue);
 	    }
 	}	    
-	console.info("DetailView.loadRecord out");
+	//console.info("DetailView.loadRecord out");
     }
 
 });

@@ -24,7 +24,7 @@ Ext.define('SpWebPortal.view.DetailPanel', {
     ],
 
     initComponent: function() {
-	console.info('DetailPanel.initComponent');
+	//console.info('DetailPanel.initComponent');
 
 	var cmps = [];
 

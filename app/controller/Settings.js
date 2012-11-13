@@ -4,7 +4,7 @@ Ext.define('SpWebPortal.controller.Settings', {
     
     //localizable text...
     settingsFormTitle: 'Settings',
-invalidPageSizeErrMsg: 'Invalid page size: {0}. Pagesize must be a number between 1 and {1}',
+    invalidPageSizeErrMsg: 'Invalid page size: {0}. Pagesize must be a number between 1 and {1}',
     //..localizable text
 
     requires: [
@@ -74,7 +74,7 @@ invalidPageSizeErrMsg: 'Invalid page size: {0}. Pagesize must be a number betwee
    },
 
     onSettingsBtnClick: function() {
-	console.info("Settings.onSettingsBtnClick");
+	//console.info("Settings.onSettingsBtnClick");
 	this.popupSettings();
     },
 
@@ -100,7 +100,7 @@ invalidPageSizeErrMsg: 'Invalid page size: {0}. Pagesize must be a number betwee
     },
 
     onInitSettings: function() {
-	console.info("Settings.onInitSettings");
+	//console.info("Settings.onInitSettings");
 	var settingsStore =  Ext.getStore('SettingsStore');
 	var settings = settingsStore.getAt(0);
 	var solrURL = settings.get('solrURL');
@@ -135,8 +135,8 @@ invalidPageSizeErrMsg: 'Invalid page size: {0}. Pagesize must be a number betwee
 
     loadGridConfig: function(id) {
 	var gridConfig = Ext.state.Manager.get(id, null);
-	console.info("loading grid config:");
-	console.info(gridConfig);
+	//console.info("loading grid config:");
+	//console.info(gridConfig);
 	if (gridConfig != null) {
 	    this.configGrid(gridConfig);
 	}
@@ -153,14 +153,14 @@ invalidPageSizeErrMsg: 'Invalid page size: {0}. Pagesize must be a number betwee
 		fld.set('displaycolidx', gc.index);
 		fld.set('displaywidth', gc.width);
 		fld.set('hiddenbydefault', gc.hidden);
-		console.info(fld);
+		//console.info(fld);
 	    }
 	}		 
     },
 
     onMainGridReconfig: function(headers, column) {
-	console.info("Settings.onMainGridReconfig");
-	console.info(headers, column);
+	//console.info("Settings.onMainGridReconfig");
+	//console.info(headers, column);
 	var cols = headers.getGridColumns();
 	var colSets = [];
 	for (var h = 0; h < cols.length; h++) {

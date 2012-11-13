@@ -2,7 +2,7 @@ Ext.define('SpWebPortal.controller.Search', {
     extend: 'Ext.app.Controller',
     
     init: function() {
-	console.info("Search.init");
+	//console.info("Search.init");
 	this.control({
 	    'checkbox[itemid="req-img-ctl"]': {
 		change: this.reqImgChange
@@ -55,7 +55,7 @@ Ext.define('SpWebPortal.controller.Search', {
     matchAllChange: function() {
 	//console.info("match all change!");
 	this.setMatchAll(!this.getMatchAll());
-	console.info("MatchAll = " + this.getMatchAll());
+	//console.info("MatchAll = " + this.getMatchAll());
     },
 
     escapeForSolr: function(srchText) {

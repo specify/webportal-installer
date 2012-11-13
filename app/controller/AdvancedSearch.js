@@ -16,7 +16,7 @@ Ext.define('SpWebPortal.controller.AdvancedSearch', {
     },
 
     init: function() {
-	console.info("AdvancedSearch.init");
+	//console.info("AdvancedSearch.init");
 
 	this.control({
 	    'advSrch button[itemid="search-btn"]': {
@@ -47,13 +47,13 @@ Ext.define('SpWebPortal.controller.AdvancedSearch', {
     },
 
     doSearch: function() {
-	console.info("AdvancedSearch.doSearch");
+	//console.info("AdvancedSearch.doSearch");
 	var ctrls = this.getSearch().query('spsearchcriterion');
 	var connector = this.getSolr() ? ' +' : ', ';
 	var filterStr = '', c;
 	for (c = 0; c < ctrls.length; c++) {
 	    var filter = this.getSolr() ? ctrls[c].solrFilter(this.getMatchAll(), this) : ctrls[c].sqlPhpFilter();
-	    console.info(filter);
+	    //console.info(filter);
 	    if (filter == 'error') {
 		filterStr = 'error';
 		break;

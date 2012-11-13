@@ -12,7 +12,7 @@ Ext.define('SpWebPortal.controller.ExpressSearch', {
     models: ['MainModel'],
 
     init: function() {
-	console.info("ExpressSearch.init");
+	//console.info("ExpressSearch.init");
 
 	this.control({
 	    'expressSrch button[itemid="search-btn"]': {
@@ -40,7 +40,7 @@ Ext.define('SpWebPortal.controller.ExpressSearch', {
     },
 
     doSearch: function() {
-	console.info("ExpressSearch doSearch()");
+	//console.info("ExpressSearch doSearch()");
 
 	var search = this.getSearch();
 	var control = search.query('textfield[itemid="search-text"]');
