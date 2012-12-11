@@ -217,8 +217,8 @@ Ext.define('SpWebPortal.view.ImageView', {
 		callback: function(object) {
 		    //console.info("getImgSrc.callback happened");
 		    var src = typeof object.params.scale === "undefined" ?
-			"http://boxley.nhm.ku.edu/specifyassets/Ichthyology/originals/" + fileName :
-			"http://boxley.nhm.ku.edu/specifyassets/Ichthyology/originals/" + fileName.replace('.jpg', '_' + scale + '.jpg');
+			"http://anza.nhm.ku.edu/specifyassets/Ichthyology/originals/" + fileName :
+			"http://anza.nhm.ku.edu/specifyassets/Ichthyology/originals/" + fileName.replace('.jpg', '_' + scale + '.jpg');
 		    if (!addToStore) {
 			img.set(srcFld, src);
 		    } else {
