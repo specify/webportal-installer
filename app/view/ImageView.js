@@ -200,25 +200,12 @@ Ext.define('SpWebPortal.view.ImageView', {
 	}
 	this.waitingForImgUrl = true;
 	try {
-	    var req = Ext.Ajax.request({
-		url: url,
-		cors: true,
-		params: params,
-		//headers: 'Access-Control-Allow-Origin: *',
-		scope: this,
-		success: function(response) {
-		    this.imgServerResponse = response.responseText;
-		    this.imgServerError = null;
-		},
-		failure: function(response) {
-		    this.imgServerError = response.status;
-		    this.imgServerResponse = null;
-		},
-		callback: function(object) {
-		    //console.info("getImgSrc.callback happened");
-		    var src = typeof object.params.scale === "undefined" ?
-			"http://anza.nhm.ku.edu/specifyassets/Ichthyology/originals/" + fileName :
-			"http://anza.nhm.ku.edu/specifyassets/Ichthyology/originals/" + fileName.replace('.jpg', '_' + scale + '.jpg');
+            $.ajax({
+                url: url,
+                data: params,
+		context: this,
+                success: function(src) {
+                    //console.info("JQUERY to the rescue!");
 		    if (!addToStore) {
 			img.set(srcFld, src);
 		    } else {
@@ -239,7 +226,7 @@ Ext.define('SpWebPortal.view.ImageView', {
 		    }
 		    if (typeof callbackFn !== "undefined" && callbackFn != null) {
 			callbackFn(img, callbackArgs);
-		    }
+		    }                
 		}
 	    });
 	} catch(e) {
