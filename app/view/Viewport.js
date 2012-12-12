@@ -112,7 +112,7 @@ Ext.define('SpWebPortal.view.Viewport', {
 		    store: Ext.getStore('MainSolrStore'),
 		    displayInfo: true,
 		    displayMsg: this.pagerDisplayMsg,
-		    emptyMsg: this.pagerEmptyMsg,
+		    emptyMsg: this.pagerEmptyMsg
 		},
 		settingsBtn,
 		mapBtn,

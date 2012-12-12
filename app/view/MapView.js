@@ -5,6 +5,6 @@ Ext.define('SpWebPortal.view.MapView', {
 
     config: {
 	mapCmp: null
-    },
+    }
 
 });

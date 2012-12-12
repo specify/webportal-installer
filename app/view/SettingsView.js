@@ -36,7 +36,7 @@ Ext.define('SpWebPortal.view.SettingsView', {
 		    type: set.type,
 		    allowBlank: false,
 		    readOnly: this.isReadOnly(set),
-		    disabled: this.isReadOnly(set),
+		    disabled: this.isReadOnly(set)
 		});
 	    }
 	}

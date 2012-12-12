@@ -151,7 +151,7 @@ Ext.define('SpWebPortal.view.ImageView', {
 		//this.getImgSrc(imgs[i]['AttachmentLocation'], null, 'KUFishvoucher', false, imgs[i]);
 		Ext.apply(imgs[i], {
 		    AttachedTo: attachedTo,
-		    AttachedToDescr: attachedToDescr,
+		    AttachedToDescr: attachedToDescr
 		    //ThumbSrc: this.getImgSrc(imgs[i]['AttachmentLocation'], this.getPreviewSize(), 'KUFishvoucher'),
 		    //Src: this.getImgSrc(imgs[i]['AttachmentLocation'], null, 'KUFishvoucher')
 		});
@@ -241,6 +241,6 @@ Ext.define('SpWebPortal.view.ImageView', {
 	    return "http://boxley.nhm.ku.edu/specifyassets/Ichthyology/originals/" + fileName;
 	}*/
 
-    },
+    }
 
 });

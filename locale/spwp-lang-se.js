@@ -34,7 +34,7 @@ Ext.define("SpWebPortal.locale.se.view.ImageView", {
     override: "SpWebPortal.view.ImageView",
 
     previewTitle: 'Förhandsgranskning',
-    selectedTitle: 'Valda bilden'
+    selectedTitle: 'Valda bilden',
     thumbPagerDisplayMsg: 'Displaying images {0} - {1} of {2}',
     thumbPagerEmptyMsg: 'No images to display'
 });
@@ -92,7 +92,7 @@ Ext.define("SpWebPortal.locale.se.view.Viewport", {
     mapSearchBtn: 'Search',
     mapSearchBtnTip: 'Apply search criteria to map region',
     mapCancelBtn: 'Avbestalla',
-    mapCancelBtnTip: 'Stop plotting the current results',
+    mapCancelBtnTip: 'Stop plotting the current results'
 });
 
 
@@ -117,11 +117,11 @@ Ext.define("SpWebPortal.locale.se.controller.Mapper", {
 
     mapTitle: 'Karta',
     noGeoCoordMsg: 'Geo coords are not present for this record',
-    mapResultsText: 'Mapped {0} records at {1} points.'
+    mapResultsText: 'Mapped {0} records at {1} points.',
     mapProgressText:'{0} - {1} av {2}',
     simpleMapProgressText: 'Mapping {0} records',
     mapCancelledText: 'Mapping cancelled',
-    loadingGeoCoordsText: 'Loading geocoordinates',
+    loadingGeoCoordsText: 'Loading geocoordinates'
 });
 
 Ext.define("SpWebPortal.locale.se.controller.Settings", {

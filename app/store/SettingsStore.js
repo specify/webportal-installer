@@ -7,7 +7,7 @@ Ext.define('SpWebPortal.store.SettingsStore', {
     model: 'SpWebPortal.model.SettingsModel',
     proxy: {
 	type: 'ajax',
-	url: 'settings.json',
+	url: 'settings.json'
     },
 
     listeners: {

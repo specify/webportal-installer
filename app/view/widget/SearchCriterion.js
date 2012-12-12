@@ -69,7 +69,7 @@ Ext.define('SpWebPortal.view.widget.SearchCriterion', {
 	if (entries != null && entries.length > 0) {
 	    var opId = '#' + this.itemid + '-op';
 	    var op = this.query(opId)[0].value;
-	    var result = searcher.escapeForSolr(entries[0]);
+	    result = searcher.escapeForSolr(entries[0]);
 	    if (op == '<=') {
 		result = '[* TO ' + result + ']';
 	    } else if (op == '>=') {

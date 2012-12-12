@@ -128,7 +128,7 @@ Ext.define('SpWebPortal.view.MainGrid', {
 			}
 		    }
 		    return result;
-		}
+		};
 	    }
 	    if (this.isGeoCoordFld(colDef)) {
 		this.processGeoCoordFld(colDef, this.geoCoordFlds);
@@ -188,8 +188,8 @@ Ext.define('SpWebPortal.view.MainGrid', {
 		    tooltip: this.detailsBtnHint,
 		    handler: function(grid, rowIndex) {
 			this.fireEvent('clicked', grid.getStore().getAt(rowIndex), isDet, rowIndex);
-		    },
-		},
+		    }
+		}
 	    ]
 	});
 	var geoImgPresCol = Ext.create('Ext.grid.column.Column', {

@@ -15,7 +15,7 @@ Ext.define('SpWebPortal.view.DetailPanel', {
 	showMap: true,
 	showImages: true,
 	showFullImageView: true,
-	tabbedLayout: true,
+	tabbedLayout: true
     },
 
     //localizable text...
@@ -47,7 +47,7 @@ Ext.define('SpWebPortal.view.DetailPanel', {
 		    },
 		    {
 			xtype: 'spdetailmappanel',
-			title: this.mapTabTitle,
+			title: this.mapTabTitle
 		    }
 		]
 	    });

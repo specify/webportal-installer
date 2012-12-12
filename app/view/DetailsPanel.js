@@ -72,7 +72,7 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
 
 		if (newBasePage != currBasePage) {
 		    this.pageToLoad = page;
-		    this.detailer.loadPageForDetail(newBasePage)
+		    this.detailer.loadPageForDetail(newBasePage);
 		} else {
 		    this.detailer.setCurrentRecIdx(actualPage-1);
 		    var record = this.getAt(actualPage-1);
@@ -190,7 +190,7 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
 		    store: this.getRecStore(),
 		    showMapAction: false,
 		    isDetail: true
-		},
+		}
 	    ]
 	});
 

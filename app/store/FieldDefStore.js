@@ -7,7 +7,7 @@ Ext.define('SpWebPortal.store.FieldDefStore', {
     model: 'SpWebPortal.model.FieldDefModel',
     proxy: {
 	type: 'ajax',
-	url: 'fldmodel.json',
+	url: 'fldmodel.json'
     },
 
     listeners: {

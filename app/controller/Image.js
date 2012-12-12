@@ -149,7 +149,7 @@ Ext.define('SpWebPortal.controller.Image', {
 		url = store.getProxy().url;
 	    }
 	    url = url.replace("rows="+pageSize, "rows="+this.mainImgStore.pageSize);
-	    url = url.replace("fl=*", "fl="+this.solrImgFl) //XXX instead of cn need to add fields needed for customized image description settings;
+	    url = url.replace("fl=*", "fl="+this.solrImgFl); //XXX instead of cn need to add fields needed for customized image description settings
 	    
 	    //Only remap if url/search has changed. This might not be completely
 	    //safe. Currently Advanced and Express searches will re-execute even url is UN-changed.

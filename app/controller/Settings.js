@@ -71,6 +71,7 @@ Ext.define('SpWebPortal.controller.Settings', {
 		return false;
 	    }
 	}
+	return false;
    },
 
     onSettingsBtnClick: function() {

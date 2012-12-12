@@ -93,7 +93,7 @@ Ext.define('SpWebPortal.store.MainSolrStore', {
 	    result += this.getLatLngFitFilter(lat1Fld, lng1Fld, sw, ne);
 	}
 	if (lat2Fld != null && lng2Fld != null) {
-	    result += this.getLatLngFitFilter(lat2Fld, lng2Fld, sw, ne)
+	    result += this.getLatLngFitFilter(lat2Fld, lng2Fld, sw, ne);
 	}
 	//console.info(result);
 	return result;

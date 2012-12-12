@@ -289,12 +289,12 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	//Messing around with idea to adjust bounds to match the aspect ratio of the map pane, in hopes of preventing
 	//map from duplicating continents when lng bounds are wide
 	//Not easy, I don't think it's really possible for a general fix. It seems the problem is not with the bounds per se,
-	//but the zoom level required to show them. At low zooms duplicating continents is what Google does...
+	//but the zoom level required to show them, and the screen resolution, and more. At low zooms duplicating continents is what Google does...
 	if (bounds == null) {
 	    return null;
 	} else {
 	    var latRat = (bounds.ca.f - bounds.ca.b)/180.0;
-	    var lngRat = (bounds.ea.f - bounds.ea.b)/360.0;s
+	    var lngRat = (bounds.ea.f - bounds.ea.b)/360.0;
 	    var mapPane = this.getMapPane();
 	    var mapRat = mapPane.getWidth() / mapPane.getHeight();
 	    //var llRat =  (bounds.ea.f - bounds.ea.b)/(bounds.ca.f - bounds.ca.b);

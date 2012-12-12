@@ -134,5 +134,6 @@ Ext.define('SpWebPortal.view.AdvancedSearchView', {
 	} else if (solrType == 'tdouble' || solrType == 'int') {
 	    return Ext.getStore('NumericOps');
 	}
+	return Ext.getStore('DateOps');
     }
 });

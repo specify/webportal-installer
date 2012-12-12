@@ -85,7 +85,7 @@ Ext.define('SpWebPortal.controller.Detailer', {
     
     onDetailTabChange: function(tabpanel, newCard) {
 	if (newCard.getXType() == 'spdetailmappanel') {
-	    var pane = tabpanel.up('spdetailpanel')
+	    var pane = tabpanel.up('spdetailpanel');
 	    if (pane != null) {
 		this.fireMapRequest(pane.getRecord(), pane);
 	    }
@@ -308,7 +308,7 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	if (typeof imgWinOwner !== "undefined" && imgWinOwner != null) {
 	    showSpecBtn = imgWinOwner.getXType() != 'spdetailpanel' && imgWinOwner.getXType() != 'spdetailspanel';
 	}
-	var imgPopWin = Ext.create('Ext.window.Window', {
+	imgPopWin = Ext.create('Ext.window.Window', {
 	    id: 'spwp-detail-image-popwin',
 	    title: imgRecord.get('Title'),
 	    height: imgSize + 70,

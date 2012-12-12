@@ -29,7 +29,7 @@ Ext.define('SpWebPortal.view.ImageSingleView', {
 	    region: 'center',
 	    itemid: 'image-panel',
 	    html: this.getImgHtml(),
-	    autoScroll: true,
+	    autoScroll: true
 	});
 
 	var dcmps = [];
@@ -67,6 +67,6 @@ Ext.define('SpWebPortal.view.ImageSingleView', {
     getImgHtml: function() {
 	var src = this.getIsActualSize() ? this.getImageRecord().get('Src') : this.getImageRecord().get('StdSrc');
 	return  '<table class="deadcenter"> <tr><td><img src='+  src + '></td></tr></table>'; //caller will have filled-in the src.
-    },
+    }
 
 });
