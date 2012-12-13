@@ -19,7 +19,9 @@ Ext.define('SpWebPortal.store.MainSolrStore', {
     id: 'mainsolr',
 
     //requires: 'SpWebPortal.model.MainModel',
-
+    requires: [
+        'SpWebPortal.store.SettingsStore'
+    ],
     pageSize: solrPageSize,
     config: {
 	urlTemplate: solrUrlTemplate,

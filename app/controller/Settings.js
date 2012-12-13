@@ -8,7 +8,7 @@ Ext.define('SpWebPortal.controller.Settings', {
     //..localizable text
 
     requires: [
-	'SpWebPortal.view.SettingsView'
+	'SpWebPortal.view.SettingsView', 'SpWebPortal.store.SettingsStore', 'SpWebPortal.store.FieldDefStore'
     ],
 
     init: function() {
