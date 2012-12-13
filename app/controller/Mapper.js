@@ -574,7 +574,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	    }
 	}
 	if (setMapCtl) {
-	    this.mainMapCtl = mapCtl
+	    this.mainMapCtl = mapCtl;
 	    this.getMapPane().setMapCmp(this.mainMapCtl);
 	}
 	return mapCtl;
@@ -613,7 +613,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
 		if (typeof aDom === "undefined") {
 		    mapCtl = this.geWinInitializeEmpty(Ext.getDom('spwpmainmappane'), true);
 		    if (this.mainMapCtl == null) {
-			this.mainMapCtl = mapCtl
+			this.mainMapCtl = mapCtl;
 			this.getMapPane().setMapCmp(this.mainMapCtl);
 		    } 
 		} else {
@@ -950,7 +950,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	    google.maps.event.clearListeners(this.mainMapCtl, 'click');
 	}
 	var cleared = 0;
-	_.each(this.mapMarkers, function(marker) {marker.setMap(null); cleared++});
+	_.each(this.mapMarkers, function(marker) {marker.setMap(null); cleared++;});
 	this.mapMarkers = {};
 	//console.info("   cleared " + cleared);
 	//also clear listeners on markers
