@@ -1040,7 +1040,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	} else {
 	    var marker = new google.maps.Marker({
 		position: point, 
-		map: map,
+		map: map
 		//title: "busted"
 	    });
 	    this.mapMarkers[point.toString()] = marker;

@@ -499,7 +499,7 @@ Ext.define('SpWebPortal.controller.Detailer', {
 
     detailsPopWinShown:  function(showMap) {
 	if (showMap  && (!this.detailsForm.getTabbedLayout() || this.detailsForm.isMapTabActive())) {
-	    var record = this.detailsForm.
+	    var record = this.detailsForm;
 	    this.fireMapRequest(record, this.detailsForm);
 	}
 	this.detailsPopWin.toFront();
