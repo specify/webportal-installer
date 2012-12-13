@@ -233,7 +233,7 @@ Ext.define('SpWebPortal.view.MainGrid', {
     isMappable: function(geoCoord) {
 	if (geoCoord == null) return false;
 	
-	if (typeof geoCoord == "string") return geoCoord.trim() != "";
+	if (typeof geoCoord === "string") return geoCoord.trim() != "";
 	
 	return true;
     },
