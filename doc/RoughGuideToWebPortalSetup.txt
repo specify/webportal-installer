@@ -2,14 +2,13 @@ How to set up a web portal.
 
 
 
-1. If necessary, in Specify, create an Export Mapping. (Work needs to be done to the mapper - remove requirement of a 'concept', allow setting of web portal settings). The ku fish, ento and mammal databases on starling already have mappings created and exported to cache tables. It probably would be a good idea to use them.
+1. If necessary, in Specify, create an Export Mapping. 
 
 
-2. Open the Exporter application. If necessary build or update the cache. Then
- click the Set up Web Portal button. When prompted, choose a directory (preferably empty) to hold the generated files. The app will index the contents of the cache for the selected mapping and generate config files for solr and the webportal app.
+2. Open the Exporter application. If necessary build or update the cache for the portal mapping. Then click the 'Export for Web Portal' button. When prompted, choose a directory (preferably empty) to hold the generated files. The app will index the contents of the cache for the selected mapping and generate config files for solr and the webportal app.
 
 
-3. Set up solr:
+3. Set up solr: (NOTE this has only been tested with solr-3.5.0!!!)
 
    
 	a) locate the example directory. e.g apache-solr-3.5.0/example
@@ -24,41 +23,61 @@ How to set up a web portal.
 4. To start solr, from the example directory, execute:
 java -jar -Djetty.port=443 start.jar
 
+5. (NOTE: need to minify and otherwise improve deployment.) If necessary, copy the web portal app directory PortalApp/ to the apache html directory. In linux this usually is /var/www/html/. The PortalApp/ dir can be found at BITEME/WebPortal. 
+
+6. If necessary, change the settings in the file PortalApp/resources/config/settings.json. 
+
+7. Copy the .json file generated in step 2 to PortalApp/resources/config/fldmodel.json
 
 
-5. If necessary, copy the contents of the web portal app directory spwp/ to the apache html directory. In linux this usually is /var/www/html/. The spwp/ dir can be found at BITEME/WebPortal.
-6. If necessary, change the settings in the file resources/config/settings.json. The settings currently available are: solrUrl, solrPort, solrCore, solrPageSize, and imageBaseUrl.
-7. Copy the .json file generated in step 2 to spwp/resources/config/fldmodel.json
-
-
-8. See if it's working by opening localhost/spwp/index.html in a web browser.
+8. See if it's working by opening localhost/PortalApp/index.html in a web browser.
 
 
 
  
 
 
-Configuration.
+Configuration:
 
 The fldmodel.json file created in step 7 contains information about the fields selected for the portal. Each field has the following settings:
 
-colname: The name of the column in the specify cache. DO NOT EDIT! 
-solrname: The name of the column in the solr index. DO NOT EDIT! 
-solrtitle: ? DO NOT EDIT! 
-title: The title for the field displayed in column headers, forms etc.
+colname: The name of the column in the specify cache. 	      DO NOT EDIT!      
+solrname: The name of the column in the solr index. 	      DO NOT EDIT! 
+solrtype: the solr data type.	 DO NOT EDIT!
+solrtitle: ?  DO NOT EDIT! 
+title: The title for the field displayed in column headers, forms etc.		Optional
 type: the data type. DO NOT EDIT! 
 width: the length of text flds. DO NOT EDIT! 
-concept: the name of the concept the field is mapped to.
-concepturl: the concept's url.
+concept: the name of the concept the field is mapped to.		Optional
+concepturl: the concept's url.	     Optional
 sptable: the name of the field's table in the specify db. DO NOT EDIT! 
 sptabletitle: the sptable's title. 
-spfld: the name of the field in the specify database}, DO NOT EDIT! 
+spfld: the name of the field in the specify database, DO NOT EDIT! 
 spfldtitle: the spfld's title.
 spdescription: the spfld's description
 colidx: the position of the field in the specify cache. DO NOT EDIT! 
-advancedsearch: If this setting is true the field will be available in the advanced-search interface. (boolean, defaultvalue: true)
-displaycolidx:  the position of the field in the results display table, and the detail form view.
-hiddenbydefault: If this setting is true then the field will not be initially displayed in the results view, though it can be made visible by clicking on a column header in the results view and choosing 'Columns'. type: 'boolean', defaultvalue: false},
-displayinmap: If true the field will displayed in the info window in Google maps views. (type: boolean, defaultvalue: true)
-mapmarkertitle: If true the field will appear in the label for points in Google maps views. (type: boolean, defaultvalue: false
+advancedsearch: If this setting is true the field will be available in the advanced-search interface. (boolean, defaul: true)  Optional
+displaycolidx:  the default initial position of the field in the results display table, and the detail form view.
+displaywidth: the default initial width in pixels of the field in the results display table. (default: 100)	Optional
+hiddenbydefault: If this setting is true then the field will not be initially displayed in the results view, though it can be made visible by clicking on a column header in the results view and choosing 'Columns'. type: 'boolean', default: false  Optional
+treeid: For geographic or taxonomic data, this field holds the name of the tree.	DO NOT EDIT!
+treerank: For geography or taxonomic data, this field holds the numeric rank of the field. DO NOT EDIT!
+
+
+The settings.json file located in PortalApp/resources/config/ contains settings configure the urls, images, and layout of the web portal.
+
+portalInstance: This uniquely identifies the instance of the portal.   DO NOT EDIT!
+solrURL: The url of the solr server.
+solrPort: The port the solr server is using.
+solrPageSize: The default initial results page size returned from solr.
+maxSolrPageSize: The highest page size allowable in the portal. Settings above 5000 can lead very poor performance.
+imageBaseUrl: The url if the image server
+imagePreviewSize: The height and width of the (square) images displayed in Image preview views. Default: 200 (The height and width for *.tv-thumb should be set to about 7 px greater than this setting in resources/css/thumb-view.css) 
+imageViewSize: The height and width of images in image view windows. Default: 500 (Set to -1 for actual size).
+backgroundURL: The url for the background image displayed for the app's entry screen. Default: resources/images/specify128.png
+bannerURL: The url displayed in upper left corner of the portal window. 
+bannerTitle: The title displayed above the banner image.
+bannerHeight: the height of the banner image.
+bannerWidth: the width of the banner image.
+imageInfoFlds: the solrnames of the fields that are displayed when the mouse is moved over images in preview views. The fields are separated by spaces. They are displayed on lines ordered from top to bottom in the order listed.
 
