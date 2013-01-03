@@ -1,3 +1,4 @@
+"use strict";
 /*
 * SpWebPortal.view.ImageView
 *
@@ -70,7 +71,8 @@ Ext.define('SpWebPortal.view.ImageView', {
 	this.setPreviewSize(settings.get('imagePreviewSize'));
 	this.setViewSize(settings.get('imageViewSize'));
 
-	this.callParent(arguments);
+	//this.callParent(arguments);
+	this.superclass.initComponent.apply(this, arguments);
     },
 
     initImgDescFlds: function(fldStr) {
@@ -199,13 +201,15 @@ Ext.define('SpWebPortal.view.ImageView', {
 	    };
 	}
 	this.waitingForImgUrl = true;
+	//console.info("sending jquery ajax request " + url);
 	try {
             $.ajax({
                 url: url,
                 data: params,
 		context: this,
+		crossDomain: true,
                 success: function(src) {
-                    //console.info("JQUERY to the rescue!");
+                    console.info("JQUERY to the rescue!");
 		    if (!addToStore) {
 			img.set(srcFld, src);
 		    } else {
@@ -227,10 +231,14 @@ Ext.define('SpWebPortal.view.ImageView', {
 		    if (typeof callbackFn !== "undefined" && callbackFn != null) {
 			callbackFn(img, callbackArgs);
 		    }                
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+		    console.info("jquery ajax error: " + textStatus + ", " + errorThrown);
 		}
 	    });
 	} catch(e) {
 	    //IF POSSIBLE just catch and ignore the cross domain header issue for now
+	    console.log(e);
 	}
 	//while (Ext.Ajax.isLoading(req));
 	//return this.imgServerResponse;

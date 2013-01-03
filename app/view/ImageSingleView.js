@@ -1,3 +1,5 @@
+"use strict";
+
 Ext.define('SpWebPortal.view.ImageSingleView', {
     extend: 'Ext.panel.Panel',
     xtype: 'spimagesingleview',
@@ -61,7 +63,8 @@ Ext.define('SpWebPortal.view.ImageSingleView', {
 	this.items = cmps;
 	this.dockedItems = dcmps;
 	
-	this.callParent(arguments);
+	//this.callParent(arguments);
+	this.superclass.initComponent.apply(this, arguments);
     },
 
     getImgHtml: function() {

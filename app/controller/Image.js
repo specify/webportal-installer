@@ -1,3 +1,4 @@
+"use strict";
 
 Ext.define('SpWebPortal.controller.Image', {
     extend: 'Ext.app.Controller',
@@ -28,7 +29,8 @@ Ext.define('SpWebPortal.controller.Image', {
 	    }
 	});
 
-	this.callParent(arguments);
+	//this.callParent(arguments);
+	this.superclass.init.apply(this, arguments);
     },
 
     onSelectionChange: function(dv, nodes) {

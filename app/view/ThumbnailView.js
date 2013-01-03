@@ -1,3 +1,4 @@
+"use strict";
 /*
  * SpWebPortal.view.ThumbnailView
  *
@@ -47,7 +48,8 @@ Ext.define('SpWebPortal.view.ThumbnailView', {
 	    ]
 	});
 
-	this.callParent(arguments);
+//	this.callParent(arguments);
+	this.superclass.initComponent.apply(this, arguments);
     }
 		 
 });
