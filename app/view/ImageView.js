@@ -209,7 +209,7 @@ Ext.define('SpWebPortal.view.ImageView', {
 		context: this,
 		crossDomain: true,
                 success: function(src) {
-                    console.info("JQUERY to the rescue!");
+                    //console.info("JQUERY to the rescue!");
 		    if (!addToStore) {
 			img.set(srcFld, src);
 		    } else {
