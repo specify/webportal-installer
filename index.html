@@ -9,6 +9,40 @@
       This site requires JavaScript.
     </noscript>
 
+    <Script Language="JavaScript">
+      // Browserdetectionscript made by Henrik Petersen / NetKontoret
+      // Script explained at www.echoecho.com/javascript.htm
+      // Please do not remove this and the two lines above.
+      // Detect the browsername
+      var browsername=navigator.appName;
+      if (browsername.indexOf("Microsoft")!=-1) {
+      browsername="MSIE";
+      }
+      else {
+      browsername="N/A";
+      }
+      
+      //detect the browserversion
+      var browserversion="0";
+      if (navigator.appVersion.indexOf("2.")!=-1) {browserversion="2";}
+      if (navigator.appVersion.indexOf("3.")!=-1) {browserversion="3";}
+      if (navigator.appVersion.indexOf("4.")!=-1) {browserversion="4";}
+      if (navigator.appVersion.indexOf("5.")!=-1) {browserversion="5";}
+      if (navigator.appVersion.indexOf("6.")!=-1) {browserversion="6";}
+      if (navigator.appVersion.indexOf("7.")!=-1) {browserversion="7";}
+      if (navigator.appVersion.indexOf("8.")!=-1) {browserversion="8";}
+      if (navigator.appVersion.indexOf("9.")!=-1) {browserversion="9";}
+      if (navigator.appVersion.indexOf("10.")!=-1) {browserversion="10";}
+      
+      // Send visitor to relevant pages
+      if (browsername=="MSIE" && browserversion < 8) {
+		window.location="UpgradeIE.html";
+      }
+			   
+			   
+
+    </script>
+
     <link rel="stylesheet" type="text/css" href="extjs/resources/css/ext-all.css">
     <!--link rel="stylesheet" type="text/css" href="extjs/resources/css/ext-all-gray.css"-->
 
@@ -20,8 +54,8 @@
 
 
     <script type="text/javascript" src="extjs/bootstrap.js"></script>
-    <script type="text/javascript" src="../../underscore-min.js"></script>
-    <script type="text/javascript" src="../../jquery-1.8.1.min.js"></script>
+    <script type="text/javascript" src="../underscore-min.js"></script>
+    <script type="text/javascript" src="../jquery-1.8.1.min.js"></script>
     <script type="text/javascript" src="xdr.js"></script>
 
     <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDYHJjsVAniNFUxSZnIO6pyVBxBqRt9gmw&sensor=false"></script>
