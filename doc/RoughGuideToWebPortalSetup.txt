@@ -21,7 +21,7 @@ How to set up a web portal.
    
 
 4. To start solr, from the example directory, execute:
-java -jar -Djetty.port=443 start.jar
+java -jar -Djetty.port=443 start.jar (in some cases it might be necessary to use sudo to run this command)
 
 5. (NOTE: need to minify and otherwise improve deployment.) If necessary, copy the web portal app directory PortalApp/ to the apache html directory. In linux this usually is /var/www/html/. The PortalApp/ dir can be found at BITEME/WebPortal. 
 
@@ -68,16 +68,16 @@ The settings.json file located in PortalApp/resources/config/ contains settings 
 
 portalInstance: This uniquely identifies the instance of the portal.   DO NOT EDIT!
 solrURL: The url of the solr server.
-solrPort: The port the solr server is using.
+solrPort: The port the solr server is using. 
 solrPageSize: The default initial results page size returned from solr.
-maxSolrPageSize: The highest page size allowable in the portal. Settings above 5000 can lead very poor performance.
-imageBaseUrl: The url if the image server
-imagePreviewSize: The height and width of the (square) images displayed in Image preview views. Default: 200 (The height and width for *.tv-thumb should be set to about 7 px greater than this setting in resources/css/thumb-view.css) 
+maxSolrPageSize: The highest page size allowable in the portal. Settings above 5000 can lead to very poor performance.
+imageBaseUrl: The url of the image server
+imagePreviewSize: The height and width of the (square) images displayed in Image preview views. Default: 200 (In the file resources/css/thumb-view.css, the height and width for *.tv-thumb should be set to about 7 px greater than this setting.) 
 imageViewSize: The height and width of images in image view windows. Default: 500 (Set to -1 for actual size).
 backgroundURL: The url for the background image displayed for the app's entry screen. Default: resources/images/specify128.png
 bannerURL: The url displayed in upper left corner of the portal window. 
 bannerTitle: The title displayed above the banner image.
 bannerHeight: the height of the banner image.
 bannerWidth: the width of the banner image.
-imageInfoFlds: the solrnames of the fields that are displayed when the mouse is moved over images in preview views. The fields are separated by spaces. They are displayed on lines ordered from top to bottom in the order listed.
+imageInfoFlds: the solrnames of the fields that are displayed when the mouse is moved over images in preview views. The fields are separated by spaces. In the portal they are displayed on separate lines (one field to a line) ordered from top to bottom in the order listed.
 
