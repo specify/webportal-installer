@@ -75,7 +75,7 @@ imageBaseUrl: The url of the image server
 imagePreviewSize: The height and width of the (square) images displayed in Image preview views. Default: 200 (In the file resources/css/thumb-view.css, the height and width for *.tv-thumb should be set to about 7 px greater than this setting.) 
 imageViewSize: The height and width of images in image view windows. Default: 500 (Set to -1 for actual size).
 backgroundURL: The url for the background image displayed for the app's entry screen. Default: resources/images/specify128.png
-bannerURL: The url displayed in upper left corner of the portal window. 
+bannerURL: The url for the image displayed in upper left corner of the portal window. 
 bannerTitle: The title displayed above the banner image.
 bannerHeight: the height of the banner image.
 bannerWidth: the width of the banner image.
