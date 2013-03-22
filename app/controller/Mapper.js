@@ -512,7 +512,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
     detailMapRequest: function(record, aDom, aMapPane) {
 	var rec = [];
 	rec[0] = record;
-	var map = this.buildMap(rec, this.geoCoordFlds, this.fldsOnMap, this.mapMarkTitleFld, false, aDom); 
+	var map = this.buildMap(rec, this.geoCoordFlds, this.fldsOnMap, this.mapMarkTitleFld, true, aDom); 
 	if (typeof aMapPane !== "undefined" && aMapPane != null) {
 	    aMapPane.setMapCtl(map);
 	}
