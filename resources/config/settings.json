@@ -1,7 +1,7 @@
 [{
-    "solrURL": "http://129.237.201.94",
+    "solrURL": "http://127.0.0.1",
     "solrPort": "8983",
-    "solrCore": "solr/core6",
+    "solrCore": "solr",
     "solrPageSize": 50,
     "maxSolrPageSize": 5000,
     "imagePreviewSize": 200, //when this setting is changed, the height and width for *.tv-thumb should be set to about 7 px greater than this setting in resources/css/thumb-view.css
