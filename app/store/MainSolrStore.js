@@ -12,7 +12,7 @@ var solrPort = settings.get('solrPort');
 var solrPageSize = settings.get('solrPageSize');
 var maxPageSizeSetting = settings.get('maxSolrPageSize');
 var solrCore = settings.get('solrCore');
-var solrUrlTemplate = solrURL + ':' + solrPort + '/' + (solrCore ? solrCore + '/': '') + 'select?indent=on&version=2.2&fq=&rows=' + solrPageSize + '&fl=*%2Cscore&qt=&wt=json&explainOther=&hl.fl=&q=';
+var solrUrlTemplate = solrURL + ':' + solrPort + '/' + (solrCore  ? solrCore + '/': '') + 'select?indent=on&version=2.2&fq=&rows=' + solrPageSize + '&fl=*%2Cscore&qt=&wt=json&explainOther=&hl.fl=&q=';
 
 Ext.define('SpWebPortal.store.MainSolrStore', {
     extend: 'Ext.data.Store',
@@ -104,7 +104,7 @@ Ext.define('SpWebPortal.store.MainSolrStore', {
     changePageSize: function(newPageSize) {
 	if (newPageSize > 0 && newPageSize <= this.getMaxPageSize() && newPageSize != this.pageSize) {
 	    this.pageSize = newPageSize;
-	    var newTemplate = solrURL + ':' + solrPort + '/' + solrCore + '/select?indent=on&version=2.2&fq=&rows=' + newPageSize + '&fl=*%2Cscore&qt=&wt=json&explainOther=&hl.fl=&q=';
+	    var newTemplate = solrURL + ':' + solrPort + '/' + (solrCore  ? solrCore + '/': '') + 'select?indent=on&version=2.2&fq=&rows=' + solrPageSize + '&fl=*%2Cscore&qt=&wt=json&explainOther=&hl.fl=&q=';
 	    this.proxy.url = this.proxy.url.replace(this.urlTemplate, newTemplate);
 	    this.urlTemplate = newTemplate;
 	    solrUrlTemplate = newTemplate;
