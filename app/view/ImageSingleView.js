@@ -12,8 +12,8 @@ Ext.define('SpWebPortal.view.ImageSingleView', {
     specimenBtnTip: 'View specimen(s) associated with this image',
     imageDetailBtnTxt: 'Image Details',
     imageDetailBtnTip: 'View image details',
-    viewActualBtnText: 'Actual size',
-    viewStdBtnText: 'Standard size',
+    viewActualBtnText: 'Standard size',
+    viewStdBtnText: 'Actual size',
     viewActualBtnTip: 'Click to view standard size',
     viewStdBtnTip: 'Click to view actual size',
     //...localizable text
@@ -55,7 +55,8 @@ Ext.define('SpWebPortal.view.ImageSingleView', {
 		    xtype: 'button',
 		    text: this.imageDetailBtnTxt,
 		    tooltip: this.imageDetailBtnTip,
-		    id: 'spwp-img-single-imagedetailbtn'
+		    id: 'spwp-img-single-imagedetailbtn',
+		    hidden: true
 		}
 	    ]
 	});

@@ -46,8 +46,8 @@ Ext.define("SpWebPortal.locale.se.view.ImageSingleView", {
     specimenBtnTip: 'View specimen(s) associated with this image',
     imageDetailBtnTxt: 'Image Details',
     imageDetailBtnTip: 'View image details',
-    viewActualBtnText: 'Actual size',
-    viewStdBtnText: 'Standard size',
+    viewActualBtnText: 'Standard size',
+    viewStdBtnText: 'Actual size',
     viewActualBtnTip: 'Click to view standard size',
     viewStdBtnTip: 'Click to view actual size'
 });
