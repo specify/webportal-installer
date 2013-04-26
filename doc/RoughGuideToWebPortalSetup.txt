@@ -25,7 +25,7 @@ How to set up a web portal.
 
     	   Change <copyField source="price" dest="price_c"/>  to <!--<copyField source="price" dest="price_c"/>-->
 
-    	   Change <copyField source="title" dest="text"/> to <!--<copyField source="title" dest="text"/>
+    	   Change <copyField source="title" dest="text"/> to <!--<copyField source="title" dest="text"/>-->
 
     	   Change <copyField source="url" dest="text"/> to <!--<copyField source="url" dest="text"/>-->
 
