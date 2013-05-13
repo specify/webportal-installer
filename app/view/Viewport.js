@@ -149,21 +149,11 @@ var topMarginLeft = settings.get('topMarginLeft') ? settings.get('topMarginLeft'
 var topMarginRight = settings.get('topMarginRight') ? settings.get('topMarginRight') : 'auto';
 var topWidth = settings.get('topWidth') ? settings.get('topWidth') : 950;
 
-//console.info(stuffOnTop);
-
 var stuffAtTheBottom = settings.get('bottomBranding');
 var bottomHeight = settings.get('bottomHeight') ? settings.get('bottomHeight') : 100;
 var bottomMarginLeft = settings.get('bottomMarginLeft') ? settings.get('bottomMarginLeft') : 'auto';
 var bottomMarginRight = settings.get('bottomMarginRight') ? settings.get('bottomMarginRight') : 'auto';
 var bottomWidth = settings.get('bottomWidth') ? settings.get('bottomWidth') : 950;
-console.info(topHeight);
-console.info(topMarginLeft);
-console.info(topMarginRight);
-console.info(topWidth);
-console.info(bottomHeight);
-console.info(bottomMarginLeft);
-console.info(bottomMarginRight);
-console.info(bottomWidth);
 
 
 	this.items = [
@@ -284,7 +274,7 @@ console.info(bottomWidth);
 		    style: {
 			marginLeft: bottomMarginLeft,
 			marginRight: bottomMarginRight,
-			width: bottomWidth,
+			width: bottomWidth
 		    },
 		    html: stuffAtTheBottom
 		}
