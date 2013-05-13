@@ -284,7 +284,16 @@ bannerTitle: The title displayed above the banner image.
 bannerHeight: the height of the banner image.
 bannerWidth: the width of the banner image.
 imageInfoFlds: the solrnames of the fields that are displayed when the mouse is moved over images in preview views. The fields are separated by spaces. In the portal they are displayed on separate lines (one field to a line) ordered from top to bottom in the order listed.
-
+topBranding: html describing customized area above the portal application window.
+topHeight: height in pixels of the topBranding area.
+topMarginLeft: css setting for topBranding content.
+topMarginRight: css setting for topBranding content.
+topWidth: width in pixels of topBranding content.
+bottomBranding: html describing customized area below the portal application window.
+bottomHeight: height in pixels of the bottomBranding area.
+bottomMarginLeft: css setting for bottomBranding content.
+bottomMarginRight: css setting for bottomBranding content.
+bottomWidth: width in pixels of bottomBranding content.
 
 
 ###################################################################

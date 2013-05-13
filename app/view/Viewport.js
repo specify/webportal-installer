@@ -39,6 +39,7 @@ Ext.define('SpWebPortal.view.Viewport', {
     banner: null,
     background: null,
     resultsTab: null,
+    cls: "content",
 
 
     initComponent: function () {
@@ -140,7 +141,31 @@ Ext.define('SpWebPortal.view.Viewport', {
 		}
 	    ]
 	});
-	    
+
+
+var stuffOnTop = settings.get('topBranding');
+var topHeight = settings.get('topHeight') ? settings.get('topHeight') : 118;
+var topMarginLeft = settings.get('topMarginLeft') ? settings.get('topMarginLeft') : 'auto';
+var topMarginRight = settings.get('topMarginRight') ? settings.get('topMarginRight') : 'auto';
+var topWidth = settings.get('topWidth') ? settings.get('topWidth') : 950;
+
+//console.info(stuffOnTop);
+
+var stuffAtTheBottom = settings.get('bottomBranding');
+var bottomHeight = settings.get('bottomHeight') ? settings.get('bottomHeight') : 100;
+var bottomMarginLeft = settings.get('bottomMarginLeft') ? settings.get('bottomMarginLeft') : 'auto';
+var bottomMarginRight = settings.get('bottomMarginRight') ? settings.get('bottomMarginRight') : 'auto';
+var bottomWidth = settings.get('bottomWidth') ? settings.get('bottomWidth') : 950;
+console.info(topHeight);
+console.info(topMarginLeft);
+console.info(topMarginRight);
+console.info(topWidth);
+console.info(bottomHeight);
+console.info(bottomMarginLeft);
+console.info(bottomMarginRight);
+console.info(bottomWidth);
+
+
 	this.items = [
 	    {
 		xtype: 'panel',
@@ -223,6 +248,48 @@ Ext.define('SpWebPortal.view.Viewport', {
 		]
 	    }
 	];
+	if (stuffOnTop) {
+	    this.items.push({
+		xtype: 'panel',
+		region: 'north',
+		border: false,
+		bodyStyle: 'background:none',
+		height: topHeight,
+		items: {
+		    xtype: 'box',
+		    id: "page",
+		    cls: "container",
+		    style: {
+			marginLeft: topMarginLeft,
+			marginRight: topMarginRight,
+			width: topWidth
+		    },
+		    html: stuffOnTop
+		}
+	    });
+	}
+	if (stuffAtTheBottom) {
+	    this.items.push(
+	    {
+		xtype: 'panel',
+		region: 'south',
+		border: false,
+		bodyStyle: 'background:none',
+		height: bottomHeight,
+		items: {
+		    xtype: 'box',
+		    id: 'footer',
+		    cls:'container',
+		    height: bottomHeight ? bottomHeight : 100,
+		    style: {
+			marginLeft: bottomMarginLeft,
+			marginRight: bottomMarginRight,
+			width: bottomWidth,
+		    },
+		    html: stuffAtTheBottom
+		}
+	    });
+	}
 	this.callParent(arguments);
     }
 });
