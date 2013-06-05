@@ -33,7 +33,7 @@ How to set up a web portal.
 
 	g) Make the following changes to the file example/solr/collection1/conf/solrconfig:
 
-  * <requestHandler name="/select" class="solr.SearchHandler">
+  <requestHandler name="/select" class="solr.SearchHandler">
     <!-- default values for query parameters can be specified, these
          will be overridden by parameters in the request
       -->
@@ -43,7 +43,7 @@ How to set up a web portal.
        <str name="df">text</str>
      </lst>
  
-change <str name="df">text</str> to str name="df">cs</str>
+* change <str name="df">text</str> to str name="df">cs</str> in the block above.
 
 
 
