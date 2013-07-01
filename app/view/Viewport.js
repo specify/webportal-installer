@@ -88,6 +88,8 @@ Ext.define('SpWebPortal.view.Viewport', {
 	mapCancelBtn.setVisible(false);
 	
 	var settings = Ext.getStore('SettingsStore').getAt(0);
+	var attUrl = settings.get("imageBaseUrl");
+	var attachmentsPresent = typeof attUrl === "string" && attUrl.length > 0;  
 
 	this.banner = Ext.create('Ext.panel.Panel', {
 	    html: '<table class="deadcenter"> <tr><td><img src='+  settings.get('bannerURL') + '></td></tr></table>',
@@ -132,7 +134,8 @@ Ext.define('SpWebPortal.view.Viewport', {
 		{
 		    xtype: 'spimageview',
 		    id: 'spwpmainimageview',
-		    title: this.imagesTitle
+		    title: this.imagesTitle,
+		    hidden: !attachmentsPresent
 		},
 		{
 		    xtype: 'spmapview',
@@ -204,7 +207,8 @@ var bottomWidth = settings.get('bottomWidth') ? settings.get('bottomWidth') : 95
 					//tooltip: this.imagesCheckBoxTip, //checkboxes don't have tooltip config
 					name: 'Images',
 					itemid: 'req-img-ctl',
-					checked: false
+					checked: false,
+					hidden: !attachmentsPresent
 				    },
 				    {
 					xtype: 'checkbox',

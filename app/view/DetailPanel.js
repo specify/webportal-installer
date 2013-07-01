@@ -34,6 +34,10 @@ Ext.define('SpWebPortal.view.DetailPanel', {
 
 	var cmps = [];
 
+	var settings = Ext.getStore('SettingsStore').getAt(0);
+	var attUrl = settings.get("imageBaseUrl");
+	this.setShowImages(typeof attUrl === "string" && attUrl.length > 0);  
+
 	if (this.getTabbedLayout()) {
 	    cmps[0] = Ext.create('Ext.tab.Panel', {
 		layout: 'fit',
@@ -43,7 +47,8 @@ Ext.define('SpWebPortal.view.DetailPanel', {
 		    Ext.widget('spdetail', {title: this.specTabTitle}),
 		    {
 			xtype: 'spimageview',
-			title: this.imgTabTitle
+			title: this.imgTabTitle,
+			hidden: !this.getShowImages()
 		    },
 		    {
 			xtype: 'spdetailmappanel',
@@ -115,7 +120,7 @@ Ext.define('SpWebPortal.view.DetailPanel', {
 	var imgView = this.down('spimageview');
 	var imgStore = imgView.getImageStore();
 	imgStore.removeAll();
-	var imagesPresent = imgView.addImgForSpecRec(record) > 0;
+	var imagesPresent = imgView.addImgForSpecRec(record) > 0 && this.getShowImages();
 	if (this.getTabbedLayout()) {
 	    this.getImgTab().tab.setVisible(imagesPresent);
 	    this.getMapTab().tab.setVisible(this.getShowMap() && this.isMapped(record));
@@ -130,7 +135,7 @@ Ext.define('SpWebPortal.view.DetailPanel', {
 		if (!imgMapView.getCollapsed()) {
 		    imgMapView.collapse();
 		}
-	    } else if (imgMapView.getCollapsed()) {
+	    } else if (imagesPresent && imgMapView.getCollapsed()) {
 		//print msg in title for now
 		imgMapView.setTitle("expand to view image(s)");
 	    }

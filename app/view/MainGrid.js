@@ -16,7 +16,7 @@ Ext.define('SpWebPortal.view.MainGrid', {
 	showMapAction: false, //Dropping the map action item just indicating presence/absence of coords with icon, details btn displays map
 	isDetail: false,
 	geoCoordFlds: [],
-	imgFld: null
+	showImgBtn: true
     },
 
     isGeoCoordFld: function(coldef) {
@@ -90,6 +90,9 @@ Ext.define('SpWebPortal.view.MainGrid', {
 
     initComponent: function() {
 	//console.info('MainGrid initComponent()');
+	var settings = Ext.getStore('SettingsStore').getAt(0);
+	var attUrl = settings.get("imageBaseUrl");
+	this.setShowImgBtn(typeof attUrl === "string" && attUrl.length > 0);  
 	var fieldStore = Ext.getStore('FieldDefStore');
 	var tblCols = [];
 	tblCols[0] = Ext.create('Ext.grid.RowNumberer', {width: 30, resizable: true});
@@ -252,7 +255,7 @@ Ext.define('SpWebPortal.view.MainGrid', {
     },
     
     renderImgPresCol: function(value, grid, record) {
-	if (this.hasImg(value, grid, record)) {
+	if (this.getShowImgBtn() && this.hasImg(value, grid, record)) {
 	    return  '<img src="resources/images/ImageWindow20x20.png" height="12" width="12">';
 	} else {
 	    return "";
