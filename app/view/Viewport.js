@@ -160,7 +160,7 @@ Ext.define('SpWebPortal.view.Viewport', {
 	var bottomMarginLeft = settings.get('bottomMarginLeft') ? settings.get('bottomMarginLeft') : 'auto';
 	var bottomMarginRight = settings.get('bottomMarginRight') ? settings.get('bottomMarginRight') : 'auto';
 	var bottomWidth = settings.get('bottomWidth') ? settings.get('bottomWidth') : 950;
-	var sideItems = 		items: [
+	var sideItems = [
 	    this.banner,
 	    {
 		xtype: 'panel',
