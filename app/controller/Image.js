@@ -16,20 +16,25 @@ Ext.define('SpWebPortal.controller.Image', {
     mainImgRecords: [],
 
     init: function() {
-	this.control({
-	    'thumbnail': {
-		selectionchange: this.onSelectionChange
-	    },
-	    '#spwpmainpagingtoolbar': {
-		change: this.onPageChange
-	    },
-	    '#spwpmaintabpanel': {
-		tabchange: this.onTabChange
-		//dosearch: this.onDoSearch
-	    }
-	});
+	var settings = Ext.getStore('SettingsStore').getAt(0);
+	var attUrl = settings.get("imageBaseUrl");
+	var attachmentsPresent = typeof attUrl === "string" && attUrl.length > 0;  
 
-	//this.callParent(arguments);
+	if (attachmentsPresent) {
+	    this.control({
+		'thumbnail': {
+		    selectionchange: this.onSelectionChange
+		},
+		'#spwpmainpagingtoolbar': {
+		    change: this.onPageChange
+		},
+		'#spwpmaintabpanel': {
+		    tabchange: this.onTabChange
+		    //dosearch: this.onDoSearch
+		}
+	    });
+	}
+
 	this.superclass.init.apply(this, arguments);
     },
 

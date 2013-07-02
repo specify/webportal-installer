@@ -32,7 +32,8 @@ Ext.define('SpWebPortal.view.ImageView', {
 	viewSize: 500,
 	imgServerResponse: null,
 	imgServerError: null,
-	imgDescriptionFlds: null
+	imgDescriptionFlds: null,
+	collectionName: null
     },
 
     initComponent: function() {
@@ -70,6 +71,7 @@ Ext.define('SpWebPortal.view.ImageView', {
 	this.setBaseUrl(settings.get('imageBaseUrl'));
 	this.setPreviewSize(settings.get('imagePreviewSize'));
 	this.setViewSize(settings.get('imageViewSize'));
+	this.setCollectionName(settings.get('collectionName'));
 
 	//this.callParent(arguments);
 	this.superclass.initComponent.apply(this, arguments);
@@ -149,16 +151,12 @@ Ext.define('SpWebPortal.view.ImageView', {
 	if (imgJson != null && imgJson != '') {
 	    var imgs = Ext.JSON.decode(imgJson);
 	    for (var i = 0; i < imgs.length; i++) {
-		this.getImgSrc(imgs[i]['AttachmentLocation'], this.getPreviewSize(), 'KUFishvoucher', 'ThumbSrc', imgs[i], true);
-		//this.getImgSrc(imgs[i]['AttachmentLocation'], null, 'KUFishvoucher', false, imgs[i]);
+		this.getImgSrc(imgs[i]['AttachmentLocation'], this.getPreviewSize(), this.getCollectionName(), 'ThumbSrc', imgs[i], true);
 		Ext.apply(imgs[i], {
 		    AttachedTo: attachedTo,
 		    AttachedToDescr: attachedToDescr
-		    //ThumbSrc: this.getImgSrc(imgs[i]['AttachmentLocation'], this.getPreviewSize(), 'KUFishvoucher'),
-		    //Src: this.getImgSrc(imgs[i]['AttachmentLocation'], null, 'KUFishvoucher')
 		});
 	    }
-	    //this.getImageStore().add(imgs);
 	    return imgs.length;
 	} else {
 	    return 0;
@@ -167,23 +165,9 @@ Ext.define('SpWebPortal.view.ImageView', {
 
 
     getImgSrc: function(fileName, scale, coll, srcFld, img, addToStore, callbackFn, callbackArgs) {
-	//var url = this.getBaseUrl() + '/getfileref.php?coll=' + coll + '&type=O&filename=' + fileName + '&scale=' + scale;
 	var url = this.getBaseUrl() + '/getfileref.php';
 	this.imgServerResponse = null;
 	this.imgServerError = null;
-	/*$.ajax({url: url,
-		type: "GET",
-		params:  {
-		    coll: coll,
-		    type: 0,
-		    filename: fileName,
-		    scale: scale
-		}
-
-	       }).done(function(data) {
-		   console.info("boxleyed");
-	       });
-	*/
 	Ext.Ajax.method = 'GET';
 	var params;
 	if (scale != null && scale > 0) {
@@ -240,14 +224,6 @@ Ext.define('SpWebPortal.view.ImageView', {
 	    //IF POSSIBLE just catch and ignore the cross domain header issue for now
 	    console.log(e);
 	}
-	//while (Ext.Ajax.isLoading(req));
-	//return this.imgServerResponse;
-
-	/*if (scale != null) {
-	    return "http://boxley.nhm.ku.edu/specifyassets/Ichthyology/originals/" + fileName.replace('.jpg', '_' + scale + '.jpg');
-	} else {
-	    return "http://boxley.nhm.ku.edu/specifyassets/Ichthyology/originals/" + fileName;
-	}*/
 
     }
 

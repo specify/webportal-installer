@@ -8,6 +8,7 @@ Ext.define('SpWebPortal.model.SettingsModel', {
 	{name: 'solrPageSize', type: 'int', defaultValue: 50},
 	{name: 'maxSolrPageSize', type: 'int', defaultValue: 5000},
 	{name: 'imageBaseUrl', type: 'string'},
+	{name: 'collectionName', type: 'string'},
 	{name: 'imagePreviewSize', type: 'int', defaultValue: 200},  //when this setting is changed in settings.json, the height and width for *.tv-thumb should be set to about 7 px greater than this setting in resources/css/thumb-view.css
 	{name: 'imageViewSize', type: 'int', defaultValue: 500}, //<= 0 for actual size
 	{name: 'defInitialView', type: 'string', defaultValue: 'grid'},
