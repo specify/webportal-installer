@@ -90,13 +90,16 @@ Ext.define('SpWebPortal.view.Viewport', {
 	var settings = Ext.getStore('SettingsStore').getAt(0);
 	var attUrl = settings.get("imageBaseUrl");
 	var attachmentsPresent = typeof attUrl === "string" && attUrl.length > 0;  
-
-	this.banner = Ext.create('Ext.panel.Panel', {
-	    html: '<table class="deadcenter"> <tr><td><img src='+  settings.get('bannerURL') + '></td></tr></table>',
-	    id: 'spwpbannerpanel',
-	    height: settings.get('bannerHeight'),
-	    region: 'north'
-	});
+	
+	var bannerURL = settings.get('bannerURL');
+	if (bannerURL) {
+	    this.banner = Ext.create('Ext.panel.Panel', {
+		html: '<table class="deadcenter"> <tr><td><img src='+  settings.get('bannerURL') + '></td></tr></table>',
+		id: 'spwpbannerpanel',
+		height: settings.get('bannerHeight'),
+		region: 'north'
+	    });
+	}
 
 	this.background = Ext.create('Ext.panel.Panel', {
 	    html: '<table class="deadcenter"> <tr><td><img src='+  Ext.getStore('SettingsStore').getAt(0).get('backgroundURL') + '></td></tr></table>',
@@ -146,18 +149,83 @@ Ext.define('SpWebPortal.view.Viewport', {
 	});
 
 
-var stuffOnTop = settings.get('topBranding');
-var topHeight = settings.get('topHeight') ? settings.get('topHeight') : 118;
-var topMarginLeft = settings.get('topMarginLeft') ? settings.get('topMarginLeft') : 'auto';
-var topMarginRight = settings.get('topMarginRight') ? settings.get('topMarginRight') : 'auto';
-var topWidth = settings.get('topWidth') ? settings.get('topWidth') : 950;
+	var stuffOnTop = settings.get('topBranding');
+	var topHeight = settings.get('topHeight') ? settings.get('topHeight') : 118;
+	var topMarginLeft = settings.get('topMarginLeft') ? settings.get('topMarginLeft') : 'auto';
+	var topMarginRight = settings.get('topMarginRight') ? settings.get('topMarginRight') : 'auto';
+	var topWidth = settings.get('topWidth') ? settings.get('topWidth') : 950;
 
-var stuffAtTheBottom = settings.get('bottomBranding');
-var bottomHeight = settings.get('bottomHeight') ? settings.get('bottomHeight') : 100;
-var bottomMarginLeft = settings.get('bottomMarginLeft') ? settings.get('bottomMarginLeft') : 'auto';
-var bottomMarginRight = settings.get('bottomMarginRight') ? settings.get('bottomMarginRight') : 'auto';
-var bottomWidth = settings.get('bottomWidth') ? settings.get('bottomWidth') : 950;
+	var stuffAtTheBottom = settings.get('bottomBranding');
+	var bottomHeight = settings.get('bottomHeight') ? settings.get('bottomHeight') : 100;
+	var bottomMarginLeft = settings.get('bottomMarginLeft') ? settings.get('bottomMarginLeft') : 'auto';
+	var bottomMarginRight = settings.get('bottomMarginRight') ? settings.get('bottomMarginRight') : 'auto';
+	var bottomWidth = settings.get('bottomWidth') ? settings.get('bottomWidth') : 950;
+	var sideItems = 		items: [
+	    this.banner,
+	    {
+		xtype: 'panel',
+		title: this.searchToolsTitle,
+		region: 'center',
 
+		layout: 'border',
+		items: [
+		    {
+			xtype: 'panel',
+			region: 'north',
+			layout: 'hbox',
+			height: 25,
+			items: [
+			    {
+				xtype: 'checkbox',
+				boxLabel: this.mapsCheckBox,
+				//tooltip: this.mapsCheckBoxTip, //checkboxes don't have tooltip config
+				name: 'Maps',
+				itemid: 'req-geo-ctl',
+				checked: false
+			    },
+			    {
+				xtype: 'checkbox',
+				boxLabel: this.imagesCheckBox,
+				//tooltip: this.imagesCheckBoxTip, //checkboxes don't have tooltip config
+				name: 'Images',
+				itemid: 'req-img-ctl',
+				checked: false,
+				hidden: !attachmentsPresent
+			    },
+			    {
+				xtype: 'checkbox',
+				boxLabel: this.fitToMapCheckBox,
+				//tooltip: this.fitToMapCheckBoxTip,  //checkboxes don't have tooltip config
+				name: 'Map',
+				itemid: 'fit-to-map',
+				id: 'spwp-fit-to-map-chkbx',
+				checked: false,
+				hidden: true
+			    }
+			]
+		    },
+		    {
+			xtype: 'panel',
+			region: 'center',
+			layout: 'accordion',
+			items: [
+			    {
+				xtype: 'spexpresssrch',
+				id: 'spwpmainexpresssrch'
+			    },
+			    {
+				xtype: 'spadvsrch',
+				id: 'spwpmainadvsrch'
+			    }
+			]
+		    }
+		]
+	    }
+	];
+
+	if (!this.banner) {
+	    sideItems.shift();
+	}
 
 	this.items = [
 	    {
@@ -178,68 +246,7 @@ var bottomWidth = settings.get('bottomWidth') ? settings.get('bottomWidth') : 95
 		split: true,
 		title: settings.get('bannerTitle'),
 
-		items: [
-		    this.banner,
-		    {
-			xtype: 'panel',
-			title: this.searchToolsTitle,
-			region: 'center',
-
-			layout: 'border',
-			items: [
-			    {
-				xtype: 'panel',
-				region: 'north',
-				layout: 'hbox',
-				height: 25,
-				items: [
-				    {
-					xtype: 'checkbox',
-					boxLabel: this.mapsCheckBox,
-					//tooltip: this.mapsCheckBoxTip, //checkboxes don't have tooltip config
-					name: 'Maps',
-					itemid: 'req-geo-ctl',
-					checked: false
-				    },
-				    {
-					xtype: 'checkbox',
-					boxLabel: this.imagesCheckBox,
-					//tooltip: this.imagesCheckBoxTip, //checkboxes don't have tooltip config
-					name: 'Images',
-					itemid: 'req-img-ctl',
-					checked: false,
-					hidden: !attachmentsPresent
-				    },
-				    {
-					xtype: 'checkbox',
-					boxLabel: this.fitToMapCheckBox,
-					//tooltip: this.fitToMapCheckBoxTip,  //checkboxes don't have tooltip config
-					name: 'Map',
-					itemid: 'fit-to-map',
-					id: 'spwp-fit-to-map-chkbx',
-					checked: false,
-					hidden: true
-				    }
-				]
-			    },
-			    {
-				xtype: 'panel',
-				region: 'center',
-				layout: 'accordion',
-				items: [
-				    {
-					xtype: 'spexpresssrch',
-					id: 'spwpmainexpresssrch'
-				    },
-				    {
-					xtype: 'spadvsrch',
-					id: 'spwpmainadvsrch'
-				    }
-				]
-			    }
-			]
-		    }
-		]
+		items: sideItems
 	    }
 	];
 	if (stuffOnTop) {
