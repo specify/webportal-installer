@@ -6,13 +6,5 @@
     "maxSolrPageSize": 5000,
     "imagePreviewSize": 200, //when this setting is changed, the height and width for *.tv-thumb should be set to about 7 px greater than this setting in resources/css/thumb-view.css
     "imageViewSize": 600,
-     "imageInfoFlds": "cn fn",
-    "topHeight": 118,
-    "topMarginLeft": 'auto',
-    "topMarginRight": 'auto',
-    "topWidth": 950,
-    "bottomHeight": 100,
-    "bottomMarginLeft": 'auto',
-    "bottomMarginRight": 'auto',
-    "bottomWidth": 950,
+     "imageInfoFlds": "cn fn"
 }]
