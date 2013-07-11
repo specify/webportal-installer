@@ -173,14 +173,14 @@ Ext.define('SpWebPortal.view.ImageView', {
 	if (scale != null && scale > 0) {
 	    params =  {
 		coll: coll,
-		type: 0,
+		type: 'T'
 		filename: fileName,
 		scale: scale
 	    };
 	} else {
 	    params =  {
 		coll: coll,
-		type: 0,
+		type: 'O',
 		filename: fileName
 	    };
 	}
