@@ -165,7 +165,7 @@ Ext.define('SpWebPortal.view.ImageView', {
 
 
     getImgSrc: function(fileName, scale, coll, srcFld, img, addToStore, callbackFn, callbackArgs) {
-	var url = this.getBaseUrl() + '/getfileref.php';
+	var url = this.getBaseUrl() + '/getfileref';
 	this.imgServerResponse = null;
 	this.imgServerError = null;
 	Ext.Ajax.method = 'GET';

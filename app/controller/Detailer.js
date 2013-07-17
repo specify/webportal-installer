@@ -19,9 +19,16 @@ Ext.define('SpWebPortal.controller.Detailer', {
     imagePopWinPos: [1,1],
     imagePopWinYpos: 1,
     ignoreDetailsPageChange: true,
+    stdImgSize: 500,
+    collectionName: '',
 
     init: function() {
 	//console.info("Detailer.init");
+	var settingsStore =  Ext.getStore('SettingsStore');
+	var settings = settingsStore.getAt(0);
+	this.stdImgSize = settings.get('imageViewSize');
+	this.collectionName = settings.get('collectionName');
+
 	this.control({
 	    'actioncolumn[itemid="detail-popup-ctl"]': {
 		clicked: this.onGridDetailClk
@@ -338,15 +345,13 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	if (imgSize <= 0 || isActualSize) {
 	    srcFld = 'Src';
 	    if (imgSize <= 0) {
-		imgSize = 500;
+		imgSize = this.stdImgSize;
 	    }
 	}	
 	var srcVal = imgRecord.get(srcFld);
 	if (typeof srcVal  === "undefined" || srcVal.trim().length == 0) {
 	    var imgView = Ext.getCmp('spwpmainimageview');
-	    //srcVal = imgView.getImgSrc(imgRecord.get('AttachmentLocation'), srcFld == 'Src' ? null : imgSize, 'KUFishvoucher');
-	    //imgRecord.set(srcFld, srcVal);
-	    imgView.getImgSrc(imgRecord.get('AttachmentLocation'), srcFld == 'Src' ? null : imgSize, 'KUFishvoucher', srcFld, imgRecord, false, 
+	    imgView.getImgSrc(imgRecord.get('AttachmentLocation'), srcFld == 'Src' ? null : imgSize, this.collectionName, srcFld, imgRecord, false, 
 			     this.popupImageSrcReady, [isActualSize, imgWinOwner]);
 	} else {
 	    this.popupImageSrcReady(imgRecord, [isActualSize, imgWinOwner]);

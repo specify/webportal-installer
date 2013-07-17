@@ -12,10 +12,10 @@ Ext.define('SpWebPortal.view.ImageSingleView', {
     specimenBtnTip: 'View specimen(s) associated with this image',
     imageDetailBtnTxt: 'Image Details',
     imageDetailBtnTip: 'View image details',
-    viewActualBtnText: 'Standard size',
-    viewStdBtnText: 'Actual size',
-    viewActualBtnTip: 'Click to view standard size',
-    viewStdBtnTip: 'Click to view actual size',
+    viewActualBtnText: 'Actual Size',
+    viewStdBtnText: 'Standard Size',
+    viewActualBtnTip: 'Click to view actual size',
+    viewStdBtnTip: 'Click to view standard size',
     //...localizable text
 
     config: {	
@@ -41,8 +41,8 @@ Ext.define('SpWebPortal.view.ImageSingleView', {
 		{
 		    xtype: 'button',
 		    id: 'spwp-img-single-viewsize-btn',
-		    text: this.isActualSize ? this.viewActualBtnText : this.viewStdBtnText,
-		    tooltip: this.isActualSize ? this.viewActualBtnTip : this.viewStdBtnTip
+		    text: this.isActualSize ? this.viewStdBtnText : this.viewActualBtnText,
+		    tooltip: this.isActualSize ? this.viewStdBtnTip : this.viewActualBtnTip
 		},
 		{
 		    xtype: 'button',
