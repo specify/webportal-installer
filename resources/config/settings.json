@@ -1,10 +1,30 @@
 [{
-   "solrURL": "http://127.0.0.1",
+    "solrURL": "http://127.0.0.1",
     "solrPort": "8983",
     "solrCore": "solr",
     "solrPageSize": 50,
     "maxSolrPageSize": 5000,
     "imagePreviewSize": 200, //when this setting is changed, the height and width for *.tv-thumb should be set to about 7 px greater than this setting in resources/css/thumb-view.css
     "imageViewSize": 600,
-     "imageInfoFlds": "cn fn"
+    "imageInfoFlds": "cn fn"
+    "portalInstance": "spwp",
+    "imageBaseUrl": null,
+    "collectionName": "Collection1",
+    "defInitialView": "grid",
+    "defMapType": "roadmap",
+    "backgroundURL": "resources/images/specify128.png",
+    "bannerURL", type: "string",
+    "bannerTitle": "Specify Web Portal",
+    "bannerHeight": 120,
+    "bannerWidth": 250,
+    "topBranding": null,
+    "topHeight": null,
+    "topMarginLeft": null,
+    "topMarginRight": null,
+    "topWidth": null,
+    "bottomBranding": null,
+    "bottomHeight": null,
+    "bottomMarginLeft": null,
+    "bottomMarginRight": null,
+    "bottomWidth": null
 }]
