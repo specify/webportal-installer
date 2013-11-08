@@ -378,7 +378,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	//console.info("Mapper.onGoogleMarkerClick2");
 	//console.info(arguments);
 	var store = Ext.getStore('MainSolrStore');
-	var ll = geoCoords.slice(0,this.geoCoordFlds.length-1);
+	var ll = geoCoords.slice(0, geoCoords.length-1);
 	var url = store.getSearchLatLngUrl(ll);
 	var mappane = this.getMapPane();
 	//mappane.setLoading(true);
