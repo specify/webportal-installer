@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Context docBase="/var/lib/specify-solr/specify-solr.war">
-  <Environment name="solr/home" type="java.lang.String" value="/var/lib/specify-solr" override="true" />
-</Context>
