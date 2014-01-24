@@ -34,7 +34,7 @@ PortalApp/.dirstamp: TheSpecifyWebPortal.zip
 
 PortalApp/%: PortalApp/.dirstamp
 
-specify-solr/.dirstamp: $(SOLR_DIST)/.dirstamp log4j.properties
+specify-solr/.dirstamp: $(SOLR_DIST)/.dirstamp PortalApp/.dirstamp log4j.properties
 	# Building directory for WAR file.
 	mkdir -p specify-solr
 
@@ -47,6 +47,9 @@ specify-solr/.dirstamp: $(SOLR_DIST)/.dirstamp log4j.properties
 	# Configure the logging.
 	mkdir -p specify-solr/WEB-INF/classes/
 	cp log4j.properties specify-solr/WEB-INF/classes/
+
+	# Copy WebPortal frontend into place.
+	cp -r PortalApp/* specify-solr
 	touch $@
 
 specify-solr.war: specify-solr/.dirstamp
