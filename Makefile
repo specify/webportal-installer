@@ -34,7 +34,11 @@ PortalApp/.dirstamp: TheSpecifyWebPortal.zip
 
 PortalApp/%: PortalApp/.dirstamp
 
-specify-solr/.dirstamp: $(SOLR_DIST)/.dirstamp PortalApp/.dirstamp log4j.properties
+settings.json: patch_settings_json.py PortalApp/resources/config/settings.json
+	# Patch web app settings.
+	python $^ PortalFiles/*Setting.json > $@
+
+specify-solr/.dirstamp: $(SOLR_DIST)/.dirstamp PortalApp/.dirstamp log4j.properties settings.json
 	# Building directory for WAR file.
 	mkdir -p specify-solr
 
@@ -50,6 +54,15 @@ specify-solr/.dirstamp: $(SOLR_DIST)/.dirstamp PortalApp/.dirstamp log4j.propert
 
 	# Copy WebPortal frontend into place.
 	cp -r PortalApp/* specify-solr
+
+	# Copy WebPortal field specs into place.
+	cp PortalFiles/*flds.json specify-solr/resources/config/fldmodel.json
+
+	# Copy patched settings into place.
+	cp settings.json specify-solr/resources/config/
+
+	# Fix SOLR URL format in WebApp.
+	sed -i "s,solrURL + ':' + solrPort + '/',solrURL," specify-solr/app/store/MainSolrStore.js
 	touch $@
 
 specify-solr.war: specify-solr/.dirstamp
