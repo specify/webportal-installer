@@ -1,5 +1,6 @@
 SOLR_HOME=/var/lib/specify-solr
 SOLR_VERSION=4.6.0
+DISABLE_ADMIN=true
 
 SOLR_DIST=solr-$(SOLR_VERSION)
 
@@ -7,7 +8,7 @@ all: solr-home/.dirstamp specify-config.xml
 
 clean:
 	rm -rf specify-solr specify-solr.war solr-home SolrFldSchema.xml \
-		schema.xml solrconfig.xml specify-config.xml
+		schema.xml solrconfig.xml specify-config.xml upacked-war web.xml
 
 realclean: clean
 	rm -rf $(SOLR_DIST) PortalApp $(SOLR_DIST).tgz TheSpecifyWebPortal.zip
@@ -38,12 +39,38 @@ settings.json: patch_settings_json.py PortalApp/resources/config/settings.json
 	# Patch web app settings.
 	python $^ PortalFiles/*Setting.json > $@
 
-specify-solr/.dirstamp: $(SOLR_DIST)/.dirstamp PortalApp/.dirstamp log4j.properties settings.json
+unpacked-war/.dirstamp: $(SOLR_DIST)/example/webapps/solr.war
+	# Unpack the example SOLR webapp.
+	mkdir -p unpacked-war
+	cd unpacked-war && jar -xf ../$<
+	touch $@
+
+unpacked-war/%: unpacked-war/.dirstamp
+
+ifeq ($(DISABLE_ADMIN),true)
+web.xml: no_admin_web.xml
+else
+web.xml: with_admin_web.xml
+endif
+	cp $< $@
+
+specify-solr.war: unpacked-war/.dirstamp $(SOLR_DIST)/.dirstamp PortalApp/.dirstamp \
+	log4j.properties settings.json web.xml
+
 	# Building directory for WAR file.
+	rm -rf specify-solr
 	mkdir -p specify-solr
 
-	# Unpack the example SOLR webapp.
-	cd specify-solr && jar -xf ../$(SOLR_DIST)/example/webapps/solr.war
+	# Copy example WAR contents.
+	cp -r unpacked-war/* specify-solr
+
+ifeq ($(DISABLE_ADMIN),true)
+	# Removing admin page.
+	rm specify-solr/admin.html
+endif
+
+	# Include patched web.xml.
+	cp web.xml specify-solr/WEB-INF/
 
 	# Copy logging libraries used by SOLR.
 	cp $(SOLR_DIST)/example/lib/ext/* specify-solr/WEB-INF/lib/
@@ -65,7 +92,6 @@ specify-solr/.dirstamp: $(SOLR_DIST)/.dirstamp PortalApp/.dirstamp log4j.propert
 	sed -i "s,solrURL + ':' + solrPort + '/',solrURL," specify-solr/app/store/MainSolrStore.js
 	touch $@
 
-specify-solr.war: specify-solr/.dirstamp
 	# Packaging the SOLR WAR file.
 	jar -cf specify-solr.war -C specify-solr/ .
 
@@ -108,6 +134,7 @@ install: all
 	cp specify-config.xml /etc/tomcat7/Catalina/localhost/specify-solr.xml
 
 	# Copying SOLR home directory into place.
+	rm -rf $(SOLR_HOME)
 	mkdir -p $(SOLR_HOME)
 	cp -r solr-home/* $(SOLR_HOME)
 	chown -R tomcat7.tomcat7 $(SOLR_HOME)

@@ -3,6 +3,7 @@
 /solr-4.6.0/
 /solr-home/
 /specify-solr/
+/unpacked-war/
 
 /TheSpecifyWebPortal.zip
 /solr-4.6.0.tgz
@@ -12,3 +13,4 @@
 /specify-solr.war
 /specify-config.xml
 /settings.json
+/web.xml
