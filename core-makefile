@@ -13,18 +13,18 @@ SolrFldSchema.xml: PortalFiles/SolrFldSchema.xml
 	echo "</fields>" >> $@
 
 schema.xml: $(TOPDIR)/patch_schema_xml.py \
-	$(TOPDIR)/$(SOLR_DIST)/example/solr/collection1/conf/schema.xml \
-	SolrFldSchema.xml
+		$(TOPDIR)/$(SOLR_DIST)/example/solr/collection1/conf/schema.xml \
+		SolrFldSchema.xml
 	# Patching SOLR schema with fields from Specify export.
 	python $^ > $@
 
 solrconfig.xml: $(TOPDIR)/patch_solrconfig_xml.py \
-	$(TOPDIR)/$(SOLR_DIST)/example/solr/collection1/conf/solrconfig.xml
+		$(TOPDIR)/$(SOLR_DIST)/example/solr/collection1/conf/solrconfig.xml
 	# Patching SOLR config for use with Specify.
 	python $^ > $@
 
 webapp: $(TOPDIR)/PortalApp settings.json
-	# Copy WebPortal frontend into place.
+	# Setup web app instance for this core.
 	cp -r $(TOPDIR)/PortalApp webapp
 
 	# Copy WebPortal field specs into place.
@@ -37,6 +37,7 @@ webapp: $(TOPDIR)/PortalApp settings.json
 	sed -i "s,solrURL + ':' + solrPort + '/',solrURL," webapp/app/store/MainSolrStore.js
 
 core: $(TOPDIR)/$(SOLR_DIST) solrconfig.xml schema.xml
+	# Setup solr-home subdir for this core.
 	cp -r $(TOPDIR)/$(SOLR_DIST)/example/solr/collection1 core
 	cp solrconfig.xml schema.xml core/conf/
 	rm -rf core/data/
