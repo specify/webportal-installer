@@ -25,7 +25,8 @@ solrconfig.xml: $(TOPDIR)/patch_solrconfig_xml.py \
 
 webapp: $(TOPDIR)/PortalApp settings.json
 	# Setup web app instance for this core.
-	cp -r $(TOPDIR)/PortalApp webapp
+	mkdir -p webapp
+	cp -r $(TOPDIR)/PortalApp/* webapp/
 
 	# Copy WebPortal field specs into place.
 	cp PortalFiles/*flds.json webapp/resources/config/fldmodel.json
@@ -35,6 +36,10 @@ webapp: $(TOPDIR)/PortalApp settings.json
 
 	# Fix SOLR URL format in WebApp.
 	sed -i "s,solrURL + ':' + solrPort + '/',solrURL," webapp/app/store/MainSolrStore.js
+
+	# Use Sencha's CDN for extjs to avoid including 200 MB of crap for each core.
+	rm -rf webapp/extjs
+	sed -i "s,extjs/,http://cdn.sencha.io/ext-4.1.1-gpl/," webapp/index.html
 
 core: $(TOPDIR)/$(SOLR_DIST) solrconfig.xml schema.xml
 	# Setup solr-home subdir for this core.
