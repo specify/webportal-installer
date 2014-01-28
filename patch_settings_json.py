@@ -10,13 +10,18 @@ corename = sys.argv[2]
 with open(sys.argv[3]) as instance_setting_file:
     instance_setting = instance_setting_file.read()
 
-instance = re.findall('"portalInstance":"(.*)"', instance_setting)[0]
+try:
+    full_settings = json.loads(instance_setting)
+except ValueError:
+    instance = re.findall('"portalInstance":"(.*)"', instance_setting)[0]
+    full_settings = {'portalInstance': instance}
 
-settings[0].update({
+full_settings.update({
     'solrURL': '/specify-solr/',
-    'portalInstance': instance,
     'solrPort': None,
     'solrCore': corename,
 })
+
+settings[0].update(full_settings)
 
 print json.dumps(settings, indent=2)

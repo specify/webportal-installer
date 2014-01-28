@@ -13,7 +13,7 @@ cores: $(TOPDIR)/core-makefile $(TOPDIR)/$(SOLR_DIST)
 	# each subdir in specify_exports.
 	cp -r $(TOPDIR)/specify_exports cores
 	for core in cores/* ; do \
-		cd $$core && $(MAKE) CORENAME=`basename $$core` -f $(TOPDIR)/core-makefile; \
+		$(MAKE) CORENAME=`basename $$core` -f $(TOPDIR)/core-makefile -C $$core ; \
 	done
 
 specify-solr.war: $(TOPDIR)/unpacked-war $(TOPDIR)/$(SOLR_DIST) \
