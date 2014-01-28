@@ -1,16 +1,8 @@
 /PortalApp/
-/PortalFiles/
 /solr-4.6.0/
-/solr-home/
-/specify-solr/
 /unpacked-war/
+/specify_exports/
+/build/
 
 /TheSpecifyWebPortal.zip
 /solr-4.6.0.tgz
-/schema.xml
-/SolrFldSchema.xml
-/solrconfig.xml
-/specify-solr.war
-/specify-config.xml
-/settings.json
-/web.xml
