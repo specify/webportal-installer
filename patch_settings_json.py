@@ -17,9 +17,9 @@ except ValueError:
     full_settings = {'portalInstance': instance}
 
 full_settings.update({
-    'solrURL': '/specify-solr/',
+    'solrURL': '',     # Use relative path from index.html.
     'solrPort': None,
-    'solrCore': corename,
+    'solrCore': '',    # Use the core from the current path.
 })
 
 settings[0].update(full_settings)
