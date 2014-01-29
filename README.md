@@ -6,7 +6,7 @@ Making Tomcat use port 80
 -------------------------
 
 For Ubuntu, getting Tomcat to listen on the standard HTTP port 80
-involves changing two files. In `/etc/default/tomcat6` change
+involves changing two files. In `/etc/default/tomcat7` change
 ```
 #AUTHBIND=no
 ```
@@ -18,7 +18,7 @@ AUTHBIND=yes
 
 Be sure to uncomment the
 line in addition to changing it to "yes". And, in
-`/etc/tomcat6/server.xml` change
+`/etc/tomcat7/server.xml` change
 ```
 <Connector port="8080" protocol="HTTP/1.1" ...
 ``` 
