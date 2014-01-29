@@ -5,7 +5,7 @@ export DISABLE_ADMIN=false
 export SOLR_DIST=solr-$(SOLR_VERSION)
 export TOPDIR=$(shell pwd)
 
-all: build/specify-home
+all: build
 
 install: all
 	# Adding app to Tomcat config.
@@ -24,9 +24,9 @@ realclean: clean
 	rm -rf $(SOLR_DIST).tgz TheSpecifyWebPortal.zip \
 		$(SOLR_DIST) PortalApp unpacked-war
 
-build/specify-home: $(SOLR_DIST) PortalApp unpacked-war build-makefile
+build: $(SOLR_DIST) PortalApp unpacked-war build-makefile
 	mkdir -p build
-	cd build && $(MAKE) -f $(TOPDIR)/build-makefile
+	$(MAKE) -f $(TOPDIR)/build-makefile -C build
 
 $(SOLR_DIST).tgz:
 	# Fetching SOLR distribution tar ball.

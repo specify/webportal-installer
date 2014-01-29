@@ -1,8 +1,9 @@
 /PortalApp/
 /solr-4.6.0/
 /unpacked-war/
-/specify_exports/
 /build/
+/specify_exports/*
+!/specify_exports/README
 
 /TheSpecifyWebPortal.zip
 /solr-4.6.0.tgz
