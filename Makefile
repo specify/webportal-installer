@@ -45,9 +45,9 @@ $(SOLR_DIST)/%: $(SOLR_DIST)
 PortalApp: TheSpecifyWebPortal.zip
 	# Unpacking Specify web portal archive.
 	unzip -q $<
+	touch $@
 
 unpacked-war: $(SOLR_DIST)/example/webapps/solr.war
 	# Unpack the example SOLR webapp.
 	mkdir -p unpacked-war
 	cd unpacked-war && jar -xf ../$<
-
