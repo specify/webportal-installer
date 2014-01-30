@@ -21,10 +21,9 @@ clean:
 	rm -rf build/
 
 realclean: clean
-	rm -rf $(SOLR_DIST).tgz TheSpecifyWebPortal.zip \
-		$(SOLR_DIST) PortalApp unpacked-war
+	rm -rf $(SOLR_DIST).tgz $(SOLR_DIST) unpacked-war
 
-build: $(SOLR_DIST) PortalApp unpacked-war build-makefile
+build: $(SOLR_DIST) unpacked-war build-makefile
 	mkdir -p build
 	$(MAKE) -f $(TOPDIR)/build-makefile -C build
 
@@ -32,20 +31,11 @@ $(SOLR_DIST).tgz:
 	# Fetching SOLR distribution tar ball.
 	wget http://apache.cs.utah.edu/lucene/solr/$(SOLR_VERSION)/$@
 
-TheSpecifyWebPortal.zip:
-	# Fetching the Specify web portal archive.
-	wget http://update.specifysoftware.org/$@
-
 $(SOLR_DIST): $(SOLR_DIST).tgz
 	# Unpacking SOLR distribution.
 	tar -zxf $<
 
 $(SOLR_DIST)/%: $(SOLR_DIST)
-
-PortalApp: TheSpecifyWebPortal.zip
-	# Unpacking Specify web portal archive.
-	unzip -q $<
-	touch $@
 
 unpacked-war: $(SOLR_DIST)/example/webapps/solr.war
 	# Unpack the example SOLR webapp.
