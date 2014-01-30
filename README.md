@@ -5,6 +5,8 @@ Installation Instructions
 -------------------------
 
 1. Unpack this repository on a server with Apache Tomcat7 installed.
+1. Some variables at the top of `Makefile` can be customized, but the
+   defaults should be fine for Debian based systems.
 1. Use the Specify Data Export tool to create a Web Portal export
    directory ( someone can expand on this ) for each collection
    to be hosted in the portal.
@@ -16,7 +18,8 @@ Installation Instructions
 1. Install the newly built Web Portal: `sudo make install`.
 1. Restart Tomcat: `sudo invoke-rc.d tomcat7 restart`
 
-The Portal can be updated by repeating all but the first step.
+The Portal can be updated by repeating the make clean, install,
+restart steps after changing the contents of `specify_exports`.
 
 Tomcat Configuration
 --------------------

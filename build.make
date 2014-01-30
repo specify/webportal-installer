@@ -8,13 +8,13 @@ web.xml: ../with_admin_web.xml
 endif
 	cp $< $@
 
-cores: $(TOPDIR)/core-makefile $(TOPDIR)/$(SOLR_DIST)
+cores: $(TOPDIR)/core.make $(TOPDIR)/$(SOLR_DIST)
 	# We build a SOLR core and webapp instance for
 	# each subdir in specify_exports.
 	cp -r $(TOPDIR)/specify_exports cores
 	rm cores/README
 	for core in cores/* ; do \
-		$(MAKE) CORENAME=`basename $$core` -f $(TOPDIR)/core-makefile -C $$core ; \
+		$(MAKE) CORENAME=`basename $$core` -f $(TOPDIR)/core.make -C $$core ; \
 	done
 
 specify-solr.war: $(TOPDIR)/unpacked-war $(TOPDIR)/$(SOLR_DIST) \
