@@ -17,7 +17,11 @@ cores: $(TOPDIR)/core.make $(TOPDIR)/$(SOLR_DIST)
 		$(MAKE) CORENAME=`basename $$core` -f $(TOPDIR)/core.make -C $$core ; \
 	done
 
-specify-solr.war: $(TOPDIR)/unpacked-war $(TOPDIR)/$(SOLR_DIST) \
+index.html: $(TOPDIR)/make_toplevel_index.py $(TOPDIR)/index_skel.html cores
+	python $(TOPDIR)/make_toplevel_index.py $(TOPDIR)/index_skel.html \
+		cores/*/webapp/resources/config/settings.json > $@
+
+specify-solr.war: $(TOPDIR)/unpacked-war $(TOPDIR)/$(SOLR_DIST) index.html \
 		$(TOPDIR)/PortalApp $(TOPDIR)/log4j.properties web.xml cores
 
 	# Building directory for WAR file.
@@ -46,6 +50,9 @@ endif
 	for core in cores/* ; do \
 		cp -r $$core/webapp specify-solr/`basename $$core` ; \
 	done
+
+	# Copy toplevel index.html into place.
+	cp index.html specify-solr/
 
 	# Packaging the SOLR WAR file.
 	jar -cf specify-solr.war -C specify-solr/ .

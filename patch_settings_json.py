@@ -14,7 +14,10 @@ try:
     full_settings = json.loads(instance_setting)
 except ValueError:
     instance = re.findall('"portalInstance":"(.*)"', instance_setting)[0]
-    full_settings = {'portalInstance': instance}
+    full_settings = {
+        'portalInstance': instance,
+        'collectionName': None,
+    }
 
 full_settings.update({
     'solrURL': '',     # Use relative path from index.html.
