@@ -37,10 +37,6 @@ webapp: $(TOPDIR)/PortalApp settings.json
 	# Fix SOLR URL format in WebApp.
 	sed -i "s,solrURL + ':' + solrPort + '/',solrURL," webapp/app/store/MainSolrStore.js
 
-	# Use Sencha's CDN for extjs to avoid including 200 MB of crap for each core.
-	rm -rf webapp/extjs
-	sed -i "s,extjs/,http://cdn.sencha.io/ext-4.1.1-gpl/," webapp/index.html
-
 core: $(TOPDIR)/$(SOLR_DIST) solrconfig.xml schema.xml
 	# Setup solr-home subdir for this core.
 	cp -r $(TOPDIR)/$(SOLR_DIST)/example/solr/collection1 core
