@@ -14,6 +14,9 @@ Requirements
 
     `sudo apt-get install default-jdk`
 
+* GNUMake
+    `sudo apt-get install make`
+
 * Python (should be installed in Ubuntu by default)
 
 Installation Instructions
