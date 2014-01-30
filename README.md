@@ -1,6 +1,16 @@
 Specify Web Portal
 ==================
 
+Requirements
+------------
+
+* Recent Ubuntu server
+* Apache Tomcat7
+** `sudo apt-get install tomcat7`
+* JDK for the `jar` utility
+** `sudo apt-get install default-jdk`
+* Python (should be installed in Ubuntu by default)
+
 Installation Instructions
 -------------------------
 
