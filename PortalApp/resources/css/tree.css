@@ -1,0 +1,49 @@
+.x-grid-cell-inner img.taxon-icon{
+    width:16px;
+    background-image:url('../images/tree/taxon.png');
+}
+.x-grid-cell-inner img.taxon-class-icon{
+    width:16px;
+    background-image:url('../images/tree/taxon-class-icon.png');
+}
+.x-grid-cell-inner img.taxon-order-icon{
+    width:16px;
+    background-image:url('../images/tree/taxon-order-icon.png');
+}
+.x-grid-cell-inner img.taxon-family-icon{
+    width:16px;
+    background-image:url('../images/tree/taxon-family-icon.png');
+}
+.x-grid-cell-inner img.taxon-genus-icon{
+    width:16px;
+    background-image:url('../images/tree/taxon-genus-icon.png');
+}
+.x-grid-cell-inner img.taxon-species-icon{
+    width:16px;
+    background-image:url('../images/tree/taxon-species-icon.png');
+}
+.x-grid-cell-inner img.taxon-subspecies-icon{
+    width:16px;
+    background-image:url('../images/tree/taxon-subspecies-icon.png');
+}
+.x-grid-cell-inner img.geo-icon{
+    width:16px;
+    background-image:url('../images/tree/geography.png');
+}
+.x-grid-cell-inner img.geo-continent-icon{
+    width:16px;
+    background-image:url('../images/tree/geo-continent-icon.png');
+}
+.x-grid-cell-inner img.geo-country-icon{
+    width:16px;
+    background-image:url('../images/tree/geo-country-icon.png');
+}
+.x-grid-cell-inner img.geo-state-icon{
+    width:16px;
+    background-image:url('../images/tree/geo-state-icon.png');
+}
+.x-grid-cell-inner img.geo-county-icon{
+    width:16px;
+    background-image:url('../images/tree/geo-county-icon.png');
+}
+

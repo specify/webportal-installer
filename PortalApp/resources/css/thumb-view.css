@@ -1,0 +1,92 @@
+*.tv-x-panel-body{
+    background: white;
+    font: 11px Arial, Helvetica, sans-serif;
+}
+*.tv-thumb{
+    /*background: #dddddd;*/
+    padding: 0;
+    height: 207px;
+    width: 207px;
+    /*height: 127px;
+    width: 127px;*/
+    line-height: 1px;
+    text-align: center;
+    vertical-align: middle;
+    margin: 0;
+    border:1px solid #dddddd;
+}
+
+*.tv-thumb::after {
+    content: ".";
+    visibility: hidden;
+}
+
+.x-quirks .tv-thumb {
+    padding-bottom: 1px;
+}
+
+*.tv-thumb td{
+    /*max-height: 200px;
+    max-width: 200px;*/
+
+    /*display: block;
+    margin: auto;*/
+
+    vertical-align: middle;
+    text-align: center;
+}
+
+*.tv-thumb-wrap{
+    float: left;
+    /*margin: 4px;*/
+    margin-right: 0;
+    //padding: 1px;
+}
+*.tv-thumb-wrap span {
+    
+    display: block;
+    overflow: hidden;
+    text-align: center;
+    /*width: 86px; /* for ie to ensure that the text is centered */
+}
+
+*.tv-x-item-over{
+    /*border:1px solid #dddddd;*/
+    background: #efefef url(over.gif) repeat-x left top;
+    /*padding: 1px;*/
+}
+
+*.tv-x-item-selected{
+    background: #eff5fb url(selected.gif) no-repeat right bottom;
+    border:1px solid #99bbe8;
+    padding: 1px;
+}
+*tv-.x-item-selected .thumb{
+    background:transparent;
+}
+
+*.tv-loading-indicator {
+    font-size:11px;
+    background-image:url(loading.gif);
+    background-repeat: no-repeat;
+    background-position: left;
+    padding-left:20px;
+    margin:10px;
+}
+
+.x-view-selector {
+    position:absolute;
+    left:0;
+    top:0;
+    width:0;
+    border:1px dotted;
+    opacity: .5;
+    -moz-opacity: .5;
+    filter:alpha(opacity=50);
+    zoom:1;
+    background-color:#c3daf9;
+    border-color:#3399bb;
+}.ext-strict .ext-ie .x-tree .x-panel-bwrap{
+    position:relative;
+    overflow:hidden;
+}
