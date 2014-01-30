@@ -8,24 +8,28 @@ Installation Instructions
 1. Some variables at the top of `Makefile` can be customized, but the
    defaults should be fine for Debian based systems.
 1. Use the Specify Data Export tool to create a Web Portal export
-   directory ( someone can expand on this ) for each collection
+   directory (someone can expand on this) for each collection
    to be hosted in the portal.
 1. Copy the exported directories into the `specify_exports` directory
    in this directory. The copied directories should be given names
    that are suitable for use in URLs; so no spaces, capital letters,
    slashes or other problematic characters.
 1. Build the SOLR app: `make clean && make`.
-1. Install the newly built Web Portal: `sudo make install`.
-1. Restart Tomcat: `sudo invoke-rc.d tomcat7 restart`
+1. Install the newly built Web Portal: `sudo make install && sudo
+   invoke-rc.d tomcat7 restart`
+1. The portal should now be accessible at
+   http://localhost:8080/specify-solr/ to a browser running on the
+   server, assuming default Tomcat configuration.
 
-The Portal can be updated by repeating the make clean, install,
-restart steps after changing the contents of `specify_exports`.
+The Portal can be updated by updating the contents of
+`specify_exports` with new exports and repeating the make clean
+... restart steps.
 
 Tomcat Configuration
 --------------------
 
 While strictly outside the scope of these instructions, you may
-wish to make the following configuration changes to Tomcat.
+wish to make the following configuration changes to Tomcat:
 
 ### Making Tomcat use port 80
 
