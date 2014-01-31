@@ -4,7 +4,7 @@ Specify Web Portal
 Requirements
 ------------
 
-* Recent Ubuntu server
+* Ubuntu Server (Tested with 12.04lts)
 
 * Apache Tomcat7
 
@@ -15,6 +15,7 @@ Requirements
     `sudo apt-get install default-jdk`
 
 * GNUMake
+
     `sudo apt-get install make`
 
 * Python (should be installed in Ubuntu by default)
