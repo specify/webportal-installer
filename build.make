@@ -8,14 +8,16 @@ web.xml: ../with_admin_web.xml
 endif
 	cp $< $@
 
-cores: $(TOPDIR)/core.make $(TOPDIR)/$(SOLR_DIST) $(TOPDIR)/specify_exports
+cores: $(TOPDIR)/core.make $(TOPDIR)/$(SOLR_DIST) $(TOPDIR)/specify_exports/*.zip
 	# We build a Solr core and webapp instance for
 	# each subdir in specify_exports.
 	rm -rf cores
-	cp -r $(TOPDIR)/specify_exports/ cores
-	rm -f cores/README
-	for core in cores/* ; do \
-		$(MAKE) CORENAME=`basename $$core` -f $(TOPDIR)/core.make -C $$core ; \
+	for zipfile in $(TOPDIR)/specify_exports/*.zip ; do \
+		zipfile_name=`basename "$$zipfile"` ; \
+		corename="$${zipfile_name%.*}" ; \
+		mkdir -p "cores/$$corename" ; \
+		unzip -d "cores/$$corename" "$$zipfile" ; \
+		$(MAKE) CORENAME="$$corename" -f $(TOPDIR)/core.make -C "cores/$$corename" ; \
 	done
 
 index.html: $(TOPDIR)/make_toplevel_index.py $(TOPDIR)/index_skel.html cores
