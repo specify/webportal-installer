@@ -1,8 +1,7 @@
-/solr-4.6.0/
+/solr-*
 /unpacked-war/
 /build/
 /specify_exports/*
 !/specify_exports/README
 
-/TheSpecifyWebPortal.zip
-/solr-4.6.0.tgz
+/.lastupdate

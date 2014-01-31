@@ -8,11 +8,12 @@ web.xml: ../with_admin_web.xml
 endif
 	cp $< $@
 
-cores: $(TOPDIR)/core.make $(TOPDIR)/$(SOLR_DIST)
-	# We build a SOLR core and webapp instance for
+cores: $(TOPDIR)/core.make $(TOPDIR)/$(SOLR_DIST) $(TOPDIR)/specify_exports
+	# We build a Solr core and webapp instance for
 	# each subdir in specify_exports.
-	cp -r $(TOPDIR)/specify_exports cores
-	rm cores/README
+	rm -rf cores
+	cp -r $(TOPDIR)/specify_exports/ cores
+	rm -f cores/README
 	for core in cores/* ; do \
 		$(MAKE) CORENAME=`basename $$core` -f $(TOPDIR)/core.make -C $$core ; \
 	done
@@ -54,11 +55,11 @@ endif
 	# Copy toplevel index.html into place.
 	cp index.html specify-solr/
 
-	# Packaging the SOLR WAR file.
+	# Packaging the Solr WAR file.
 	jar -cf specify-solr.war -C specify-solr/ .
 
 solr-home: $(TOPDIR)/$(SOLR_DIST) cores specify-solr.war solr.xml
-	# Build the SOLR home directory.
+	# Build the Solr home directory.
 	rm -rf solr-home
 	cp -r $(TOPDIR)/$(SOLR_DIST)/example/multicore solr-home
 	# Copy each core into place.
@@ -68,11 +69,11 @@ solr-home: $(TOPDIR)/$(SOLR_DIST) cores specify-solr.war solr.xml
 	done
 	# Copy war file into place.
 	cp specify-solr.war solr-home/
-	# Copy top level SOLR configuration into place.
+	# Copy top level Solr configuration into place.
 	cp solr.xml solr-home/
 
 solr.xml: $(TOPDIR)/make_solr_xml.py $(TOPDIR)/$(SOLR_DIST)/example/multicore/solr.xml cores
-	# Generate top level SOLR config that defines the available cores.
+	# Generate top level Solr config that defines the available cores.
 	python $(TOPDIR)/make_solr_xml.py $(TOPDIR)/$(SOLR_DIST)/example/multicore/solr.xml \
 		cores/* > $@
 
