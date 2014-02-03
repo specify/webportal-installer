@@ -2,11 +2,10 @@
 all: solr-home specify-config.xml
 
 ifeq ($(DISABLE_ADMIN),true)
-web.xml: ../no_admin_web.xml
+WEB_XML := ../no_admin_web.xml
 else
-web.xml: ../with_admin_web.xml
+WEB_XML := ../with_admin_web.xml
 endif
-	cp $< $@
 
 cores: $(TOPDIR)/core.make $(TOPDIR)/$(SOLR_DIST) $(TOPDIR)/specify_exports/*.zip
 	# We build a Solr core and webapp instance for
@@ -25,7 +24,7 @@ index.html: $(TOPDIR)/make_toplevel_index.py $(TOPDIR)/index_skel.html cores
 		cores/*/webapp/resources/config/settings.json > $@
 
 specify-solr.war: $(TOPDIR)/unpacked-war $(TOPDIR)/$(SOLR_DIST) index.html \
-		$(TOPDIR)/PortalApp $(TOPDIR)/log4j.properties web.xml cores
+		$(TOPDIR)/PortalApp $(TOPDIR)/log4j.properties $(WEB_XML) cores
 
 	# Building directory for WAR file.
 	rm -rf specify-solr
@@ -39,8 +38,8 @@ ifeq ($(DISABLE_ADMIN),true)
 	rm specify-solr/admin.html
 endif
 
-	# Include patched web.xml.
-	cp web.xml specify-solr/WEB-INF/
+	# Include web.xml.
+	cp $(WEB_XML) specify-solr/WEB-INF/
 
 	# Copy logging libraries used by SOLR.
 	cp $(TOPDIR)/$(SOLR_DIST)/example/lib/ext/* specify-solr/WEB-INF/lib/
