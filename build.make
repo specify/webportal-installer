@@ -38,8 +38,8 @@ ifeq ($(DISABLE_ADMIN),true)
 	rm specify-solr/admin.html
 endif
 
-	# Include web.xml.
-	cp $(WEB_XML) specify-solr/WEB-INF/
+	# Include correct web.xml.
+	cp $(WEB_XML) specify-solr/WEB-INF/web.xml
 
 	# Copy logging libraries used by SOLR.
 	cp $(TOPDIR)/$(SOLR_DIST)/example/lib/ext/* specify-solr/WEB-INF/lib/
