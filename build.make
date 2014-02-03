@@ -1,5 +1,5 @@
 
-all: solr-home specify-config.xml
+all: solr-home
 
 ifeq ($(DISABLE_ADMIN),true)
 WEB_XML := ../no_admin_web.xml
@@ -77,10 +77,3 @@ solr.xml: $(TOPDIR)/make_solr_xml.py $(TOPDIR)/$(SOLR_DIST)/example/multicore/so
 	# Generate top level Solr config that defines the available cores.
 	python $(TOPDIR)/make_solr_xml.py $(TOPDIR)/$(SOLR_DIST)/example/multicore/solr.xml \
 		cores/* > $@
-
-specify-config.xml:
-	# Create config file for Tomcat to load our app.
-	echo '<?xml version="1.0" encoding="UTF-8"?>' > $@
-	echo '<Context docBase="$(SOLR_HOME)/specify-solr.war">' >> $@
-	echo '<Environment name="solr/home" type="java.lang.String" value="$(SOLR_HOME)" override="true" />' >> $@
-	echo '</Context>' >> $@
