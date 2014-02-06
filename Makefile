@@ -55,7 +55,7 @@ update: .lastupdate
 
 .lastupdate: build
 	$(MAKE) install-solr-home
-	invoke-rc.d tomcat7 restart
+	sudo invoke-rc.d tomcat7 restart
 	touch $@
 
 clean:
