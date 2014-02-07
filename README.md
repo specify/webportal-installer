@@ -89,8 +89,9 @@ Auto Update Instructions
 1. Verify the portal is working by visiting
    `http://your.server:8080/specify-solr`.
 1. Install a crontab as the update user to execute `make && make
-   update` on a periodic schedule. An example crontab is included and
-   can be installed with the command `crontab example.crontab`.
+   update` on a periodic schedule. An example crontab can be generated
+   with `make example.crontab` and installed with `crontab
+   example.crontab`. This example uses a period of ten minutes.
 1. Now when new exports are copied into `specify_exports` the portal
    will be automatically updated the next time the cron job runs. The
    last update time is shown on the main page.

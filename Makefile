@@ -56,6 +56,9 @@ install-solr-home:
 symlink:
 	ln -s $(INSTALL_DIR) $(SOLR_HOME)
 
+example.crontab:
+	echo "*/10 * * * * cd $(TOPDIR) && make >> $$HOME/webportal-make.log 2>&1 && make update >> $$HOME/webportal-update.log 2>&1" > $@
+
 update: .lastupdate
 
 .lastupdate: build

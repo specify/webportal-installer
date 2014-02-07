@@ -1,1 +1,0 @@
-*/10 * * * * cd $HOME/webportal-installer && make >> $HOME/webportal-make.log 2>&1 && make update >> $HOME/webportal-update.log 2>&1
