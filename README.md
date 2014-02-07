@@ -56,22 +56,23 @@ Auto Update Instructions
 ------------------------
 
 1. Decide on a non root account to use for the update process, log in
-   to it and download this repository.
+   to it and download this repository. It is easiest if the account
+   has sudo privileges.
 1. The account will need to be added to the tomcat7 group. `sudo
-   adduser USERNAME tomcat7`.
-1. Use `visudo` to give the tomcat7 group the ability to restart
+   adduser USERNAME tomcat7`. If you are logged in as that user, you
+   will need to relog for the shell to pick up on this change.
+1. Use `sudo visudo` to give the tomcat7 group the ability to restart
    Tomcat by adding the line:
 
     `%tomcat7 ALL=(ALL) NOPASSWD: /usr/sbin/invoke-rc.d tomcat7 restart`
 
 1. Edit `Makefile` changing `INSTALL_DIR` to a directory in a location
-   writable by the chosen account. For example if the account is
-   `webportal`, you could use `/home/webportal/solr-home`.
-1. Also in the Makefile change `INSTALL_UID` to the username of the
-   update account and `INSTALL_GID` to `tomcat7`.
+   writable by the chosen account. A recommend value can be used by
+   uncommenting the line `INSTALL_DIR := $(HOME)/specify-solr`.
 1. Make the directory pointed to by `SOLR_HOME` a link to
-   `INSTALL_DIR`. For example:
-   `sudo ln -s /home/webportal/solr-home /var/lib/specify-solr`
+   `INSTALL_DIR`. There is a make target for this: `sudo make
+   symlink`. This only needs to be done once unless either of those
+   directories are changed.
 1. Use the Specify Data Export tool to create a Web Portal export zip
    file (someone can expand on this) for each collection to be hosted
    in the portal.

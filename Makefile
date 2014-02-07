@@ -1,30 +1,32 @@
 # Directory where Solr indices are stored.
-SOLR_HOME = /var/lib/specify-solr
+SOLR_HOME := /var/lib/specify-solr
 
 # Running 'make install-solr-home' will copy the built web app into
 # this directory.  Should generally be the same as SOLR_HOME, but can
 # be set to user writable location and symbolically linked to
 # SOLR_HOME to allow 'make install-solr-home' to be ran by a
 # non-privileged user.
-INSTALL_DIR = $(SOLR_HOME)
+INSTALL_DIR := $(SOLR_HOME)
+
+# Example user writable INSTALL_DIR:
+#INSTALL_DIR := $(HOME)/specify-solr
 
 # Running 'make install-context-file' will create the following
 # context file to alert Tomcat to the web portal app. To make the
 # portal the "default" app, change 'specify-solr.xml' to 'ROOT.xml'.
-TOMCAT_CONTEXT_FILE = /etc/tomcat7/Catalina/localhost/specify-solr.xml
+TOMCAT_CONTEXT_FILE := /etc/tomcat7/Catalina/localhost/specify-solr.xml
 
 # The user and group to set on the installed files. The tomcat user
 # must be in the given group because Solr writes some files to
-# SOLR_HOME.  If not running 'make install-solr-home' as root, these probably
-# have to be the same as the executing user.
-INSTALL_UID = tomcat7
-INSTALL_GID = tomcat7
+# SOLR_HOME.
+INSTALL_UID := $(USER)
+INSTALL_GID := tomcat7
 
 # Set to false to allow Solr admin page to be available.
-export DISABLE_ADMIN = true
+export DISABLE_ADMIN := true
 
 # Mirror for downloading Apache Solr.
-SOLR_MIRROR = http://archive.apache.org/dist/lucene/solr
+SOLR_MIRROR := http://archive.apache.org/dist/lucene/solr
 
 # Use latest available version of Solr 4.
 export SOLR_VERSION := $(shell curl -s $(SOLR_MIRROR)/ | python get_latest_solr_vers.py)
@@ -50,6 +52,9 @@ install-solr-home:
 	mkdir -p $(INSTALL_DIR)
 	cp -r build/solr-home/* $(INSTALL_DIR)
 	chown -R $(INSTALL_UID).$(INSTALL_GID) $(INSTALL_DIR)
+
+symlink:
+	ln -s $(INSTALL_DIR) $(SOLR_HOME)
 
 update: .lastupdate
 
