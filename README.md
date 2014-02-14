@@ -117,7 +117,8 @@ wish to make the following configuration changes to Tomcat:
 ### Making Tomcat use port 80
 
 First make sure no other service, such as Apache httpd, is bound 
-to port 80. `sudo netstat --inet -nlpt | grep ':80'`
+to port 80. `sudo netstat --inet -nlpt | grep ':80'` If there is
+any such process, Tomcat will fail to start.
 
 For Ubuntu, getting Tomcat to listen on the standard HTTP port 80
 involves changing two files. In `/etc/default/tomcat7` change
