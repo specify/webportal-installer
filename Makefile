@@ -52,6 +52,7 @@ install-solr-home:
 	mkdir -p $(INSTALL_DIR)
 	cp -r build/solr-home/* $(INSTALL_DIR)
 	chown -R $(INSTALL_UID).$(INSTALL_GID) $(INSTALL_DIR)
+	chmod g+w $(INSTALL_DIR)/*/data/index
 
 symlink:
 	ln -s $(INSTALL_DIR) $(SOLR_HOME)
