@@ -150,11 +150,10 @@ See: [Ref. 1](http://thelowedown.wordpress.com/2010/08/17/tomcat-6-binding-to-a-
 If you would like to have the web portal be the default app so that
 the URL is of the form "http://your.server.foo/core-name/" instead of
 "http://your.server.foo/specify-solr/core-name/", change the context
-file name to `ROOT.xml` in Tomcat config directory. Assuming Ubuntu:
-
-```
-cd /etc/tomcat7/Catalina/localhost
-sudo mv specify-solr.xml ROOT.xml
-```
+file name to `ROOT.xml` in Tomcat config directory. This can be
+accomplished by changing `TOMCAT_CONTEXT_FILE` in the Makefile to 
+`/etc/tomcat7/Catalina/localhost/ROOT.xml`, deleting any existing
+instance of `/etc/tomcat7/Catalina/localhost/specify-solr.xml`, and
+running `sudo make install-context-file` then restarting Tomcat.
 
 See: [Ref. 2](http://wiki.apache.org/tomcat/HowTo#How_do_I_make_my_web_application_be_the_Tomcat_default_application.3F)
