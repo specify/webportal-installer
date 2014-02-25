@@ -7,7 +7,8 @@ else
 WEB_XML := ../with_admin_web.xml
 endif
 
-cores: $(TOPDIR)/core.make $(TOPDIR)/$(SOLR_DIST) $(TOPDIR)/specify_exports/*.zip
+cores: $(TOPDIR)/core.make $(TOPDIR)/$(SOLR_DIST) \
+		 $(TOPDIR)/specify_exports  $(TOPDIR)/specify_exports/*.zip
 	# We build a Solr core and webapp instance for
 	# each subdir in specify_exports.
 	rm -rf cores
