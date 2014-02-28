@@ -11,6 +11,8 @@ Requirements
 * GNUMake
 * Unzip utility
 
+The necessary packages can be installed through apt.
+
 `sudo apt-get install make default-jdk tomcat7 unzip`
 
 Simple Installation Instructions
@@ -54,7 +56,7 @@ Auto Update Instructions
 1. If you are logged in as that user, you will need to relog for the
    shell to pick up on this change.
 
-    `exit` and log in.
+    `exit` and log back in.
 
 1. Use to give the tomcat7 group the ability to restart
    Tomcat.
@@ -66,8 +68,10 @@ Auto Update Instructions
     `%tomcat7 ALL=(ALL) NOPASSWD: /usr/sbin/invoke-rc.d tomcat7 restart`
 
 1. Edit `Makefile` changing `INSTALL_DIR` to a directory in a location
-   writable by the chosen account. A recommend value can be used by
-   uncommenting the line `INSTALL_DIR := $(HOME)/specify-solr`.
+   writable by the chosen account. A recommended value can be used by
+   uncommenting this line in the file:
+
+   `INSTALL_DIR := $(HOME)/specify-solr`
 
 1. Make the directory pointed to by `SOLR_HOME` a link to
    `INSTALL_DIR`. This only needs to be done once unless either of those
@@ -104,8 +108,7 @@ Auto Update Instructions
    periodic schedule. An example crontab can be generated as follows
    and checks for updates with a period of 10 minutes.
 
-    `make example.crontab`
-    `crontab example.crontab`
+    `make example.crontab && crontab example.crontab`
 
 1. Now when new exports are copied into `specify_exports` the portal
    will be automatically updated the next time the cron job runs. The
