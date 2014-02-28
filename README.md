@@ -9,9 +9,9 @@ Requirements
 * Apache Tomcat7
 * JDK for the `jar` utility
 * GNUMake
-* Unzip program
+* Unzip utility
 
-    `sudo apt-get install make default-jdk tomcat7 unzip`
+`sudo apt-get install make default-jdk tomcat7 unzip`
 
 Simple Installation Instructions
 -------------------------
@@ -73,7 +73,7 @@ Auto Update Instructions
    `INSTALL_DIR`. This only needs to be done once unless either of those
    directories are changed. There is a make target for this.
 
-    `sudo make symlink`.
+    `sudo make symlink`
 
 1. Use the Specify Data Export tool to create a Web Portal export zip
    file for each collection to be hosted in the portal.
@@ -85,7 +85,7 @@ Auto Update Instructions
 
 1. Build the SOLR app.
 
-    `make clean && make`.
+    `make clean && make`
 
 1. Install the Tomcat context file. This step requires root and needs
    only be done once unless `SOLR_HOME` is changed.
