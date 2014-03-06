@@ -1,9 +1,13 @@
 
 all: webapp core
 
-settings.json: $(TOPDIR)/patch_settings_json.py $(TOPDIR)/PortalApp/resources/config/settings.json
+# The custom setting file should really be a dependency here,
+# but I don't know how to handle the case that it doesn't exist.
+settings.json: $(TOPDIR)/patch_settings_json.py \
+		$(TOPDIR)/PortalApp/resources/config/settings.json
 	# Patch web app settings.
-	python $^ $(CORENAME) PortalFiles/*Setting.json > $@
+	python $^ $(TOPDIR)/custom_settings/$(CORENAME)/settings.json \
+		$(CORENAME) PortalFiles/*Setting.json > $@
 
 SolrFldSchema.xml: PortalFiles/SolrFldSchema.xml
 	# Add a root element to the schema field list.
@@ -23,13 +27,19 @@ solrconfig.xml: $(TOPDIR)/patch_solrconfig_xml.py \
 	# Patching Solr config for use with Specify.
 	python $^ > $@
 
-webapp: $(TOPDIR)/PortalApp settings.json PortalFiles/*flds.json
+# The custom setting file should really be a dependency here,
+# but I don't know how to handle the case that it doesn't exist.
+fldmodel.json: $(TOPDIR)/make_fldmodel_json.py PortalFiles/*flds.json
+	# Patch any custom settings into the field definitions.
+	python $^ $(TOPDIR)/custom_settings/$(CORENAME)/fldmodel.json > $@
+
+webapp: $(TOPDIR)/PortalApp settings.json fldmodel.json
 	# Setup web app instance for this core.
 	mkdir -p webapp
 	cp -r $(TOPDIR)/PortalApp/* webapp/
 
 	# Copy WebPortal field specs into place.
-	cp PortalFiles/*flds.json webapp/resources/config/fldmodel.json
+	cp fldmodel.json webapp/resources/config/fldmodel.json
 
 	# Copy patched settings into place.
 	cp settings.json webapp/resources/config/

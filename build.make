@@ -1,5 +1,5 @@
 
-all: solr-home
+all: solr-home setting_templates
 
 ifeq ($(DISABLE_ADMIN),true)
 WEB_XML := ../no_admin_web.xml
@@ -18,6 +18,19 @@ cores: $(TOPDIR)/core.make $(TOPDIR)/$(SOLR_DIST) \
 		mkdir -p "cores/$$corename" ; \
 		unzip -d "cores/$$corename" "$$zipfile" ; \
 		$(MAKE) CORENAME="$$corename" -f $(TOPDIR)/core.make -C "cores/$$corename" ; \
+	done
+
+setting_templates: $(TOPDIR)/make_settings_template.py $(TOPDIR)/make_fields_template.py cores
+	mkdir -p $@
+	for core in cores/* ; do \
+		corename=`basename "$$core"` ; \
+		mkdir -p "$@/$$corename" ; \
+		python $(TOPDIR)/make_settings_template.py \
+			$(TOPDIR)/PortalApp/resources/config/settings.json \
+			> "$@/$$corename/settings.json" ; \
+		python $(TOPDIR)/make_fields_template.py \
+			"cores/$$corename/webapp/resources/config/fldmodel.json" \
+			> "$@/$$corename/fldmodel.json" ; \
 	done
 
 index.html: $(TOPDIR)/make_toplevel_index.py $(TOPDIR)/index_skel.html cores
