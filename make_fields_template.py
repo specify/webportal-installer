@@ -13,10 +13,16 @@ EDITABLE_PROPS = [
     ]
 
 def munge(field):
-    return OrderedDict((key, field[key])
-                       for key in field
-                       if key == "colname" or
-                       key in EDITABLE_PROPS)
+    result = OrderedDict((key, field[key])
+                         for key in field
+                         if key == "colname" or
+                         key in EDITABLE_PROPS)
+
+    if 'hiddenbydefault' not in result:
+        result['hiddenbydefault'] = False
+
+    return result
+
 
 
 with open(sys.argv[1]) as f:
