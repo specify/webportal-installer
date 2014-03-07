@@ -1,14 +1,24 @@
 import sys
+import os
 import re
 import json
 
 with open(sys.argv[1]) as settings_file:
     settings = json.load(settings_file)
 
-corename = sys.argv[2]
+if os.path.isfile(sys.argv[2]):
+    with open(sys.argv[2]) as f:
+        custom_settings = json.load(f)
+else:
+    custom_settings = {}
 
-with open(sys.argv[3]) as instance_setting_file:
+settings[0].update(custom_settings)
+
+corename = sys.argv[3]
+
+with open(sys.argv[4]) as instance_setting_file:
     instance_setting = instance_setting_file.read()
+
 
 try:
     full_settings = json.loads(instance_setting)
