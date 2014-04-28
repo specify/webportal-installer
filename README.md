@@ -26,8 +26,8 @@ updates, see below.
 1. Some variables at the top of `Makefile` can be customized, but the
    defaults should be fine for Debian based systems.
 1. Use the Specify Data Export tool to create a Web Portal export zip
-   file (someone can expand on this) for each collection to be hosted
-   in the portal.
+   file (see the Specify 6 Data Export documentation) for each collection
+   to be hosted in the portal.
 1. Copy the zip files into the `specify_exports` directory in this
    directory. The copied files should be given names that are
    suitable for use in URLs; so no spaces, capital letters, slashes or
@@ -38,6 +38,8 @@ updates, see below.
 1. The portal should now be accessible at
    `http://localhost:8080/specify-solr/` to a browser running on the
    server, assuming default Tomcat configuration.
+1. See the Tomcat configuration section below to setup Tomcat to use
+   the standard HTTP port 80.
 
 The Portal can be updated by updating the contents of
 `specify_exports` with new exports and repeating the make clean
