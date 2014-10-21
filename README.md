@@ -10,10 +10,11 @@ Requirements
 * JDK for the `jar` utility
 * GNUMake
 * Unzip utility
+* cURL utility
 
 The necessary packages can be installed through apt.
 
-`sudo apt-get install make default-jdk tomcat7 unzip`
+`sudo apt-get install make default-jdk tomcat7 unzip curl`
 
 Simple Installation Instructions
 -------------------------
