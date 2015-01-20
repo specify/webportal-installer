@@ -5,7 +5,7 @@ Requirements
 ------------
 
 * Ubuntu Server (Tested with 12.04lts)
-* Python (should be installed in Ubuntu by default)
+* Python 2.7
 * Apache Tomcat7
 * JDK for the `jar` utility
 * GNUMake
@@ -14,7 +14,7 @@ Requirements
 
 The necessary packages can be installed through apt.
 
-`sudo apt-get install make default-jdk tomcat7 unzip curl`
+`sudo apt-get install make python2.7 default-jdk tomcat7 unzip curl`
 
 Simple Installation Instructions
 -------------------------
