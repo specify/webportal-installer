@@ -34,7 +34,7 @@ Ext.define('SpWebPortal.view.MainGrid', {
 	} else if (fld == 'longitude1') {
 	    geoCoordFlds[1] = coldef.get('solrname');
 	}
-	else if (fld == 'latitude2') {
+	else if (fld == 'latitude1') {
 	    geoCoordFlds[2] = coldef.get('solrname');
 	}
 	else if (fld == 'longitude2') {

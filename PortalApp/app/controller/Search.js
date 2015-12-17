@@ -58,9 +58,9 @@ Ext.define('SpWebPortal.controller.Search', {
 	//console.info("MatchAll = " + this.getMatchAll());
     },
 
-    escapeForSolr: function(srchText) {
+    escapeForSolr: function(srchText, isFullText) {
 	//assuming srchText is defined and non-null
-	var result = srchText.toLowerCase();
+	var result = isFullText ? srchText.toLowerCase() : srchText;
 	result = result.replace('&', '%26');
 	//etc...
 	return result;
