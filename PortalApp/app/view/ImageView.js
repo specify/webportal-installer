@@ -165,7 +165,7 @@ Ext.define('SpWebPortal.view.ImageView', {
 
 
     getImgSrc: function(fileName, scale, coll, srcFld, img, addToStore, callbackFn, callbackArgs) {
-	var url = this.getBaseUrl() + '/getfileref';
+	var url = this.getBaseUrl() + '/fileget';
 	this.imgServerResponse = null;
 	this.imgServerError = null;
 	Ext.Ajax.method = 'GET';
@@ -186,44 +186,45 @@ Ext.define('SpWebPortal.view.ImageView', {
 	}
 	this.waitingForImgUrl = true;
 	//console.info("sending jquery ajax request " + url);
-	try {
-            $.ajax({
-                url: url,
-                data: params,
-		context: this,
-		crossDomain: true,
-                success: function(src) {
-                    //console.info("JQUERY to the rescue!");
-		    if (!addToStore) {
-			img.set(srcFld, src);
-		    } else {
-			if (srcFld == "ThumbSrc") {
-			    Ext.apply(img, {
-				ThumbSrc: src
-			    });
-			} else if (srcFld == "StdSrc") {
-			    Ext.apply(img, {
-				StdSrc: src
-			    });
-			} else if (srcFld == "Src") {
-			    Ext.apply(img, {
-				Src: src
-			    });
-			}
-			this.getImageStore().add(img);
-		    }
-		    if (typeof callbackFn !== "undefined" && callbackFn != null) {
-			callbackFn(img, callbackArgs);
-		    }                
-		},
-		error: function(jqXHR, textStatus, errorThrown) {
-		    console.info("jquery ajax error: " + textStatus + ", " + errorThrown);
-		}
-	    });
-	} catch(e) {
-	    //IF POSSIBLE just catch and ignore the cross domain header issue for now
-	    console.log(e);
+	// try {
+        //     $.ajax({
+        //         url: url,
+        //         data: params,
+	// 	context: this,
+	// 	crossDomain: true,
+        //         success: function(src) {
+        //             //console.info("JQUERY to the rescue!");
+	var src = url + '?' + $.param(params);
+	if (!addToStore) {
+	    img.set(srcFld, src);
+	} else {
+	    if (srcFld == "ThumbSrc") {
+		Ext.apply(img, {
+		    ThumbSrc: src
+		});
+	    } else if (srcFld == "StdSrc") {
+		Ext.apply(img, {
+		    StdSrc: src
+		});
+	    } else if (srcFld == "Src") {
+		Ext.apply(img, {
+		    Src: src
+		});
+	    }
+	    this.getImageStore().add(img);
 	}
+	if (typeof callbackFn !== "undefined" && callbackFn != null) {
+	    callbackFn(img, callbackArgs);
+	}                
+	// 	},
+	// 	error: function(jqXHR, textStatus, errorThrown) {
+	// 	    console.info("jquery ajax error: " + textStatus + ", " + errorThrown);
+	// 	}
+	//     });
+	// } catch(e) {
+	//     //IF POSSIBLE just catch and ignore the cross domain header issue for now
+	//     console.log(e);
+	// }
 
     }
 
