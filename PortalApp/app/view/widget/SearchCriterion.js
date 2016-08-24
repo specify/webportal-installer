@@ -150,9 +150,9 @@ Ext.define('SpWebPortal.view.widget.SearchCriterion', {
 	        var fld = fieldStore.getAt(c);
 	        if (this.itemid == fld.get('solrname')) {
                     if (this.isFullTextFld(fld)) {
-                        this.fullText = 'true';
+                        this.fulltext = 'true';
                     } else {
-                        this.fullText = 'false';
+                        this.fulltext = 'false';
                     }
                     break;
 	        }
