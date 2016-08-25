@@ -86,7 +86,7 @@ Ext.define('SpWebPortal.view.Viewport', {
 	var expBtn = Ext.create('Ext.button.Button', {
 	    xtype: 'button',
 	    tooltip: 'to csv',
-	    icon: 'resources/images/system.png',
+	    icon: 'resources/images/ExportExcelTemplate16x16.png',
 	    itemid: 'spwpexpcsvbtn',
 	    id: 'spwpexpcsvbtn'
 	});
