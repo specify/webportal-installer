@@ -23,15 +23,24 @@ Ext.define('SpWebPortal.controller.Search', {
 	requireGeoCoords: false,
 	matchAll: false,
 	fitToMap: false,
-	forceFitToMap: false
+	forceFitToMap: false,
+        writeToCsv: false
     },
 
     onSpecialKey: function(field, e) {
 	if (e.getKey() == e.ENTER) {
+            console.info("doSearch()?");
 	    this.doSearch();
 	}
     },
 
+    forCsv: function () {
+        console.info("CSV");
+        this.setWriteToCsv(true); 
+        this.doSearch();
+        this.setWriteToCsv(false);
+    },
+    
     mapViewIsActive: function() {
 	return Ext.getCmp('spwpmainmappane').isVisible();
     },

@@ -83,6 +83,13 @@ Ext.define('SpWebPortal.view.Viewport', {
 	    itemid: 'spwpsettingsbtn',
 	    id: 'spwpsettingsbtn'
 	});
+	var expBtn = Ext.create('Ext.button.Button', {
+	    xtype: 'button',
+	    tooltip: 'to csv',
+	    icon: 'resources/images/system.png',
+	    itemid: 'spwpexpcsvbtn',
+	    id: 'spwpexpcsvbtn'
+	});
 
 	mapBtn.setVisible(false);
 	mapCancelBtn.setVisible(false);
@@ -121,6 +128,7 @@ Ext.define('SpWebPortal.view.Viewport', {
 		    emptyMsg: this.pagerEmptyMsg
 		},
 		settingsBtn,
+                expBtn,
 		mapBtn,
 		mapCancelBtn,
 		mapProg,

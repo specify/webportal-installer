@@ -15,6 +15,9 @@ Ext.define('SpWebPortal.controller.ExpressSearch', {
 	//console.info("ExpressSearch.init");
 
 	this.control({
+	    'button[itemid="spwpexpcsvbtn"]' : {
+		click: this.forCsv
+	    },
 	    'expressSrch button[itemid="search-btn"]': {
 		click: this.doSearch
 	    },
@@ -51,23 +54,27 @@ Ext.define('SpWebPortal.controller.ExpressSearch', {
 	    ? '*' 
 	        : this.escapeForSolr(control[0].value,true);
 	var filterToMap = (this.getForceFitToMap() || this.getFitToMap()) && this.mapViewIsActive();
+        var dummy_geocoords;
+	var url = solr.getSearchUrl(images, maps, mainQ, filterToMap, this.getMatchAll(), dummy_geocoords, this.getWriteToCsv());
 
-	var url = solr.getSearchUrl(images, maps, mainQ, filterToMap, this.getMatchAll());
+        if (this.getWriteToCsv()) {
+            window.open(url);
+        } else {
+            this.setForceFitToMap(false);
 
-	this.setForceFitToMap(false);
+	    solr.getProxy().url = url; 
+	    solr.setSearched(true);
+	    solr.loadPage(1);
 
-	solr.getProxy().url = url; 
-	solr.setSearched(true);
-	solr.loadPage(1);
-
-	/*var resultsTab = Ext.getCmp('spwpmaintabpanel');
-	if (!resultsTab.isVisible()) {
-	    var background = Ext.getCmp('spwpmainbackground');
-	    background.setVisible(false);
-	    resultsTab.setVisible(true);
-	}
-	resultsTab.fireEvent('dosearch');*/
-	this.searchLaunched();
+	    /*var resultsTab = Ext.getCmp('spwpmaintabpanel');
+	     if (!resultsTab.isVisible()) {
+	     var background = Ext.getCmp('spwpmainbackground');
+	     background.setVisible(false);
+	     resultsTab.setVisible(true);
+	     }
+	     resultsTab.fireEvent('dosearch');*/
+	    this.searchLaunched();
+        }
     }
 });
 

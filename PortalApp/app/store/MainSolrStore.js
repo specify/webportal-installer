@@ -13,6 +13,7 @@ var solrPageSize = settings.get('solrPageSize');
 var maxPageSizeSetting = settings.get('maxSolrPageSize');
 var solrCore = settings.get('solrCore');
 var solrUrlTemplate = solrURL + ':' + solrPort + '/' + (solrCore  ? solrCore + '/': '') + 'select?indent=on&version=2.2&fq=&rows=' + solrPageSize + '&fl=*%2Cscore&qt=&wt=json&explainOther=&hl.fl=&q=';
+var solrUrlTemplateCsv = solrURL + ':' + solrPort + '/' + (solrCore  ? solrCore + '/': '') + 'select?indent=on&version=2.2&fq=&rows=99999999&fl=*&qt=&wt=csv&explainOther=&hl.fl=&q=';
 
 Ext.define('SpWebPortal.store.MainSolrStore', {
     extend: 'Ext.data.Store',
@@ -25,6 +26,7 @@ Ext.define('SpWebPortal.store.MainSolrStore', {
     pageSize: solrPageSize,
     config: {
 	urlTemplate: solrUrlTemplate,
+        urlTemplateCsv: solrUrlTemplateCsv,
 	geoCoordFlds: [], //due to mysterious initialization behavior, this
 	                 //is not set until the MainGrid.js initComponent() is executed
 	maxPageSize: typeof maxPageSizeSetting === "undefined" ? 5000 : maxPageSizeSetting,
@@ -135,7 +137,7 @@ Ext.define('SpWebPortal.store.MainSolrStore', {
 
     getSearchLatLngUrl: function(geoCoords) {
 	return this.getSearchUrl(this.getImages(), this.getMaps(), this.getMainTerm(), 
-this.getFilterToMap(), this.getMatchAll(), geoCoords);
+                                 this.getFilterToMap(), this.getMatchAll(), geoCoords);
     },
 
     getIdUrl: function(ids) {
@@ -169,7 +171,7 @@ this.getFilterToMap(), this.getMatchAll(), geoCoords);
 	return result;
     },
 
-    getSearchUrl: function(images, maps, mainTerm, filterToMap, matchAll, geoCoords) {
+    getSearchUrl: function(images, maps, mainTerm, filterToMap, matchAll, geoCoords, csv) {
 
 	this.setImages(images);
 	this.setMaps(maps);
@@ -182,7 +184,7 @@ this.getFilterToMap(), this.getMatchAll(), geoCoords);
 	if (images || maps || mapFilter) {
 	    mainQ = '_query_:"' + mainQ + '"+AND+_query_:"';
 	}
-	var url = this.urlTemplate + mainQ;
+	var url = (csv ? this.urlTemplateCsv : this.urlTemplate) + mainQ;
 
 	if (images) {
 	    url += this.getImageRequirementFilter();
