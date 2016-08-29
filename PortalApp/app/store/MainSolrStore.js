@@ -37,7 +37,8 @@ Ext.define('SpWebPortal.store.MainSolrStore', {
 	filterToMap: false, 
 	matchAll: false,
 	searched: false,
-	treeLevels: null
+	treeLevels: null,
+        notForCsv: ['spid','geoc','contents']
     },
 
     autoLoad: false,
@@ -184,7 +185,7 @@ Ext.define('SpWebPortal.store.MainSolrStore', {
 	if (images || maps || mapFilter) {
 	    mainQ = '_query_:"' + mainQ + '"+AND+_query_:"';
 	}
-	var url = (csv ? this.urlTemplateCsv : this.urlTemplate) + mainQ;
+	var url = (csv ? this.urlTemplateCsv.replace('&fl=*', this.getCsvFldParam()) : this.urlTemplate) + mainQ;
 
 	if (images) {
 	    url += this.getImageRequirementFilter();
@@ -301,6 +302,37 @@ Ext.define('SpWebPortal.store.MainSolrStore', {
 	return result;
     },
 
+    getCsvFldTitle: function(fld) {
+        var result = fld.get('title') + '';
+        if (result == '') {
+            result = fld.get('spfldtitle') + '';
+        }
+        if (result == '') {
+            result = fld.get('solrname');
+        }
+        return result.replace(/ /g,'');
+    },
+
+    isCsvFld: function(fld) {
+        return this.notForCsv.indexOf(fld.get('solrname')) == -1;
+    },
+    
+    getCsvFldParam: function() {
+        var flds = Ext.getStore('FieldDefStore');
+        //to only currently visible fields could use Ext.getCmp('spwpmaingrid')
+        var result = '';
+        for (var f = 0; f < flds.getCount(); f++) {
+            var fld = flds.getAt(f);
+            if (this.isCsvFld(fld)) {
+                result += "," + this.getCsvFldTitle(fld) + ":" + fld.get('solrname');
+            }
+        }
+        if (result == '') {
+            result = '*';
+        }
+        return '&fl=' + encodeURIComponent(result);
+    },
+            
     listeners: {
 	'beforeload': function(store, operation) {
 	    //alert('beforeload: ' + store.getProxy().url);
