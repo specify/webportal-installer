@@ -461,6 +461,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	    Ext.getCmp('spwpmainpagingtoolbar').setVisible(false);
 	    Ext.getCmp('spwpmainmapprogbar').setVisible(true);
 	    Ext.getCmp('spwpsettingsbtn').setVisible(false);
+	    Ext.getCmp('spwpexpcsvbtn').setVisible(false);
 	} else {
 	    tabPanel.down('button[itemid="mapsearchbtn"]').setVisible(false);
 	    Ext.getCmp('spwpmainpagingtoolbar').setVisible(isPagedTab);
@@ -468,6 +469,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	    Ext.getCmp('spwpmainmapstatustext').setVisible(false);
 	    Ext.getCmp('spwpmainmapcancelbtn').setVisible(false);
 	    Ext.getCmp('spwpsettingsbtn').setVisible(isPagedTab);
+	    Ext.getCmp('spwpexpcsvbtn').setVisible(isPagedTab);
 	}
     },
 
