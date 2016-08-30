@@ -151,11 +151,11 @@ Ext.define('SpWebPortal.view.ImageView', {
 	if (imgJson != null && imgJson != '') {
 	    var imgs = Ext.JSON.decode(imgJson);
 	    for (var i = 0; i < imgs.length; i++) {
-		this.getImgSrc(imgs[i]['AttachmentLocation'], this.getPreviewSize(), this.getCollectionName(), 'ThumbSrc', imgs[i], true);
 		Ext.apply(imgs[i], {
 		    AttachedTo: attachedTo,
 		    AttachedToDescr: attachedToDescr
 		});
+		this.getImgSrc(imgs[i]['AttachmentLocation'], this.getPreviewSize(), this.getCollectionName(), 'ThumbSrc', imgs[i], true);
 	    }
 	    return imgs.length;
 	} else {
