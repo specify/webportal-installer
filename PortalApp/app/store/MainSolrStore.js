@@ -324,7 +324,7 @@ Ext.define('SpWebPortal.store.MainSolrStore', {
         for (var f = 0; f < flds.getCount(); f++) {
             var fld = flds.getAt(f);
             if (this.isCsvFld(fld)) {
-                result += "," + this.getCsvFldTitle(fld) + ":" + fld.get('solrname');
+                result += (result.length > 0 ? "," : "") + this.getCsvFldTitle(fld) + ":" + fld.get('solrname');
             }
         }
         if (result == '') {
