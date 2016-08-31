@@ -46,8 +46,21 @@ Ext.define('SpWebPortal.controller.AdvancedSearch', {
 	}
     },
 
-    doSearch: function() {
+    getCsvFileName(srchTrm) {
+        if (srchTrm == '*') {
+            return 'Everything';
+        } else {
+            return srchTrm.substring(0,12).replace(/\(|\)|\#|\@|\$|\%|\&|\+|\-|\=|\"|\'|\?|\<|\>|\.|\,|\:|\;|\*|\!|\/|\|/g,'_');
+        }
+    },
+
+    doSearch: function(srchSrc) {
 	//console.info("AdvancedSearch.doSearch");
+
+        if (this.getWriteToCsv() && "expr" == srchSrc) {
+            return;
+        }
+        
 	var ctrls = this.getSearch().query('spsearchcriterion');
 	var connector = this.getSolr() ? ' +' : ', ';
 	var filterStr = '', c;
@@ -85,23 +98,27 @@ Ext.define('SpWebPortal.controller.AdvancedSearch', {
 		this.searchLaunched();
 	    } else {
 		var solr = this.getMainSolrStoreStore();
-				
-		var url = solr.getSearchUrl(images, maps, filterStr, filterToMap, this.getMatchAll());
-		
-		this.setForceFitToMap(false);
+		var dummy_geocoords;		
+		var url = solr.getSearchUrl(images, maps, filterStr, filterToMap, this.getMatchAll(), dummy_geocoords, this.getWriteToCsv());
+		if (this.getWriteToCsv()) {
+                    this.exportToCsv(url, this.getCsvFileName(filterStr));
+                } else {
+		    this.setForceFitToMap(false);
+                    Ext.apply(Ext.getCmp('spwpexpcsvbtn'), {srch: 'adv'});
 
-		solr.getProxy().url = url; 
-		solr.setSearched(true);
-		solr.loadPage(1);
+		    solr.getProxy().url = url; 
+		    solr.setSearched(true);
+		    solr.loadPage(1);
 
-		/*var resultsTab = Ext.getCmp('spwpmaintabpanel');
-		if (!resultsTab.isVisible()) {
-		    var background = Ext.getCmp('spwpmainbackground');
-		    background.setVisible(false);
-		    resultsTab.setVisible(true);
-		}
-		resultsTab.fireEvent('dosearch');*/
-		this.searchLaunched();
+		    /*var resultsTab = Ext.getCmp('spwpmaintabpanel');
+		     if (!resultsTab.isVisible()) {
+		     var background = Ext.getCmp('spwpmainbackground');
+		     background.setVisible(false);
+		     resultsTab.setVisible(true);
+		     }
+		     resultsTab.fireEvent('dosearch');*/
+		    this.searchLaunched();
+                }
 	    }
 	}
     }

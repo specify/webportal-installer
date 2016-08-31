@@ -4,6 +4,9 @@ Ext.define('SpWebPortal.controller.Search', {
     init: function() {
 	//console.info("Search.init");
 	this.control({
+	    'button[itemid="spwpexpcsvbtn"]' : {
+		click: this.forCsv
+	    },
 	    'checkbox[itemid="req-img-ctl"]': {
 		change: this.reqImgChange
 	    },
@@ -34,10 +37,10 @@ Ext.define('SpWebPortal.controller.Search', {
 	}
     },
 
-    forCsv: function () {
-        console.info("CSV");
+    forCsv: function (cmp) {
+        //console.info("CSV");
         this.setWriteToCsv(true); 
-        this.doSearch();
+        this.doSearch(cmp.srch);
         this.setWriteToCsv(false);
     },
     
@@ -83,7 +86,34 @@ Ext.define('SpWebPortal.controller.Search', {
 	    resultsTab.setVisible(true);
 	}
 	resultsTab.fireEvent('dosearch');
-    }	
+    },
+
+    exportToCsv(url, fileName) {
+	//console.info("sending jquery ajax request " + url);
+        if (navigator.userAgent.indexOf("MSIE") != -1) {
+            window.open(url);
+        } else {
+            $.ajax({
+                url: url,
+	        context: this,
+	        crossDomain: true,
+                success: function(src) {
+                    console.info("JQUERY to the rescue!");
+                    var a = document.createElement("a");
+                    var file = new Blob([src], {type: 'application/csv'});
+                    a.href = URL.createObjectURL(file);
+                    a.download = fileName + '.csv';
+                    document.body.appendChild(a);
+                    a.click();
+                    setTimeout(function() {
+                        document.body.removeChild(a);
+                        window.URL.revokeObjectURL(url);
+                    }, 0);
+                }
+            });
+        }
+    }
+    
 });
 
     

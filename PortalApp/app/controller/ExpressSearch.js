@@ -15,9 +15,6 @@ Ext.define('SpWebPortal.controller.ExpressSearch', {
 	//console.info("ExpressSearch.init");
 
 	this.control({
-	    'button[itemid="spwpexpcsvbtn"]' : {
-		click: this.forCsv
-	    },
 	    'expressSrch button[itemid="search-btn"]': {
 		click: this.doSearch
 	    },
@@ -42,9 +39,21 @@ Ext.define('SpWebPortal.controller.ExpressSearch', {
 	}
     },
 
-    doSearch: function() {
+    getCsvFileName(srchTrm) {
+        if (srchTrm == '*') {
+            return 'Everything';
+        } else {
+            return srchTrm.replace(/\(|\)|\#|\@|\$|\%|\&|\+|\-|\=|\"|\'|\?|\<|\>|\.|\,|\:|\;|\*|\!|\/|\|/g,'_');
+        }
+    },
+    
+    doSearch: function(exportSrc) {
 	//console.info("ExpressSearch doSearch()");
 
+        if (this.getWriteToCsv() && "adv" == exportSrc) {
+            return;
+        }
+        
 	var search = this.getSearch();
 	var control = search.query('textfield[itemid="search-text"]');
 	var solr = this.getMainSolrStoreStore();
@@ -58,10 +67,33 @@ Ext.define('SpWebPortal.controller.ExpressSearch', {
 	var url = solr.getSearchUrl(images, maps, mainQ, filterToMap, this.getMatchAll(), dummy_geocoords, this.getWriteToCsv());
 
         if (this.getWriteToCsv()) {
-            window.open(url);
+	    /*console.info("sending jquery ajax request " + url);
+            $.ajax({
+                url: url,
+	 	context: this,
+	 	crossDomain: true,
+                success: function(src) {
+                    console.info("JQUERY to the rescue!");
+                    var a = document.createElement("a");
+                    var file = new Blob([src], {type: 'application/csv'});
+                    a.href = URL.createObjectURL(file);
+                    a.download = this.getCsvFileName(mainQ) + '.csv';
+                    document.body.appendChild(a);
+                    a.click();
+                    setTimeout(function() {
+                        document.body.removeChild(a);
+                        window.URL.revokeObjectURL(url);
+                    }, 0);
+                }
+             });*/
+
+            this.exportToCsv(url, this.getCsvFileName(mainQ));
+            
+            //window.open(url);
+            
         } else {
             this.setForceFitToMap(false);
-
+            Ext.apply(Ext.getCmp('spwpexpcsvbtn'), {srch: 'expr'});
 	    solr.getProxy().url = url; 
 	    solr.setSearched(true);
 	    solr.loadPage(1);
