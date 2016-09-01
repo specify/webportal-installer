@@ -313,7 +313,7 @@ Ext.define('SpWebPortal.store.MainSolrStore', {
         if (result == '') {
             result = fld.get('solrname');
         }
-        return result.replace(/ |\(|\)|\#|\@|\$|\%|\&|\+|\-|\=|\"|\'|\?|\<|\>|\.|\,|\:|\;|\*|\!|\/|\|/g,'');
+        return result.replace(/ |\(|\)|\#|\@|\$|\%|\&|\+|\-|\=|\"|\'|\?|\<|\>|\.|\,|\:|\;|\*|\!|\/|\|\[|\\n|\\t/g,'');
     },
 
     isCsvFld: function(fld) {
