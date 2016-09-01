@@ -100,6 +100,7 @@ Ext.define('SpWebPortal.controller.Search', {
                 success: function(src) {
                     console.info("JQUERY to the rescue!");
                     var a = document.createElement("a");
+                    //need to replace \, with , due to issues with solr csv.sv.escape setting.
                     var file = new Blob([src], {type: 'application/csv'});
                     a.href = URL.createObjectURL(file);
                     a.download = fileName + '.csv';
