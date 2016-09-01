@@ -96,9 +96,23 @@ Ext.define('SpWebPortal.controller.Search', {
         }
     },
 
+    isIE: function() {
+        var sAgent = window.navigator.userAgent;
+        var Idx = sAgent.indexOf("MSIE");
+
+        // If IE, return version number.
+        if (Idx >= 0) {
+            return true;
+        } else if (!!sAgent.match(/Trident\/7\./)) {
+            return true;
+        } else {
+            return false;
+        }   
+    },
+    
     exportToCsv: function(url, fileName) {
 	//console.info("sending jquery ajax request " + url);
-        if (navigator.userAgent.indexOf("MSIE") != -1) {
+        if (this.isIE()) {
             window.open(url);
         } else {
             $.ajax({

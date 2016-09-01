@@ -59,30 +59,7 @@ Ext.define('SpWebPortal.controller.ExpressSearch', {
 	var url = solr.getSearchUrl(images, maps, mainQ, filterToMap, this.getMatchAll(), dummy_geocoords, this.getWriteToCsv());
 
         if (this.getWriteToCsv()) {
-	    /*console.info("sending jquery ajax request " + url);
-            $.ajax({
-                url: url,
-	 	context: this,
-	 	crossDomain: true,
-                success: function(src) {
-                    console.info("JQUERY to the rescue!");
-                    var a = document.createElement("a");
-                    var file = new Blob([src], {type: 'application/csv'});
-                    a.href = URL.createObjectURL(file);
-                    a.download = this.getCsvFileName(mainQ) + '.csv';
-                    document.body.appendChild(a);
-                    a.click();
-                    setTimeout(function() {
-                        document.body.removeChild(a);
-                        window.URL.revokeObjectURL(url);
-                    }, 0);
-                }
-             });*/
-
             this.exportToCsv(url, this.getCsvFileName(mainQ));
-            
-            //window.open(url);
-            
         } else {
             this.setForceFitToMap(false);
             Ext.apply(Ext.getCmp('spwpexpcsvbtn'), {srch: 'expr'});
