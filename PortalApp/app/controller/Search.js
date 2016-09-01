@@ -88,7 +88,15 @@ Ext.define('SpWebPortal.controller.Search', {
 	resultsTab.fireEvent('dosearch');
     },
 
-    exportToCsv(url, fileName) {
+    getCsvFileName: function(srchTrm) {
+        if (srchTrm == '*') {
+            return 'Everything';
+        } else {
+            return srchTrm.substring(0,12).replace(/\(|\)|\#|\@|\$|\%|\&|\+|\-|\=|\"|\'|\?|\<|\>|\.|\,|\:|\;|\*|\!|\/|\|/g,'_');
+        }
+    },
+
+    exportToCsv: function(url, fileName) {
 	//console.info("sending jquery ajax request " + url);
         if (navigator.userAgent.indexOf("MSIE") != -1) {
             window.open(url);

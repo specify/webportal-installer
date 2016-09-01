@@ -38,14 +38,6 @@ Ext.define('SpWebPortal.controller.ExpressSearch', {
 	    this.setForceFitToMap(false);
 	}
     },
-
-    getCsvFileName(srchTrm) {
-        if (srchTrm == '*') {
-            return 'Everything';
-        } else {
-            return srchTrm.replace(/\(|\)|\#|\@|\$|\%|\&|\+|\-|\=|\"|\'|\?|\<|\>|\.|\,|\:|\;|\*|\!|\/|\|/g,'_');
-        }
-    },
     
     doSearch: function(exportSrc) {
 	//console.info("ExpressSearch doSearch()");

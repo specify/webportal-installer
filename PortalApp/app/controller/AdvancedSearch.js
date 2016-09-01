@@ -46,14 +46,6 @@ Ext.define('SpWebPortal.controller.AdvancedSearch', {
 	}
     },
 
-    getCsvFileName(srchTrm) {
-        if (srchTrm == '*') {
-            return 'Everything';
-        } else {
-            return srchTrm.substring(0,12).replace(/\(|\)|\#|\@|\$|\%|\&|\+|\-|\=|\"|\'|\?|\<|\>|\.|\,|\:|\;|\*|\!|\/|\|/g,'_');
-        }
-    },
-
     doSearch: function(srchSrc) {
 	//console.info("AdvancedSearch.doSearch");
 
