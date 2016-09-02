@@ -92,7 +92,7 @@ Ext.define('SpWebPortal.controller.Search', {
         if (srchTrm == '*') {
             return 'Everything';
         } else {
-            return srchTrm.substring(0,12).replace(/\(|\)|\#|\@|\$|\%|\&|\+|\-|\=|\"|\'|\?|\<|\>|\.|\,|\:|\;|\*|\!|\/|\|\]|\[|\\n|\\t/g,'_');
+            return srchTrm.substring(0,12).replace(/\(|\)|\#|\@|\$|\%|\&|\+|\-|\=|\"|\'|\?|\<|\>|\.|\,|\:|\;|\*|\!|\/|\||\]|\[|\\n|\\t|\}|\{/g,'_');
         }
     },
 
