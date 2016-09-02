@@ -21,9 +21,16 @@ Ext.define('SpWebPortal.view.MainGrid', {
 
     isGeoCoordFld: function(coldef) {
 	var fld = coldef.get('spfld').toLowerCase();
+        //Would be better to not include the xxxTextFields here?
 	return fld == 'latitude1' || fld == 'latitude2' 
 	    || fld == 'lat1text' || fld == 'lat2text'
 	    || fld == 'longitude1' || fld == 'longitude2' 
+	    || fld == 'long1text'  || fld == 'long2text';
+    },
+
+    isGeoCoordTextFld: function(coldef) {
+	var fld = coldef.get('spfld').toLowerCase();
+	return fld == 'lat1text' || fld == 'lat2text'
 	    || fld == 'long1text'  || fld == 'long2text';
     },
 
@@ -138,7 +145,11 @@ Ext.define('SpWebPortal.view.MainGrid', {
 		if (this.getShowMapAction() && this.isGoodPlaceForMapBtn(colDef)) {
 		    mapColPos = r+1;
 		}
-		col.renderer = Ext.util.Format.numberRenderer(this.getGeoCoordFormat());
+                if (!this.isGeoCoordTextFld(colDef)) {
+                    //using a format was intended to limit decimal places to 7,
+                    //but when decimal places are already less than 7, it ends up appending zeroes...
+		    col.renderer = Ext.util.Format.numberRenderer(this.getGeoCoordFormat());
+                }
 	    }
 	    if (colDef.get('displayinmap') || colDef.get('mapmarkertitle')) {
 		fldsOnMap[fldsOnMap.length] = [colDef.get('solrname'), colDef.get('title')];
