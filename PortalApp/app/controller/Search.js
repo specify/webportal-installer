@@ -126,7 +126,7 @@ Ext.define('SpWebPortal.controller.Search', {
                     var bom = '\uFEFF';
                     var file = new Blob([bom + src], {type: 'application/csv'});
                     if (navigator.msSaveOrOpenBlob) {
-                        navigator.msSaveOrOpenBlob(file, fileName);
+                        navigator.msSaveOrOpenBlob(file, fileName + '.csv');
                     } else {
                         a.href = URL.createObjectURL(file);
                         a.download = fileName + '.csv';
