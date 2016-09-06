@@ -96,7 +96,7 @@ Ext.define('SpWebPortal.controller.Search', {
         }
     },
 
-    isIE: function() {
+    isOldIE: function() {
         var sAgent = window.navigator.userAgent;
         var Idx = sAgent.indexOf("MSIE");
 
@@ -104,15 +104,17 @@ Ext.define('SpWebPortal.controller.Search', {
         if (Idx >= 0) {
             return true;
         } else if (!!sAgent.match(/Trident\/7\./)) {
-            return true;
+            //return true;
+            return false;
         } else {
             return false;
         }   
     },
+
     
     exportToCsv: function(url, fileName) {
 	//console.info("sending jquery ajax request " + url);
-        if (this.isIE()) {
+        if (this.isOldIE()) {
             window.open(url);
         } else {
             $.ajax({
@@ -123,14 +125,18 @@ Ext.define('SpWebPortal.controller.Search', {
                     var a = document.createElement("a");
                     var bom = '\uFEFF';
                     var file = new Blob([bom + src], {type: 'application/csv'});
-                    a.href = URL.createObjectURL(file);
-                    a.download = fileName + '.csv';
-                    document.body.appendChild(a);
-                    a.click();
-                    setTimeout(function() {
-                        document.body.removeChild(a);
-                        window.URL.revokeObjectURL(url);
-                    }, 0);
+                    if (navigator.msSaveOrOpenBlob) {
+                        navigator.msSaveOrOpenBlob(file, fileName);
+                    } else {
+                        a.href = URL.createObjectURL(file);
+                        a.download = fileName + '.csv';
+                        document.body.appendChild(a);
+                        a.click();
+                        setTimeout(function() {
+                            document.body.removeChild(a);
+                            window.URL.revokeObjectURL(url);
+                        }, 0);
+                    }
                 }
             });
         }
