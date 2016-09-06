@@ -121,7 +121,8 @@ Ext.define('SpWebPortal.controller.Search', {
 	        crossDomain: true,
                 success: function(src) {
                     var a = document.createElement("a");
-                    var file = new Blob([src], {type: 'application/csv'});
+                    var bom = '\uFEFF';
+                    var file = new Blob([bom + src], {type: 'application/csv'});
                     a.href = URL.createObjectURL(file);
                     a.download = fileName + '.csv';
                     document.body.appendChild(a);
