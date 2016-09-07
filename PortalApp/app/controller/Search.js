@@ -38,10 +38,19 @@ Ext.define('SpWebPortal.controller.Search', {
     },
 
     forCsv: function (cmp) {
-        //console.info("CSV");
-        this.setWriteToCsv(true); 
+        //One thing: If a user enters a search term, then clicks export-to-csv
+        //w/o first searching, then the export will be different than the contents of the records tab.
+        //kinda weird, but does it matter?
+        this.setWriteToCsv(true);
+        var mainStore = Ext.getStore('MainSolrStore');
+        if (mainStore && mainStore.getFilterToMap()) {
+            this.setForceFitToMap(true);
+        }
         this.doSearch(cmp.srch);
         this.setWriteToCsv(false);
+        if (mainStore && mainStore.getFilterToMap()) {
+            this.setForceFitToMap(false);
+        }
     },
     
     mapViewIsActive: function() {
@@ -90,33 +99,35 @@ Ext.define('SpWebPortal.controller.Search', {
 
     getCsvFileName: function(srchTrm) {
         if (srchTrm == '*') {
-            return 'Everything';
+            return 'SpSearch';
         } else {
             return srchTrm.substring(0,12).replace(/\(|\)|\#|\@|\$|\%|\&|\+|\-|\=|\"|\'|\?|\<|\>|\.|\,|\:|\;|\*|\!|\/|\||\]|\[|\\n|\\t|\}|\{/g,'_');
         }
     },
 
-    isOldIE: function() {
+    isIE: function() {
         var sAgent = window.navigator.userAgent;
         var Idx = sAgent.indexOf("MSIE");
 
-        // If IE, return version number.
         if (Idx >= 0) {
             return true;
         } else if (!!sAgent.match(/Trident\/7\./)) {
-            //return true;
-            return false;
+            return true;
         } else {
             return false;
         }   
     },
 
+    doDownload: function() {
+        if (this.isIE()) {
+            return navigator.msSaveOrOpenBlob ? true : false;
+        } else {
+            return true;
+        }
+    },
     
     exportToCsv: function(url, fileName) {
-	//console.info("sending jquery ajax request " + url);
-        if (this.isOldIE()) {
-            window.open(url);
-        } else {
+        if (this.doDownload()) {
             $.ajax({
                 url: url,
 	        context: this,
@@ -139,9 +150,10 @@ Ext.define('SpWebPortal.controller.Search', {
                     }
                 }
             });
+        } else {
+            window.open(url);
         }
     }
-    
 });
 
     

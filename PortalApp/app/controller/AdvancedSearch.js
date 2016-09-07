@@ -71,7 +71,7 @@ Ext.define('SpWebPortal.controller.AdvancedSearch', {
 	}
 	var images = this.getRequireImages();
 	var maps = this.getRequireGeoCoords();
-	var filterToMap = (this.getForceFitToMap() || this.getFitToMap()) && this.mapViewIsActive();
+	var filterToMap = (this.getForceFitToMap() || this.getFitToMap()) && (this.mapViewIsActive() || this.getWriteToCsv());
 	if (filterStr.length == 0) {
 	    filterStr = "*";
 	}
