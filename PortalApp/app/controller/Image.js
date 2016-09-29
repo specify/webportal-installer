@@ -14,6 +14,7 @@ Ext.define('SpWebPortal.controller.Image', {
     thumb: null,
     lastSearchCancelled: false,
     mainImgRecords: [],
+    imgsPerPage: 78,
 
     init: function() {
 	var settings = Ext.getStore('SettingsStore').getAt(0);
@@ -71,13 +72,39 @@ Ext.define('SpWebPortal.controller.Image', {
 	thbStore.removeAll();
 	var imgStore = this.imgView.getImageStore();
 	imgStore.removeAll();
-	
-	for (var r = 0; r < store.getCount(); r++) {
+
+        //the old way...
+	/*for (var r = 0; r < store.getCount(); r++) {
 	    var rec = store.getAt(r);
 	    this.imgView.addImgForSpecRec(rec);
-	}
+	}*/
+        //...the old way
+
+        //"paged"...
+        if (this.setupPreviewTask != null) {
+            this.setupPreviewTask.destroy();
+        }
+        this.setupPreviewTask = Ext.TaskManager.newTask({
+            run: this.setupPreviewTasked(store),
+            scope: this,
+            interval: 100
+        });
+        this.setupPreviewTask.start();
+        //..."paged"
     },	
-    
+
+    setupPreviewTasked: function(store) {
+        return function(invocations) {
+            var lo = (invocations - 1) * this.imgsPerPage;
+            var hi = Math.min(lo + this.imgsPerPage, store.getCount());  
+            for (var r = lo; r < hi; r++) {
+                var rec = store.getAt(r);
+                this.imgView.addImgForSpecRec(rec);
+            }
+            return hi < store.getCount();
+        };
+    },
+                     
     onPageChange: function(pager) {
 	//console.info('Image onPageChange()');
 	if (this.imgView == null) {
