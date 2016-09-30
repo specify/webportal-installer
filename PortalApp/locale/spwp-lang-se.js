@@ -112,8 +112,8 @@ Ext.define("SpWebPortal.locale.se.controller.Image", {
     selectedImage: 'Valda bilden',
     previewTitle: 'Förhandsgranskning ({0} av {1} items)',
     previewTitleAll: 'Preview ({0} items)',
-    moreItemsBtnText: 'Next {0} items'
-
+    moreItemsBtnText: 'Next {0} ...',
+    moreItemsBtnPosText: '{0} of {1} items '
 });
 
 Ext.define("SpWebPortal.locale.se.controller.Mapper", {

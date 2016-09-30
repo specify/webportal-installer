@@ -73,14 +73,19 @@ Ext.define('SpWebPortal.view.ImageView', {
                 {
                     xtype: 'tbfill'
                 },
-                
-                Ext.create('Ext.button.Button', {
+                {
+                    xtype: 'tbtext',
+                    text: '',
+                    id: this.moreImagesBtnId + 'posid',
+                    hidden: true
+                },
+                {
 	            xtype: 'button',
 	            itemid: 'moreImagesBtn',
  	            text: this.moreItems,
                     id: this.moreImagesBtnId,
                     hidden: true
-	        })
+	        }
 	    ]
 	});
 

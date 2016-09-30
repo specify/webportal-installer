@@ -7,7 +7,8 @@ Ext.define('SpWebPortal.controller.Image', {
     selectedImage: 'Selected Image',
     previewTitle: 'Preview ({0} of {1} items)',
     previewTitleAll: 'Preview ({0} items)',
-    moreItemsBtnText: 'Next {0} items',
+    moreItemsBtnText: 'Next {0} ...',
+    moreItemsBtnPosText: '{0} of {1} items ',
     //...localizable text
 
     mainImgStore: null,
@@ -108,12 +109,14 @@ Ext.define('SpWebPortal.controller.Image', {
         var btnId = this.imgView.getMoreImagesBtnId(); 
         var moreImgBtn = Ext.getCmp(btnId);
         moreImgBtn.setVisible(true);
+        var moreImgBtnPos = Ext.getCmp(btnId + 'posid');
+        moreImgBtnPos.setVisible(true);
         //Having different batchers for different views is necessary in case paging is
         //implemented for detail image views
-        this.getNextImageBatch.btnId = this.imageBatcher(moreImgBtn, store, 0).bind(this)();
+        this.getNextImageBatch.btnId = this.imageBatcher(moreImgBtn, moreImgBtnPos, store, 0).bind(this)();
     },	
 
-    imageBatcher: function(btn, store, invocations) {
+    imageBatcher: function(btn, pos, store, invocations) {
         return function() {
             var lo = invocations * this.imgsPerPage;
             var hi = Math.min(lo + this.imgsPerPage, store.getCount());  
@@ -123,10 +126,12 @@ Ext.define('SpWebPortal.controller.Image', {
             }
             if (hi < store.getCount()) {
                 btn.setText(Ext.String.format(this.moreItemsBtnText, Math.min(store.getCount() - hi, this.imgsPerPage)));
+                pos.setText(Ext.String.format(this.moreItemsBtnPosText, hi, store.getTotalCount()));
                 this.thumb.up('panel').setTitle(Ext.String.format(this.previewTitle, hi, store.getTotalCount()));
-                return this.imageBatcher(btn, store, invocations+1);
+                return this.imageBatcher(btn, pos, store, invocations+1);
             } else {
                 btn.setVisible(false);
+                pos.setVisible(false);
                 this.thumb.up('panel').setTitle(Ext.String.format(this.previewTitleAll, store.getTotalCount()));
                 return null;
             }
