@@ -36,7 +36,8 @@ Ext.define("SpWebPortal.locale.se.view.ImageView", {
     previewTitle: 'Förhandsgranskning',
     selectedTitle: 'Valda bilden',
     thumbPagerDisplayMsg: 'Displaying images {0} - {1} of {2}',
-    thumbPagerEmptyMsg: 'No images to display'
+    thumbPagerEmptyMsg: 'No images to display',
+    moreItems: 'More items'
 });
 
 Ext.define("SpWebPortal.locale.se.view.ImageSingleView", {
@@ -109,7 +110,10 @@ Ext.define("SpWebPortal.locale.se.controller.Image", {
     override: "SpWebPortal.controller.Image",
 
     selectedImage: 'Valda bilden',
-    previewTitle: 'Förhandsgranskning (sida {0} av {1})'
+    previewTitle: 'Förhandsgranskning ({0} av {1} items)',
+    previewTitleAll: 'Preview ({0} items)',
+    moreItemsBtnText: 'Next {0} items'
+
 });
 
 Ext.define("SpWebPortal.locale.se.controller.Mapper", {

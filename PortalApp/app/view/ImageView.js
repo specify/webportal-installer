@@ -15,7 +15,8 @@ Ext.define('SpWebPortal.view.ImageView', {
     selectedTitle: 'Selected Image',
     thumbPagerDisplayMsg: 'Displaying images {0} - {1} of {2}',
     thumbPagerEmptyMsg: 'No images to display',
-
+    moreItems: 'More Items',
+    
     //...localizable text
 
     layout: 'border',
@@ -33,7 +34,8 @@ Ext.define('SpWebPortal.view.ImageView', {
 	imgServerResponse: null,
 	imgServerError: null,
 	imgDescriptionFlds: null,
-	collectionName: null
+	collectionName: null,
+        moreImagesBtnId: null
     },
 
     initComponent: function() {
@@ -50,8 +52,14 @@ Ext.define('SpWebPortal.view.ImageView', {
 	    }
 	}));
 
+        //ensure unique ids for popup window image views
+        this.moreImagesBtnId = 'spwpmoreimagesbtn';
+        var n = 2;
+        while (Ext.getCmp(this.moreImagesBtnId) && n < 666) {
+            this.moreImagesBtnId = 'spwpmoreimagesbtn' + n++;
+        }
 	var cmps = [];
-
+        
 	cmps[0] = Ext.create('Ext.panel.Panel', {
 	    title: this.previewTitle,
 	    region: 'center',
@@ -60,7 +68,20 @@ Ext.define('SpWebPortal.view.ImageView', {
 	    items: Ext.create('SpWebPortal.view.ThumbnailView', {
 		//store: thumbStore
 		store: this.getImageStore()
-	    })
+	    }),
+	    bbar: [
+                {
+                    xtype: 'tbfill'
+                },
+                
+                Ext.create('Ext.button.Button', {
+	            xtype: 'button',
+	            itemid: 'moreImagesBtn',
+ 	            text: this.moreItems,
+                    id: this.moreImagesBtnId,
+                    hidden: true
+	        })
+	    ]
 	});
 
 	this.items = cmps;

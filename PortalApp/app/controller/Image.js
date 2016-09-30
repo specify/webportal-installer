@@ -5,22 +5,28 @@ Ext.define('SpWebPortal.controller.Image', {
 
     //localizable text...
     selectedImage: 'Selected Image',
-    previewTitle: 'Preview (page {0} of {1})',
+    previewTitle: 'Preview ({0} of {1} items)',
+    previewTitleAll: 'Preview ({0} items)',
+    moreItemsBtnText: 'Next {0} items',
     //...localizable text
- 
+
     mainImgStore: null,
     imgView: null,
     solrImgFl: null,
     thumb: null,
     lastSearchCancelled: false,
     mainImgRecords: [],
-    imgsPerPage: 78,
+    imgsPerPage: null,
+    getNextImageBatch: {},
 
     init: function() {
 	var settings = Ext.getStore('SettingsStore').getAt(0);
 	var attUrl = settings.get("imageBaseUrl");
 	var attachmentsPresent = typeof attUrl === "string" && attUrl.length > 0;  
-
+        this.imgsPerPage = settings.get("imagePageSize");
+        if (!this.imgsPerPage) {
+            this.imgsPerPage = 100;
+        }
 	if (attachmentsPresent) {
 	    this.control({
 		'thumbnail': {
@@ -32,7 +38,10 @@ Ext.define('SpWebPortal.controller.Image', {
 		'#spwpmaintabpanel': {
 		    tabchange: this.onTabChange
 		    //dosearch: this.onDoSearch
-		}
+		},
+                'button[itemid="moreImagesBtn"]': {
+                    click: this.moreImages
+                }
 	    });
 	}
 
@@ -66,8 +75,11 @@ Ext.define('SpWebPortal.controller.Image', {
     setupImgPreview: function(store) {
 	//console.info('Image setUpImgPreview()');
 
-	this.thumb.up('panel').setTitle(Ext.String.format(this.previewTitle, store.currentPage, Math.ceil(store.getTotalCount()/store.pageSize)));
-	
+        //old way
+        //this.thumb.up('panel').setTitle(Ext.String.format(this.previewTitle, store.currentPage, Math.ceil(store.getTotalCount()/store.pageSize)));
+        //new way
+        this.thumb.up('panel').setTitle(Ext.String.format(this.previewTitle, this.imgsPerPage, store.getTotalCount()));
+        
 	var thbStore = this.thumb.getStore();
 	thbStore.removeAll();
 	var imgStore = this.imgView.getImageStore();
@@ -81,7 +93,7 @@ Ext.define('SpWebPortal.controller.Image', {
         //...the old way
 
         //"paged"...
-        if (this.setupPreviewTask != null) {
+        /*if (this.setupPreviewTask != null) {
             this.setupPreviewTask.destroy();
         }
         this.setupPreviewTask = Ext.TaskManager.newTask({
@@ -89,10 +101,46 @@ Ext.define('SpWebPortal.controller.Image', {
             scope: this,
             interval: 100
         });
-        this.setupPreviewTask.start();
+        this.setupPreviewTask.start();*/
         //..."paged"
+
+        //really paged
+        var btnId = this.imgView.getMoreImagesBtnId(); 
+        var moreImgBtn = Ext.getCmp(btnId);
+        moreImgBtn.setVisible(true);
+        //Having different batchers for different views is necessary in case paging is
+        //implemented for detail image views
+        this.getNextImageBatch.btnId = this.imageBatcher(moreImgBtn, store, 0).bind(this)();
     },	
 
+    imageBatcher: function(btn, store, invocations) {
+        return function() {
+            var lo = invocations * this.imgsPerPage;
+            var hi = Math.min(lo + this.imgsPerPage, store.getCount());  
+            for (var r = lo; r < hi; r++) {
+                var rec = store.getAt(r);
+                this.imgView.addImgForSpecRec(rec);
+            }
+            if (hi < store.getCount()) {
+                btn.setText(Ext.String.format(this.moreItemsBtnText, Math.min(store.getCount() - hi, this.imgsPerPage)));
+                this.thumb.up('panel').setTitle(Ext.String.format(this.previewTitle, hi, store.getTotalCount()));
+                return this.imageBatcher(btn, store, invocations+1);
+            } else {
+                btn.setVisible(false);
+                this.thumb.up('panel').setTitle(Ext.String.format(this.previewTitleAll, store.getTotalCount()));
+                return null;
+            }
+        };
+    },
+            
+    moreImages: function(btn) {
+        var btnId = btn.getId();
+        if (this.getNextImageBatch.btnId) {
+            this.getNextImageBatch.btnId = this.getNextImageBatch.btnId.bind(this)();
+        }
+    },
+    
+    /*
     setupPreviewTasked: function(store) {
         return function(invocations) {
             var lo = (invocations - 1) * this.imgsPerPage;
@@ -103,7 +151,7 @@ Ext.define('SpWebPortal.controller.Image', {
             }
             return hi < store.getCount();
         };
-    },
+    },*/
                      
     onPageChange: function(pager) {
 	//console.info('Image onPageChange()');
