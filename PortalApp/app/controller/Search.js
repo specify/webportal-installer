@@ -1,8 +1,27 @@
 Ext.define('SpWebPortal.controller.Search', {
     extend: 'Ext.app.Controller',
     
+    config: {
+	requireImages: false,
+	requireGeoCoords: false,
+	matchAll: false,
+	fitToMap: false,
+	forceFitToMap: false,
+        writeToCsv: false,
+        expOK: false
+    },
+    
     init: function() {
 	//console.info("Search.init");
+
+        var settings = Ext.getStore('SettingsStore').getAt(0);
+        var expOKSet = settings.get("allowExportToFile");
+        if (typeof expOKSet === "undefined" || expOKSet != 0) {
+            this.setExpOK(true);
+        } else {
+            this.setExpOK(false);
+        }
+        
 	this.control({
 	    'button[itemid="spwpexpcsvbtn"]' : {
 		click: this.forCsv
@@ -21,14 +40,6 @@ Ext.define('SpWebPortal.controller.Search', {
 	this.callParent(arguments);
     },
 
-    config: {
-	requireImages: false,
-	requireGeoCoords: false,
-	matchAll: false,
-	fitToMap: false,
-	forceFitToMap: false,
-        writeToCsv: false
-    },
 
     onSpecialKey: function(field, e) {
 	if (e.getKey() == e.ENTER) {
@@ -38,18 +49,21 @@ Ext.define('SpWebPortal.controller.Search', {
     },
 
     forCsv: function (cmp) {
-        //One thing: If a user enters a search term, then clicks export-to-csv
-        //w/o first searching, then the export will be different than the contents of the records tab.
-        //kinda weird, but does it matter?
-        this.setWriteToCsv(true);
-        var mainStore = Ext.getStore('MainSolrStore');
-        if (mainStore && mainStore.getFilterToMap()) {
-            this.setForceFitToMap(true);
-        }
-        this.doSearch(cmp.srch);
-        this.setWriteToCsv(false);
-        if (mainStore && mainStore.getFilterToMap()) {
-            this.setForceFitToMap(false);
+        //export btn should only be visible when exports are allowed but just in case
+        if (this.getExpOK()) {
+            //One thing: If a user enters a search term, then clicks export-to-csv
+            //w/o first searching, then the export will be different than the contents of the records tab.
+            //kinda weird, but does it matter?
+            this.setWriteToCsv(true);
+            var mainStore = Ext.getStore('MainSolrStore');
+            if (mainStore && mainStore.getFilterToMap()) {
+                this.setForceFitToMap(true);
+            }
+            this.doSearch(cmp.srch);
+            this.setWriteToCsv(false);
+            if (mainStore && mainStore.getFilterToMap()) {
+                this.setForceFitToMap(false);
+            }
         }
     },
     

@@ -469,7 +469,10 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	    Ext.getCmp('spwpmainmapstatustext').setVisible(false);
 	    Ext.getCmp('spwpmainmapcancelbtn').setVisible(false);
 	    Ext.getCmp('spwpsettingsbtn').setVisible(isPagedTab);
-	    Ext.getCmp('spwpexpcsvbtn').setVisible(isPagedTab);
+            var expBtn = Ext.getCmp('spwpexpcsvbtn');
+            if (expBtn) {
+                expBtn.setVisible(isPagedTab && expBtn.allowed);
+            }
 	}
     },
 

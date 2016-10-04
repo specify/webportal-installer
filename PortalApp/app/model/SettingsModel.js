@@ -28,7 +28,9 @@ Ext.define('SpWebPortal.model.SettingsModel', {
  	{name: 'bottomHeight', type: 'int'},
 	{name: 'bottomMarginLeft', type: 'string'},
 	{name: 'bottomMarginRight', type: 'string'},
-	{name: 'bottomWidth', type: 'int'}
+	{name: 'bottomWidth', type: 'int'},
+	{name: 'imagePageSize', type: 'int', defaultValue: 100},
+	{name: 'allowExportToFile', type: 'int', defaultValue: 1}
    ],
 
     validations: [

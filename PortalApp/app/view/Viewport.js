@@ -83,21 +83,31 @@ Ext.define('SpWebPortal.view.Viewport', {
 	    itemid: 'spwpsettingsbtn',
 	    id: 'spwpsettingsbtn'
 	});
-	var expBtn = Ext.create('Ext.button.Button', {
-	    xtype: 'button',
-	    tooltip: 'to csv',
-	    icon: 'resources/images/ExportExcelTemplate16x16.png',
-	    itemid: 'spwpexpcsvbtn',
-	    id: 'spwpexpcsvbtn'
-	});
 
 	mapBtn.setVisible(false);
 	mapCancelBtn.setVisible(false);
 	
 	var settings = Ext.getStore('SettingsStore').getAt(0);
 	var attUrl = settings.get("imageBaseUrl");
-	var attachmentsPresent = typeof attUrl === "string" && attUrl.length > 0;  
-	
+	var attachmentsPresent = typeof attUrl === "string" && attUrl.length > 0;
+        var expOK = settings.get("allowExportToFile");
+        
+        if (typeof expOK === "undefined" || expOK != 0) {
+            expOK = true;
+        } else {
+            expOK = false;
+        }
+        
+	var expBtn = Ext.create('Ext.button.Button', {
+	    xtype: 'button',
+	    tooltip: 'to csv',
+	    icon: 'resources/images/ExportExcelTemplate16x16.png',
+	    itemid: 'spwpexpcsvbtn',
+	    id: 'spwpexpcsvbtn',
+            hidden: !expOK,
+            allowed: expOK
+	});
+
 	var bannerURL = settings.get('bannerURL');
 	if (bannerURL) {
 	    this.banner = Ext.create('Ext.panel.Panel', {

@@ -25,7 +25,7 @@ Ext.define('SpWebPortal.controller.Image', {
 	var attUrl = settings.get("imageBaseUrl");
 	var attachmentsPresent = typeof attUrl === "string" && attUrl.length > 0;  
         this.imgsPerPage = settings.get("imagePageSize");
-        if (!this.imgsPerPage) {
+        if (!this.imgsPerPage || this.imgsPerPage == 0) {
             this.imgsPerPage = 100;
         }
 	if (attachmentsPresent) {
@@ -79,7 +79,11 @@ Ext.define('SpWebPortal.controller.Image', {
         //old way
         //this.thumb.up('panel').setTitle(Ext.String.format(this.previewTitle, store.currentPage, Math.ceil(store.getTotalCount()/store.pageSize)));
         //new way
-        this.thumb.up('panel').setTitle(Ext.String.format(this.previewTitle, this.imgsPerPage, store.getTotalCount()));
+        if (store.getTotalCount() > this.imgsPerPage) {
+            this.thumb.up('panel').setTitle(Ext.String.format(this.previewTitle, this.imgsPerPage, store.getTotalCount()));
+        } else {
+            this.thumb.up('panel').setTitle(Ext.String.format(this.previewTitleAll, store.getTotalCount()));
+        }  
         
 	var thbStore = this.thumb.getStore();
 	thbStore.removeAll();
