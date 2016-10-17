@@ -141,7 +141,31 @@ Ext.define('SpWebPortal.controller.Image', {
             }
         };
     },
-            
+
+    imageBatcherNew: function(btn, pos, store, invocations) {
+        return function() {
+            var lo = invocations * this.imgsPerPage;
+            var hi = Math.min(lo + this.imgsPerPage, store.getCount());  
+            var worker = new Worker("app/controller/ImgBatchWorker.js");
+            worker.addEventListener('message', function(e){
+                if (hi < store.getCount()) {
+                    btn.setText(Ext.String.format(this.moreItemsBtnText, Math.min(store.getCount() - hi, this.imgsPerPage)));
+                    pos.setText(Ext.String.format(this.moreItemsBtnPosText, hi, store.getTotalCount()));
+                    this.thumb.up('panel').setTitle(Ext.String.format(this.previewTitle, hi, store.getTotalCount()));
+                    worker.terminate();
+                    return this.imageBatcherNew(btn, pos, store, invocations+1);
+                } else {
+                    btn.setVisible(false);
+                    pos.setVisible(false);
+                    this.thumb.up('panel').setTitle(Ext.String.format(this.previewTitleAll, store.getTotalCount()));
+                    worker.terminate();
+                    return null;
+                }
+            }, false);
+            worker.postMessage({'lo': lo, 'hi': hi, 'store': store, 'f': this.imgView.addImgForSpecRec.bind(this.imgView)});
+        };
+    },
+    
     moreImages: function(btn) {
         var btnId = btn.getId();
         if (this.getNextImageBatch.btnId) {
