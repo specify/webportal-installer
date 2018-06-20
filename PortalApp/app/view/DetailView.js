@@ -31,14 +31,29 @@ Ext.define('SpWebPortal.view.DetailView', {
 	var flds = [];
 	for (var f = 1; f < fieldStore.count(); f++) {
 	    var fld = fieldStore.getAt(f);
-	    flds[f] = Ext.create('Ext.form.field.Text', {
-		fieldLabel: fld.get('title'),
-		name: fld.get('solrname'),
-		readOnly: true,
-		labelAlign: 'right',
-		anchor: '100%',
-		displaycolidx: fld.get('displaycolidx')
-	    });
+            if (fld.get('linkify')) {
+                //Display object is less than ideal for columns with values that may or may not
+                //contain embedded links. Linkless values will be unbordered and unadorned and might
+                //look strange.
+                flds[f] = Ext.create('Ext.form.field.Display', {
+		    fieldLabel: fld.get('title'),
+		    name: fld.get('solrname'),
+		    readOnly: true,
+		    labelAlign: 'right',
+		    anchor: '100%',
+		    displaycolidx: fld.get('displaycolidx'),
+                    linkify: fld.get('linkify')
+	        });
+            } else {
+                flds[f] = Ext.create('Ext.form.field.Text', {
+		    fieldLabel: fld.get('title'),
+		    name: fld.get('solrname'),
+		    labelAlign: 'right',
+		    anchor: '100%',
+		    displaycolidx: fld.get('displaycolidx'),
+                    linkify: fld.get('linkify')
+	        });
+            }
 	}
 	flds.sort(function(a, b){return a.displaycolidx - b.displaycolidx;});
 	this.items = flds;
@@ -48,6 +63,13 @@ Ext.define('SpWebPortal.view.DetailView', {
 
     loadRecord: function(record) {
 	//console.info("DetailView.loadRecord in");
+        for (var f = 0; f < this.items.items.length; f++) {
+            if (this.items.items[f]['linkify']) {
+                var fldName = this.items.items[f]['name'];
+                //using target tag makes link open in new browser tab
+                record.data[fldName] = linkify(record.data[fldName]).replace('<a href=', '<a target="_blank" href=');
+            }
+        }   
 	this.callParent(arguments);
 	var imgFld = this.getForm().findField('img');
 	if (imgFld != null) {

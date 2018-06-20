@@ -14,13 +14,13 @@ INSTALL_DIR := $(SOLR_HOME)
 # Running 'make install-context-file' will create the following
 # context file to alert Tomcat to the web portal app. To make the
 # portal the "default" app, change 'specify-solr.xml' to 'ROOT.xml'.
-TOMCAT_CONTEXT_FILE := /etc/tomcat7/Catalina/localhost/specify-solr.xml
+TOMCAT_CONTEXT_FILE := /etc/tomcat/Catalina/localhost/specify-solr.xml
 
 # The user and group to set on the installed files. The tomcat user
 # must be in the given group because Solr writes some files to
 # SOLR_HOME.
 INSTALL_UID := $(USER)
-INSTALL_GID := tomcat7
+INSTALL_GID := tomcat
 
 # Set to false to allow Solr admin page to be available.
 export DISABLE_ADMIN := true
@@ -64,7 +64,7 @@ update: .lastupdate
 
 .lastupdate: build
 	$(MAKE) install-solr-home
-	sudo invoke-rc.d tomcat7 restart
+	sudo invoke-rc.d tomcat restart
 	touch $@
 
 clean:

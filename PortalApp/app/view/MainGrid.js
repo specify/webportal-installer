@@ -28,8 +28,7 @@ Ext.define('SpWebPortal.view.MainGrid', {
     // ...localizable strings
 
     requires: [
-	'SpWebPortal.model.AttachedImageModel'
-    ],
+	'SpWebPortal.model.AttachedImageModel'],
 
     config: {
 	showMapAction: false, //Dropping the map action item just indicating presence/absence of coords with icon, details btn displays map
@@ -114,6 +113,10 @@ Ext.define('SpWebPortal.view.MainGrid', {
 	return colDef.get('solrname') == 'img';
     },
 
+    isUrlCol: function(colDef) {
+        return colDef.get('linkify');
+    },
+    
     initComponent: function() {
 	//console.info('MainGrid initComponent()');
 	var settings = Ext.getStore('SettingsStore').getAt(0);
@@ -138,6 +141,12 @@ Ext.define('SpWebPortal.view.MainGrid', {
 		initialIdx: colDef.get('displaycolidx')
 	    });
 	    //console.info(col);
+            if (this.isUrlCol(colDef)) {
+                col.renderer = function(value) {
+                    //using target tag makes link open in new browser tab
+                    return linkify(value).replace('<a href=', '<a target="_blank" href=');
+                };
+            }
 	    if (this.isImageCol(colDef)) {
 		this.imgCol = colDef.get('solrname');
 		col.renderer = function(value) {
