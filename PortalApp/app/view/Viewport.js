@@ -126,6 +126,10 @@ Ext.define('SpWebPortal.view.Viewport', {
             hidden: !expOK,
             allowed: expOK
 	});
+	var expStatText = Ext.create('Ext.toolbar.TextItem', {
+	    hidden: true,
+	    id: 'spwpexpcsvstatustext'
+	});
 
 	var bannerURL = settings.get('bannerURL');
 	if (bannerURL) {
