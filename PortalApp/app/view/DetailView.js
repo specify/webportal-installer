@@ -63,13 +63,18 @@ Ext.define('SpWebPortal.view.DetailView', {
 
     loadRecord: function(record) {
 	//console.info("DetailView.loadRecord in");
-        for (var f = 0; f < this.items.items.length; f++) {
-            if (this.items.items[f]['linkify']) {
-                var fldName = this.items.items[f]['name'];
-                //using target tag makes link open in new browser tab
-                record.data[fldName] = linkify(record.data[fldName]).replace('<a href=', '<a target="_blank" href=');
+        if (!record.linkified) {
+            for (var f = 0; f < this.items.items.length; f++) {
+                if (this.items.items[f]['linkify']) {
+                    var fldName = this.items.items[f]['name'];
+                    if (!record.data[fldName]['linkified']) {
+                        //using target tag makes link open in new browser tab
+                        record.data[fldName] = linkify(record.data[fldName]).replace('<a href=', '<a target="_blank" href=');
+                    }
+                }
+                record.linkified = true;
             }
-        }   
+        }
 	this.callParent(arguments);
 	var imgFld = this.getForm().findField('img');
 	if (imgFld != null) {
