@@ -29,6 +29,10 @@ Ext.define('SpWebPortal.controller.Search', {
         writeToCsv: false,
         expOK: false
     },
+
+    //localizable text...
+    downloading: 'Downloading',
+    //...localizable text
     
     init: function() {
 	//console.info("Search.init");
@@ -161,6 +165,9 @@ Ext.define('SpWebPortal.controller.Search', {
     
     exportToCsv: function(url, fileName) {
         if (this.doDownload()) {
+            Ext.getCmp('spwpexpcsvbtn').setDisabled(true);
+            Ext.getCmp('spwpexpcsvstatustext').setText(this.downloading + fileName + '...');
+            Ext.getCmp('spwpexpcsvstatustext').setVisible(true);
             $.ajax({
                 url: url,
 	        context: this,
@@ -181,6 +188,9 @@ Ext.define('SpWebPortal.controller.Search', {
                             window.URL.revokeObjectURL(url);
                         }, 0);
                     }
+                    Ext.getCmp('spwpexpcsvbtn').setDisabled(false);
+                    Ext.getCmp('spwpexpcsvstatustext').setVisible(false);
+                    Ext.getCmp('spwpexpcsvstatustext').setText(this.downloading);
                 }
             });
         } else {

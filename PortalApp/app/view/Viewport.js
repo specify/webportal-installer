@@ -42,6 +42,7 @@ Ext.define('SpWebPortal.view.Viewport', {
     mapSearchBtnTip: 'Apply search criteria to map region',
     mapCancelBtn: 'Cancel',
     mapCancelBtnTip: 'Stop plotting the current results',
+    toCsv: 'download to csv',
     //...localizable text
 
     requires: [
@@ -119,7 +120,7 @@ Ext.define('SpWebPortal.view.Viewport', {
         
 	var expBtn = Ext.create('Ext.button.Button', {
 	    xtype: 'button',
-	    tooltip: 'to csv',
+	    tooltip: this.toCsv, 
 	    icon: 'resources/images/ExportExcelTemplate16x16.png',
 	    itemid: 'spwpexpcsvbtn',
 	    id: 'spwpexpcsvbtn',
@@ -166,6 +167,7 @@ Ext.define('SpWebPortal.view.Viewport', {
 		mapCancelBtn,
 		mapProg,
 		mapStatText,
+                expStatText,
 		loadingBtn
 	    ],
 	    items: [

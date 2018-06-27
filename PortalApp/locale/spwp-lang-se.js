@@ -40,6 +40,12 @@ Ext.define("SpWebPortal.locale.se.view.DetailsPanel", {
     recordText: 'postern'
 });
 
+Ext.define('SpWebPortal.locale.se.controller.Search', {
+    override: "SpWebPortal.controller.Search",
+
+    downloading: 'Downloading'
+});
+
 Ext.define("SpWebPortal.locale.se.view.ExpressSearchView", {
     override: "SpWebPortal.view.ExpressSearchView",
 
@@ -112,7 +118,8 @@ Ext.define("SpWebPortal.locale.se.view.Viewport", {
     mapSearchBtn: 'Search',
     mapSearchBtnTip: 'Apply search criteria to map region',
     mapCancelBtn: 'Avbestalla',
-    mapCancelBtnTip: 'Stop plotting the current results'
+    mapCancelBtnTip: 'Stop plotting the current results',
+    toCsv: 'download to csv'
 });
 
 
