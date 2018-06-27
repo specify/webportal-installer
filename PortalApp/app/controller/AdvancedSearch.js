@@ -55,6 +55,32 @@ Ext.define('SpWebPortal.controller.AdvancedSearch', {
 	this.setMatchAll(true);
 
 	this.callParent(arguments);
+
+        Ext.onReady(this.runInitialSearch(this));
+    },
+
+    runInitialSearch: function(myself) {
+        return function() {
+            var filterParam = myself.getParams('filter');
+            if (filterParam) {
+                myself.searchFor(filterParam, false, false, false);
+            }
+        };
+    },
+
+    getParams: function(param) {
+        var vars = {};
+	window.location.href.replace( location.hash, '' ).replace(
+		/[?&]+([^=&]+)=?([^&]*)?/gi, // regexp
+		function( m, key, value ) { // callback
+			vars[key] = value !== undefined ? value : '';
+		}
+	);
+
+	if ( param ) {
+		return vars[param] ? vars[param] : null;
+	}
+	return vars;
     },
 
     onMapSearchClick: function() {
@@ -65,35 +91,7 @@ Ext.define('SpWebPortal.controller.AdvancedSearch', {
 	}
     },
 
-    doSearch: function(srchSrc) {
-	//console.info("AdvancedSearch.doSearch");
-
-        if (this.getWriteToCsv() && "expr" == srchSrc) {
-            return;
-        }
-        
-	var ctrls = this.getSearch().query('spsearchcriterion');
-	var connector = this.getSolr() ? ' +' : ', ';
-	var filterStr = '', c;
-	for (c = 0; c < ctrls.length; c++) {
-	    var filter = this.getSolr() ? ctrls[c].solrFilter(this.getMatchAll(), this) : ctrls[c].sqlPhpFilter();
-	    //console.info(filter);
-	    if (filter == 'error') {
-		filterStr = 'error';
-		break;
-	    } else if (filter != '') {
-		if (filterStr != '') {
-		    filterStr += connector;
-		}
-		filterStr += filter;
-	    }
-	}
-	var images = this.getRequireImages();
-	var maps = this.getRequireGeoCoords();
-	var filterToMap = (this.getForceFitToMap() || this.getFitToMap()) && (this.mapViewIsActive() || this.getWriteToCsv());
-	if (filterStr.length == 0) {
-	    filterStr = "*";
-	}
+    searchFor: function(filterStr, images, maps, filterToMap) {
 	if (filterStr.length > 0 && filterStr != 'error') {
 	    if (!this.getSolr()) {
 		SpecStore.getProxy().url = urlStrTemplateInit + '?WHERE=' +  '[' + filterStr + ']';
@@ -120,17 +118,40 @@ Ext.define('SpWebPortal.controller.AdvancedSearch', {
 		    solr.getProxy().url = url; 
 		    solr.setSearched(true);
 		    solr.loadPage(1);
-
-		    /*var resultsTab = Ext.getCmp('spwpmaintabpanel');
-		     if (!resultsTab.isVisible()) {
-		     var background = Ext.getCmp('spwpmainbackground');
-		     background.setVisible(false);
-		     resultsTab.setVisible(true);
-		     }
-		     resultsTab.fireEvent('dosearch');*/
 		    this.searchLaunched();
                 }
 	    }
 	}
+    },
+
+    doSearch: function(srchSrc) {
+	//console.info("AdvancedSearch.doSearch");
+
+        if (this.getWriteToCsv() && "expr" == srchSrc) {
+            return;
+        }
+	var ctrls = this.getSearch().query('spsearchcriterion');
+	var connector = this.getSolr() ? ' +' : ', ';
+	var filterStr = '', c;
+	for (c = 0; c < ctrls.length; c++) {
+	    var filter = this.getSolr() ? ctrls[c].solrFilter(this.getMatchAll(), this) : ctrls[c].sqlPhpFilter();
+	    //console.info(filter);
+	    if (filter == 'error') {
+		filterStr = 'error';
+		break;
+	    } else if (filter != '') {
+		if (filterStr != '') {
+		    filterStr += connector;
+		}
+		filterStr += filter;
+	    }
+	}
+	var images = this.getRequireImages();
+	var maps = this.getRequireGeoCoords();
+	var filterToMap = (this.getForceFitToMap() || this.getFitToMap()) && (this.mapViewIsActive() || this.getWriteToCsv());
+	if (filterStr.length == 0) {
+	    filterStr = "*";
+	}
+        this.searchFor(filterStr, images, maps, filterToMap);
     }
 });

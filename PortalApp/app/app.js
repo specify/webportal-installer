@@ -29,7 +29,6 @@ Ext.application({
     stores: ['SettingsStore', 'FieldDefStore', 'NumericOps', 'DateOps', 'StringOps', 'Sorts'],
     controllers: ['Mapper', 'ExpressSearch', 'AdvancedSearch', 'Detailer',
 		 'Image', 'Settings'],
-
     
     init: function () {
 	Ext.getBody().setHTML("");
@@ -62,6 +61,5 @@ Ext.application({
 	    idProperty: 'spid',
 	    fields: dataFlds
 	});
-
     }
 });
