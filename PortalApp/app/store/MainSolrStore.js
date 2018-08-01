@@ -84,11 +84,10 @@ Ext.define('SpWebPortal.store.MainSolrStore', {
 
     getLatLngFitFilter: function(lat, lng, sw, ne) {
 	var result = lat + ':[' + this.roundNumber(sw.lat(), 4) + ' TO ' + this.roundNumber(ne.lat(), 4) + ']+AND+';
-	if (sw.lng() > 0 && ne.lng() < 0) {
+	if ((sw.lng() > 0 && ne.lng() < 0) ||
+            (((sw.lng() < 0 && ne.lng() < 0) || (sw.lng() >= 0 && ne.lng() >=0)) && sw.lng() > ne.lng())) {
 	    result += 'NOT ' + lng + ':[' + this.roundNumber(ne.lng(), 4) + ' TO ' + this.roundNumber(sw.lng(), 4) + ']';
-	} else if (sw.lng() > 0 && ne.lng() > 0 && sw.lng() > ne.lng()) {
-	    result += lng + ':[' + this.roundNumber(ne.lng(), 4) + ' TO ' + this.roundNumber(sw.lng(), 4) + ']';
-	} else {
+        }  else {
 	    result +=  lng + ':[' + this.roundNumber(sw.lng(), 4) + ' TO ' + this.roundNumber(ne.lng(), 4) + ']';
 	}
 	return result;
