@@ -54,7 +54,8 @@ Ext.define('SpWebPortal.view.ImageView', {
 	imgServerError: null,
 	imgDescriptionFlds: null,
 	collectionName: null,
-        moreImagesBtnId: null
+        moreImagesBtnId: null,
+        collList: null
     },
 
     initComponent: function() {
@@ -120,8 +121,22 @@ Ext.define('SpWebPortal.view.ImageView', {
 
 	//this.callParent(arguments);
 	this.superclass.initComponent.apply(this, arguments);
+
+        this.setUpCollList(settings);
     },
 
+    setUpCollList: function(settings) {
+        this.collList = {
+            'SEMC': 'KUEntoPinned',
+            'KUI': 'KU Fish Voucher Collection',
+            'KUH': 'KUHerpetology',
+            'KUO': 'Ornithology',
+            'KUM': 'Mammalogy',
+            'KANU': 'KANU',
+            'FLIZ': 'IZ'
+        };
+    },
+    
     initImgDescFlds: function(fldStr) {
 	if (typeof fldStr === "undefined" || fldStr ==  null || fldStr == '') {
 	    return this.getDefaultImgDescFlds();
@@ -186,13 +201,26 @@ Ext.define('SpWebPortal.view.ImageView', {
 	if (imgJson != null && imgJson != '') {
 	    var attachedTo = record.get('spid');
 	    var attachedToDescr = this.getDescription(record);
-	    return this.addImg(imgJson, attachedTo, attachedToDescr);
+            var collName = this.getCollNameForRec(record);
+	    return this.addImg(imgJson, attachedTo, attachedToDescr, collName);
 	} else {
 	    return 0;
 	}
     },
 
-    addImg: function(imgJson, attachedTo, attachedToDescr) {
+    getCollNameForRec: function(record) {
+        return this.getCollNameForId(record.get(this.getCollIdFld));
+    },
+
+    getCollIdFld: function() {
+        return "t1";
+    },
+
+    getCollNameForId: function(collId) {
+        return this.getCollList()[collId];
+    },
+    
+    addImg: function(imgJson, attachedTo, attachedToDescr,collName) {
 	if (imgJson != null && imgJson != '') {
 	    var imgs = Ext.JSON.decode(imgJson);
 	    for (var i = 0; i < imgs.length; i++) {
@@ -200,7 +228,8 @@ Ext.define('SpWebPortal.view.ImageView', {
 		    AttachedTo: attachedTo,
 		    AttachedToDescr: attachedToDescr
 		});
-		this.getImgSrc(imgs[i]['AttachmentLocation'], this.getPreviewSize(), this.getCollectionName(), 'ThumbSrc', imgs[i], true);
+                var coll = typeof collName === "undefined" ? this.getCollectionName() : collName;
+		this.getImgSrc(imgs[i]['AttachmentLocation'], this.getPreviewSize(), coll, 'ThumbSrc', imgs[i], true);
 	    }
 	    return imgs.length;
 	} else {

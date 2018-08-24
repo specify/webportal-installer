@@ -332,6 +332,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	    var pnt = [];
 	    pnt[0] = parseFloat(ll[0]);
 	    pnt[1] = parseFloat(ll[1]);
+            pnt[3] = ll[2]; //the collection id, currently the marker label
 	    pnt[2] = facets[f+1];
 	    //result[f/2] = facets[f].split(' ');
 	    result[f/2] = pnt;
@@ -397,7 +398,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	//console.info("Mapper.onGoogleMarkerClick2");
 	//console.info(arguments);
 	var store = Ext.getStore('MainSolrStore');
-	var ll = geoCoords.slice(0, geoCoords.length-1);
+	var ll = geoCoords.slice(0, geoCoords.length-2);
 	var url = store.getSearchLatLngUrl(ll);
 	var mappane = this.getMapPane();
 	//mappane.setLoading(true);
@@ -465,7 +466,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
 		    this.getDistinctPoints(url);
 		} else {
 		    this.lilMapStore.getProxy().url = url;
-		    this.loadMapStore(1);
+		    this.loadMapStore(1);S
 		}
 	    } else {
  		this.progBar.setVisible(false);
@@ -704,13 +705,14 @@ Ext.define('SpWebPortal.controller.Mapper', {
     },
 
     markMap2: function(sortedCoords, mapCtl, fldsOnMap, mapMarkTitleFld, isPopup) {
-	var current = [];
+	//var current = [];
 	//console.info("Mapper: marking " + sortedCoords.length + " points.");
 	for (var p = 0; p < sortedCoords.length; p++) {
-	    current[0] = sortedCoords[p][0];
-	    current[1] = sortedCoords[p][1];
-	    current[2] = sortedCoords[p][2];
-	    this.addMarker2(mapCtl, current, fldsOnMap, mapMarkTitleFld);
+	    //current[0] = sortedCoords[p][0];
+	    //current[1] = sortedCoords[p][1];
+	    //current[2] = sortedCoords[p][2];
+	    //this.addMarker2(mapCtl, current, fldsOnMap, mapMarkTitleFld);
+	    this.addMarker2(mapCtl, sortedCoords[p], fldsOnMap, mapMarkTitleFld);
 	}
     },
 
@@ -819,6 +821,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
 		coords[0] = records[r][0];
 		coords[1] = records[r][1];
 		coords[2] = records[r][2];
+                coords[3] = records[r][3];
 	    } else {
 		coords[0] = records[r].get(geoCoordFlds[0]);
 		coords[1] = records[r].get(geoCoordFlds[1]);
@@ -838,6 +841,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
 			geoCoords[p][0] = coords[0];
 			geoCoords[p][1] = coords[1];
 			geoCoords[p][2] = coords[2];
+                        geoCoords[p][3] = coords[3];
 			added[point] = 'y';
 			if (checkBounds) {
 			    if (this.minMappedLat > coords[0]) {
@@ -1065,6 +1069,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	    var marker = new google.maps.Marker({
 		position: point, 
 		map: map
+                //label: geoCoords[3].slice(geoCoords[3].length - 1)
 		//title: "busted"
 	    });
 	    this.mapMarkers[point.toString()] = marker;
