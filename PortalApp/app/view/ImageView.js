@@ -138,11 +138,12 @@ Ext.define('SpWebPortal.view.ImageView', {
     },
     
     initImgDescFlds: function(fldStr) {
+        console.info("initImgDescFlds -" + fldStr);
 	if (typeof fldStr === "undefined" || fldStr ==  null || fldStr == '') {
 	    return this.getDefaultImgDescFlds();
 	} else {
 	    var result = [];
-	    var flds = fldStr.split(' ');
+	    var flds = fldStr.split(' ');d
 	    var fldStore = Ext.getStore('FieldDefStore');
 	    for (var f = 0; f < flds.length; f++) {
 		var def4f = null;
@@ -209,7 +210,7 @@ Ext.define('SpWebPortal.view.ImageView', {
     },
 
     getCollNameForRec: function(record) {
-        return this.getCollNameForId(record.get(this.getCollIdFld));
+        return this.getCollNameForId(record.get(this.getCollIdFld()));
     },
 
     getCollIdFld: function() {
