@@ -1066,10 +1066,28 @@ Ext.define('SpWebPortal.controller.Mapper', {
         if (this.mapMarkers[point.toString()]) {
 	    //console.info("hey already marked: " + point.toString());
 	} else {
+            //hard-coded for ku agg demo; need to use setting...
+            var icon;
+            var coll = geoCoords[3];
+            if (coll == 'SEMC') {
+                icon = 'resources/images/bug.png';
+            } else if (coll == 'KUI') {
+                icon = 'resources/images/fish.png';
+            } else if (coll == 'KUO') {
+                icon = 'resources/images/bird.png';
+            } else if (coll == 'KUM') {
+                icon = 'resources/images/mammal.png';
+            } else if (coll == 'KANU') {
+                icon = 'resources/images/flower.png';
+            } else if (coll == 'KUH') {
+                icon = 'resources/images/lizard.png';
+            }                
+                
 	    var marker = new google.maps.Marker({
 		position: point, 
-		map: map
+		map: map,
                 //label: geoCoords[3].slice(geoCoords[3].length - 1)
+                icon: icon
 		//title: "busted"
 	    });
 	    this.mapMarkers[point.toString()] = marker;
