@@ -224,12 +224,13 @@ Ext.define('SpWebPortal.view.ImageView', {
     addImg: function(imgJson, attachedTo, attachedToDescr,collName) {
 	if (imgJson != null && imgJson != '') {
 	    var imgs = Ext.JSON.decode(imgJson);
+            var coll = typeof collName === "undefined" ? this.getCollectionName() : collName;
 	    for (var i = 0; i < imgs.length; i++) {
 		Ext.apply(imgs[i], {
 		    AttachedTo: attachedTo,
-		    AttachedToDescr: attachedToDescr
+		    AttachedToDescr: attachedToDescr,
+                    CollName: coll
 		});
-                var coll = typeof collName === "undefined" ? this.getCollectionName() : collName;
 		this.getImgSrc(imgs[i]['AttachmentLocation'], this.getPreviewSize(), coll, 'ThumbSrc', imgs[i], true);
 	    }
 	    return imgs.length;

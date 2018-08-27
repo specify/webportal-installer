@@ -370,7 +370,7 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	var srcVal = imgRecord.get(srcFld);
 	if (typeof srcVal  === "undefined" || srcVal.trim().length == 0) {
 	    var imgView = Ext.getCmp('spwpmainimageview');
-	    imgView.getImgSrc(imgRecord.get('AttachmentLocation'), srcFld == 'Src' ? null : imgSize, imgView.getCollNameForRec(imgRecord), srcFld, imgRecord, false, 
+	    imgView.getImgSrc(imgRecord.get('AttachmentLocation'), srcFld == 'Src' ? null : imgSize, imgRecord.get("CollName"), srcFld, imgRecord, false, 
 			     this.popupImageSrcReady, [isActualSize, imgWinOwner]);
 	} else {
 	    this.popupImageSrcReady(imgRecord, [isActualSize, imgWinOwner]);
