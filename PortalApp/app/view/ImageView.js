@@ -56,6 +56,7 @@ Ext.define('SpWebPortal.view.ImageView', {
 	collectionName: null,
         moreImagesBtnId: null,
         collList: null,
+        urlList: null,
         collIdFld: null
     },
 
@@ -129,8 +130,12 @@ Ext.define('SpWebPortal.view.ImageView', {
     setCollSettings: function(settings) {
         var colls = settings.get('collections');
         this.collList = {};
+        this.collUrls = {};
         for (var i = 0; i < _.size(colls) > 0; i++) {
             this.collList[colls[i]['code']] = colls[i]['collname'];
+            if (colls[i]['attachmentbaseurl']) {
+                this.collUrls[colls[i]['collname']] = colls[i]['attachmentbaseurl'];
+            }
         };
         this.collIdFld = settings.get('collCodeSolrFld');
     },
@@ -214,6 +219,32 @@ Ext.define('SpWebPortal.view.ImageView', {
     getCollNameForId: function(collId) {
         var result;
         if (_.size(this.getCollList()) > 0 && typeof collId !== "undefined") {
+            result = this.getCollList()[collId].name;
+        }
+        return typeof result !== "undefined" ? result : this.getCollectionName();
+    },
+    
+    addImg: function(imgJson, attachedTo, attachedToDescr,collName) {
+	if (imgJson != null && imgJson != '') {
+	    var imgs = Ext.JSON.decode(imgJson);
+            var coll = typeof collName === "undefined" ? this.getCollectionName() : collName;
+	    for (var i = 0; i < imgs.length; i++) {
+		Ext.apply(imgs[i], {
+		    AttachedTo: attachedTo,
+		    AttachedToDescr: attachedToDescr,
+                    CollName: coll
+		});
+		this.getImgSrc(imgs[i]['AttachmentLocation'], this.getPreviewSize(), coll, 'ThumbSrc', imgs[i], true);
+	    }
+	    return imgs.length;
+	} else {
+	    return 0;
+	}
+    },
+
+    getAttachmentBaseUrl: function(coll) {
+        var result;
+        if (_.size(this.getCollList()) > 0 && typeof collId !== "undefined") {
             result = this.getCollList()[collId];
         }
         return typeof result !== "undefined" ? result : this.getCollectionName();
@@ -237,9 +268,37 @@ Ext.define('SpWebPortal.view.ImageView', {
 	}
     },
 
+    getAttachmentBaseUrl: function(coll) {
+        var result;
+        if (_.size(this.getCollUrls()) > 0 && typeof coll !== "undefined") {
+            result = this.getCollUrls()[coll];
+        }
+        return typeof result !== "undefined" ? result : this.getBaseUrl();
+    },
+    
+    addImg: function(imgJson, attachedTo, attachedToDescr,collName) {
+	if (imgJson != null && imgJson != '') {
+	    var imgs = Ext.JSON.decode(imgJson);
+            var coll = typeof collName === "undefined" ? this.getCollectionName() : collName;
+	    for (var i = 0; i < imgs.length; i++) {
+		Ext.apply(imgs[i], {
+		    AttachedTo: attachedTo,
+		    AttachedToDescr: attachedToDescr,
+                    CollName: coll
+		});
+		this.getImgSrc(imgs[i]['AttachmentLocation'], this.getPreviewSize(), coll, 'ThumbSrc', imgs[i], true);
+	    }
+	    return imgs.length;
+	} else {
+	    return 0;
+	}
+    },
+
+    getAttachmentBaseUrl: function(coll) {
+    },
 
     getImgSrc: function(fileName, scale, coll, srcFld, img, addToStore, callbackFn, callbackArgs) {
-	var url = this.getBaseUrl() + '/fileget';
+	var url = this.getAttacgmentBaseUrl() + '/fileget';
 	this.imgServerResponse = null;
 	this.imgServerError = null;
 	Ext.Ajax.method = 'GET';
@@ -259,15 +318,6 @@ Ext.define('SpWebPortal.view.ImageView', {
 	    };
 	}
 	this.waitingForImgUrl = true;
-	//console.info("sending jquery ajax request " + url);
-	// try {
-        //     $.ajax({
-        //         url: url,
-        //         data: params,
-	// 	context: this,
-	// 	crossDomain: true,
-        //         success: function(src) {
-        //             //console.info("JQUERY to the rescue!");
 	var src = url + '?' + $.param(params);
 	if (!addToStore) {
 	    img.set(srcFld, src);
@@ -290,16 +340,6 @@ Ext.define('SpWebPortal.view.ImageView', {
 	if (typeof callbackFn !== "undefined" && callbackFn != null) {
 	    callbackFn(img, callbackArgs);
 	}                
-	// 	},
-	// 	error: function(jqXHR, textStatus, errorThrown) {
-	// 	    console.info("jquery ajax error: " + textStatus + ", " + errorThrown);
-	// 	}
-	//     });
-	// } catch(e) {
-	//     //IF POSSIBLE just catch and ignore the cross domain header issue for now
-	//     console.log(e);
-	// }
-
     }
 
 });
