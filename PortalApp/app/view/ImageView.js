@@ -55,7 +55,8 @@ Ext.define('SpWebPortal.view.ImageView', {
 	imgDescriptionFlds: null,
 	collectionName: null,
         moreImagesBtnId: null,
-        collList: null
+        collList: null,
+        collIdFld: null
     },
 
     initComponent: function() {
@@ -122,19 +123,16 @@ Ext.define('SpWebPortal.view.ImageView', {
 	//this.callParent(arguments);
 	this.superclass.initComponent.apply(this, arguments);
 
-        this.setUpCollList(settings);
+        this.setCollSettings(settings);
     },
 
-    setUpCollList: function(settings) {
-        this.collList = {
-            'SEMC': 'KUEntoPinned',
-            'KUI': 'KU Fish Voucher Collection',
-            'KUH': 'KUHerpetology',
-            'KUO': 'Ornithology',
-            'KUM': 'Mammalogy',
-            'KANU': 'KANU',
-            'FLIZ': 'IZ'
+    setCollSettings: function(settings) {
+        var colls = settings.get('collections');
+        this.collList = {};
+        for (var i = 0; i < _.size(colls) > 0; i++) {
+            this.collList[colls[i]['code']] = colls[i]['collname'];
         };
+        this.collIdFld = settings.get('collCodeSolrFld');
     },
     
     initImgDescFlds: function(fldStr) {
@@ -213,12 +211,12 @@ Ext.define('SpWebPortal.view.ImageView', {
         return this.getCollNameForId(record.get(this.getCollIdFld()));
     },
 
-    getCollIdFld: function() {
-        return "t1";
-    },
-
     getCollNameForId: function(collId) {
-        return this.getCollList()[collId];
+        var result;
+        if (_.size(this.getCollList()) > 0 && typeof collId !== "undefined") {
+            result = this.getCollList()[collId];
+        }
+        return typeof result !== "undefined" ? result : this.getCollectionName();
     },
     
     addImg: function(imgJson, attachedTo, attachedToDescr,collName) {
