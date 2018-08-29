@@ -71,6 +71,16 @@ Ext.define('SpWebPortal.controller.Search', {
 	}
     },
 
+    adjustFitToMapStuff: function() {
+        if (!this.mapViewIsActive()) {
+	    var fitToMapCtl = Ext.getCmp('spwp-fit-to-map-chkbx');
+	    if (fitToMapCtl != null && fitToMapCtl.getValue()) {
+	        fitToMapCtl.setValue(false);
+	    }
+        }
+        this.setForceFitToMap(false);
+    },
+    
     forCsv: function (cmp) {
         //export btn should only be visible when exports are allowed but just in case
         if (this.getExpOK()) {

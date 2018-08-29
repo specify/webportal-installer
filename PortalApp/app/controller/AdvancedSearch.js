@@ -112,7 +112,7 @@ Ext.define('SpWebPortal.controller.AdvancedSearch', {
 		if (this.getWriteToCsv()) {
                     this.exportToCsv(url, this.getCsvFileName(filterStr));
                 } else {
-		    this.setForceFitToMap(false);
+                    this.adjustFitToMapStuff();
                     Ext.apply(Ext.getCmp('spwpexpcsvbtn'), {srch: 'adv'});
 
 		    solr.getProxy().url = url; 

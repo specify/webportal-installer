@@ -80,7 +80,7 @@ Ext.define('SpWebPortal.controller.ExpressSearch', {
         if (this.getWriteToCsv()) {
             this.exportToCsv(url, this.getCsvFileName(mainQ));
         } else {
-            this.setForceFitToMap(false);
+            this.adjustFitToMapStuff();
             Ext.apply(Ext.getCmp('spwpexpcsvbtn'), {srch: 'expr'});
 	    solr.getProxy().url = url; 
 	    solr.setSearched(true);
