@@ -564,7 +564,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
     },
 
     areMappable: function(geoCoords) {
-	for (var c = 0; c < geoCoords.length; c++) {
+	for (var c = 0; c < geoCoords.length-2; c++) {
 	    if (!this.isMappable(geoCoords[c])) {
 		return false;
 	    }
