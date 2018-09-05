@@ -51,7 +51,16 @@ Ext.define('SpWebPortal.model.SettingsModel', {
 	{name: 'bottomWidth', type: 'int'},
 	{name: 'imagePageSize', type: 'int', defaultValue: 100},
 	{name: 'allowExportToFile', type: 'int', defaultValue: 1},
-        {name: 'collections', type: 'json', defaultValue: []}
+        {name: 'collections', type: 'json', defaultValue: []},
+        {name: 'doClusterFx', type: 'boolean', defaultValue: false},
+        {name: 'clusterGridSize', type: 'int'},
+        {name: 'clusterMaxZoom', type: 'int'},
+        {name: 'clusterZoomOnClick', type: 'boolean'},
+        {name: 'clusterImagePath', type: 'string', defaultValue: 'resources/images/m'},
+        {name: 'clusterImageExtension', type: 'string'},
+        {name: 'clusterAverageCenter', type: 'boolean'},
+        {name: 'clusterMinimumClusterSize', type: 'int'},
+        {name: 'clusterStyles', type: 'json'}
    ],
 
     validations: [

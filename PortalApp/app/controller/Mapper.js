@@ -101,13 +101,38 @@ Ext.define('SpWebPortal.controller.Mapper', {
 		maprequest: this.detailMapRequest
 	    }
 	});
-        this.setUpCollMarkerIcons();
-	this.callParent(arguments);
+        this.getSets();
+        //document.write('<script>src="app/controller/markerclusterer.js"></script>');
+        this.callParent(arguments);
     },
 
-    setUpCollMarkerIcons: function() {
+    getSets: function() {
 	var settingsStore =  Ext.getStore('SettingsStore');
-	var settings = settingsStore.getAt(0);
+	var settings = settingsStore.getAt(0);        
+        this.setUpCollMarkerIcons(settings);
+        this.setUpClustering(settings);
+    },
+
+    setUpClustering: function(settings) {
+        console.info("setting up cluster sets");
+        console.info(settings.get('doClusterFx'));
+        if (settings.get('doClusterFx')) {
+            this.clusterSets = {};
+            var params = ['gridSize','maxZoom','zoomOnClick','imagePath','imageExtension','averageCenter','minimumClusterSize','styles'];
+            for (var p = 0; p < params.length; p++) {
+                var param = params[p];
+                console.info(param + " -- " +  'cluster' + param.charAt(0).toUpperCase() + param.slice(1));
+                var setting = settings.get('cluster' + param.charAt(0).toUpperCase() + param.slice(1));
+                console.info(setting);
+                if (setting) {
+                    this.clusterSets[param] = setting;
+                }
+                console.info(this.clusterSets);
+            }
+        }
+    },
+    
+    setUpCollMarkerIcons: function(settings) {
         var colls = settings.get('collections');
         //console.info(colls);
         this.collMarkerIcons = {};
@@ -679,6 +704,14 @@ Ext.define('SpWebPortal.controller.Mapper', {
 		geoCoords = [];
 	    }
 	    this.markMap2(sortedCoords, mapCtl, fldsOnMap, mapMarkTitleFld, isPopup);
+            if (this.clusterSets) {
+                if (!this.markerCluster) {
+                    this.markerCluster = new MarkerClusterer(mapCtl, this.mapMarkers, this.clusterSets);
+                } else {
+                    this.markerCluster.clearMarkers();
+                    this.markerCluster.addMarkers(this.mapMarkers);
+                }
+            }
 	}	
 	//console.info("buildMap2 completing");
 	//this.getMapPane().setLoading(false);
@@ -951,7 +984,8 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	    google.maps.event.clearListeners(this.mainMapCtl, 'click');
 	}
 	_.each(this.mapMarkers, function(markers) {
-            _.each(markers, function(marker) {marker.setMap(null);});
+            //_.each(markers, function(marker) {marker.setMap(null);});
+            markers.setMap(null);
         });
 	this.mapMarkers = {};
     },
@@ -1011,30 +1045,33 @@ Ext.define('SpWebPortal.controller.Mapper', {
         var point = new google.maps.LatLng(geoCoords[0], geoCoords[1]);
         var pointStr = point.toString();        
         var prevMarkers = this.mapMarkers[pointStr];
-        var icon;
-        var coll = geoCoords[3];
-        if (typeof coll !== "undefined" && _.size(this.collMarkerIcons) > 0) {
-            icon = this.collMarkerIcons[coll];
-        }
-	var marker = typeof icon === "undefined" ?
+        if (!prevMarkers) { 
+            var icon;
+            var coll = geoCoords[3];
+            if (typeof coll !== "undefined" && _.size(this.collMarkerIcons) > 0) {
+                icon = this.collMarkerIcons[coll];
+            }
+	    var marker = typeof icon === "undefined" ?
+                    new google.maps.Marker({
+		        position: point, 
+		        map: map
+                    }) :
                 new google.maps.Marker({
 		    position: point, 
-		    map: map
-                }) :
-            new google.maps.Marker({
-		position: point, 
-		map: map,
-                icon: icon
-            });	
-	this.mapMarkers[pointStr] = prevMarkers ? prevMarkers.push(marker) : [marker];
-	var self = this;
-	var ll = [];
-	for (var i = 0; i < geoCoords.length; i++) {
-	    ll[i] = geoCoords[i];
-	}
-	google.maps.event.addListener(marker, 'click', function() {
-	    self.onGoogleMarkerClick2(ll);
-	});		
+		    map: map,
+                    icon: icon
+                });	
+	    //this.mapMarkers[pointStr] = prevMarkers ? prevMarkers.push(marker) : [marker];
+            this.mapMarkers[pointStr] = marker; 
+	    var self = this;
+	    var ll = [];
+	    for (var i = 0; i < geoCoords.length; i++) {
+	        ll[i] = geoCoords[i];
+	    }
+	    google.maps.event.addListener(marker, 'click', function() {
+	        self.onGoogleMarkerClick2(ll);
+	    });
+        }
     }
 
 });
