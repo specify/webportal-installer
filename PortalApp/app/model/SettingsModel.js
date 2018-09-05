@@ -53,6 +53,7 @@ Ext.define('SpWebPortal.model.SettingsModel', {
 	{name: 'allowExportToFile', type: 'int', defaultValue: 1},
         {name: 'collections', type: 'json', defaultValue: []},
         {name: 'doClusterFx', type: 'boolean', defaultValue: false},
+        {name: 'clusterMinPoints', type: 'int', defaultValue: 3000},
         {name: 'clusterGridSize', type: 'int'},
         {name: 'clusterMaxZoom', type: 'int'},
         {name: 'clusterZoomOnClick', type: 'boolean'},

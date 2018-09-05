@@ -709,7 +709,9 @@ Ext.define('SpWebPortal.controller.Mapper', {
                     this.markerCluster = new MarkerClusterer(mapCtl, this.mapMarkers, this.clusterSets);
                 } else {
                     this.markerCluster.clearMarkers();
-                    this.markerCluster.addMarkers(this.mapMarkers);
+                    if (this.shouldCluster(mapCtl)) {
+                        this.markerCluster.addMarkers(this.mapMarkers);
+                    }
                 }
             }
 	}	
@@ -717,6 +719,23 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	//this.getMapPane().setLoading(false);
     },
 
+    shouldCluster: function(mapCtl) {
+        if (this.clusterSets) {
+            var minCluster = this.clusterSets['clusterMinPoints'];
+            if (minCluster && _.size(this.mapMarkers) < minCluster) {
+                return false;
+            }
+            var maxZoom = this.clusterSets['maxZoom'];
+            if (maxZoom) {
+                return mapCtl.getZoom() <= maxZoom;
+            } else {
+                return true;
+            }
+        } else {
+            return false;
+        }
+    },
+    
     markMap2: function(sortedCoords, mapCtl, fldsOnMap, mapMarkTitleFld, isPopup) {
 	for (var p = 0; p < sortedCoords.length; p++) {
 	    this.addMarker2(mapCtl, sortedCoords[p], fldsOnMap, mapMarkTitleFld, isPopup);
