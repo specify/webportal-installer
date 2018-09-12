@@ -146,7 +146,7 @@ Ext.define('SpWebPortal.view.ImageView', {
 	    return this.getDefaultImgDescFlds();
 	} else {
 	    var result = [];
-	    var flds = fldStr.split(' ');d
+	    var flds = fldStr.split(' ');
 	    var fldStore = Ext.getStore('FieldDefStore');
 	    for (var f = 0; f < flds.length; f++) {
 		var def4f = null;
