@@ -55,11 +55,12 @@ Ext.define('SpWebPortal.view.ImageView', {
 	imgDescriptionFlds: null,
 	collectionName: null,
         moreImagesBtnId: null,
-        collList: null,
-        urlList: null,
         collIdFld: null
     },
 
+    collList: {},
+    urlList: {},
+    
     initComponent: function() {
 
 	this.setImageStore(Ext.create('Ext.data.Store', {
@@ -129,8 +130,6 @@ Ext.define('SpWebPortal.view.ImageView', {
 
     setCollSettings: function(settings) {
         var colls = settings.get('collections');
-        this.collList = {};
-        this.urlList = {};
         for (var i = 0; i < _.size(colls) > 0; i++) {
             this.collList[colls[i]['code']] = colls[i]['collname'];
             if (colls[i]['attachmentbaseurl']) {
@@ -218,8 +217,8 @@ Ext.define('SpWebPortal.view.ImageView', {
 
     getCollNameForId: function(collId) {
         var result;
-        if (_.size(this.getCollList()) > 0 && typeof collId !== "undefined") {
-            result = this.getCollList()[collId].name;
+        if (_.size(this.collList) > 0 && typeof collId !== "undefined") {
+            result = this.collList[collId].name;
         }
         return typeof result !== "undefined" ? result : this.getCollectionName();
     },
@@ -262,8 +261,8 @@ Ext.define('SpWebPortal.view.ImageView', {
 
     getAttachmentBaseUrl: function(coll) {
         var result;
-        if (_.size(this.getUrlList()) > 0 && typeof coll !== "undefined") {
-            result = this.getUrlList()[coll];
+        if (_.size(this.urlList) > 0 && typeof coll !== "undefined") {
+            result = this.urlList[coll];
         }
         return typeof result !== "undefined" ? result : this.getBaseUrl();
     },
