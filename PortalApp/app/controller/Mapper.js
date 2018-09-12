@@ -715,8 +715,6 @@ Ext.define('SpWebPortal.controller.Mapper', {
                 }
             }
 	}	
-	//console.info("buildMap2 completing");
-	//this.getMapPane().setLoading(false);
     },
 
     shouldCluster: function(mapCtl) {
@@ -1063,8 +1061,8 @@ Ext.define('SpWebPortal.controller.Mapper', {
         //var titleTxt = this.getMarkerText(records, mapMarkTitleFld);
         var point = new google.maps.LatLng(geoCoords[0], geoCoords[1]);
         var pointStr = point.toString();        
-        var prevMarkers = this.mapMarkers[pointStr];
-        if (!prevMarkers) { 
+        var prevMarker = this.mapMarkers[pointStr];
+        if (!prevMarker) { 
             var icon;
             var coll = geoCoords[3];
             if (typeof coll !== "undefined" && _.size(this.collMarkerIcons) > 0) {
@@ -1080,7 +1078,6 @@ Ext.define('SpWebPortal.controller.Mapper', {
 		    map: map,
                     icon: icon
                 });	
-	    //this.mapMarkers[pointStr] = prevMarkers ? prevMarkers.push(marker) : [marker];
             this.mapMarkers[pointStr] = marker; 
 	    var self = this;
 	    var ll = [];
@@ -1092,5 +1089,4 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	    });
         }
     }
-
 });

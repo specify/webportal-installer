@@ -262,8 +262,8 @@ Ext.define('SpWebPortal.view.ImageView', {
 
     getAttachmentBaseUrl: function(coll) {
         var result;
-        if (_.size(this.getCollUrls()) > 0 && typeof coll !== "undefined") {
-            result = this.getCollUrls()[coll];
+        if (_.size(this.getUrlList()) > 0 && typeof coll !== "undefined") {
+            result = this.getUrlList()[coll];
         }
         return typeof result !== "undefined" ? result : this.getBaseUrl();
     },
