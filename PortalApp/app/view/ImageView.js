@@ -130,11 +130,11 @@ Ext.define('SpWebPortal.view.ImageView', {
     setCollSettings: function(settings) {
         var colls = settings.get('collections');
         this.collList = {};
-        this.collUrls = {};
+        this.urlList = {};
         for (var i = 0; i < _.size(colls) > 0; i++) {
             this.collList[colls[i]['code']] = colls[i]['collname'];
             if (colls[i]['attachmentbaseurl']) {
-                this.collUrls[colls[i]['collname']] = colls[i]['attachmentbaseurl'];
+                this.urlList[colls[i]['collname']] = colls[i]['attachmentbaseurl'];
             }
         };
         this.collIdFld = settings.get('collCodeSolrFld');
