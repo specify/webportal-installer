@@ -242,14 +242,6 @@ Ext.define('SpWebPortal.view.ImageView', {
 	}
     },
 
-    getAttachmentBaseUrl: function(coll) {
-        var result;
-        if (_.size(this.getCollList()) > 0 && typeof collId !== "undefined") {
-            result = this.getCollList()[collId];
-        }
-        return typeof result !== "undefined" ? result : this.getCollectionName();
-    },
-    
     addImg: function(imgJson, attachedTo, attachedToDescr,collName) {
 	if (imgJson != null && imgJson != '') {
 	    var imgs = Ext.JSON.decode(imgJson);
@@ -292,9 +284,6 @@ Ext.define('SpWebPortal.view.ImageView', {
 	} else {
 	    return 0;
 	}
-    },
-
-    getAttachmentBaseUrl: function(coll) {
     },
 
     getImgSrc: function(fileName, scale, coll, srcFld, img, addToStore, callbackFn, callbackArgs) {
