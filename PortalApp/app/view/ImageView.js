@@ -218,7 +218,7 @@ Ext.define('SpWebPortal.view.ImageView', {
     getCollNameForId: function(collId) {
         var result;
         if (_.size(this.collList) > 0 && typeof collId !== "undefined") {
-            result = this.collList[collId].name;
+            result = this.collList[collId];
         }
         return typeof result !== "undefined" ? result : this.getCollectionName();
     },
