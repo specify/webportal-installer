@@ -141,10 +141,10 @@ Ext.define('SpWebPortal.view.ImageView', {
     
     initImgDescFlds: function(fldStr) {
         console.info("initImgDescFlds -" + fldStr);
+        var result =  [];
 	if (typeof fldStr === "undefined" || fldStr ==  null || fldStr == '') {
-	    return this.getDefaultImgDescFlds();
+	    result = this.getDefaultImgDescFlds();
 	} else {
-	    var result = [];
 	    var flds = fldStr.split(' ');
 	    var fldStore = Ext.getStore('FieldDefStore');
 	    for (var f = 0; f < flds.length; f++) {
@@ -163,8 +163,11 @@ Ext.define('SpWebPortal.view.ImageView', {
 		    break;
 		}
 	    }
-	    return result;
 	}
+        if (this.getCollIdFld()) {
+            result.push('CollId', this.getCollIdFld(), 'string');
+        }
+	return result;
     },
 
     getDefaultImgDescFlds: function() {
@@ -241,23 +244,6 @@ Ext.define('SpWebPortal.view.ImageView', {
 	}
     },
 
-    addImg: function(imgJson, attachedTo, attachedToDescr,collName) {
-	if (imgJson != null && imgJson != '') {
-	    var imgs = Ext.JSON.decode(imgJson);
-            var coll = typeof collName === "undefined" ? this.getCollectionName() : collName;
-	    for (var i = 0; i < imgs.length; i++) {
-		Ext.apply(imgs[i], {
-		    AttachedTo: attachedTo,
-		    AttachedToDescr: attachedToDescr,
-                    CollName: coll
-		});
-		this.getImgSrc(imgs[i]['AttachmentLocation'], this.getPreviewSize(), coll, 'ThumbSrc', imgs[i], true);
-	    }
-	    return imgs.length;
-	} else {
-	    return 0;
-	}
-    },
 
     getAttachmentBaseUrl: function(coll) {
         var result;
@@ -267,24 +253,6 @@ Ext.define('SpWebPortal.view.ImageView', {
         return typeof result !== "undefined" ? result : this.getBaseUrl();
     },
     
-    addImg: function(imgJson, attachedTo, attachedToDescr,collName) {
-	if (imgJson != null && imgJson != '') {
-	    var imgs = Ext.JSON.decode(imgJson);
-            var coll = typeof collName === "undefined" ? this.getCollectionName() : collName;
-	    for (var i = 0; i < imgs.length; i++) {
-		Ext.apply(imgs[i], {
-		    AttachedTo: attachedTo,
-		    AttachedToDescr: attachedToDescr,
-                    CollName: coll
-		});
-		this.getImgSrc(imgs[i]['AttachmentLocation'], this.getPreviewSize(), coll, 'ThumbSrc', imgs[i], true);
-	    }
-	    return imgs.length;
-	} else {
-	    return 0;
-	}
-    },
-
     getImgSrc: function(fileName, scale, coll, srcFld, img, addToStore, callbackFn, callbackArgs) {
 	var url = this.getAttachmentBaseUrl() + '/fileget';
 	this.imgServerResponse = null;

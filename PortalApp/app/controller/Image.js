@@ -93,11 +93,6 @@ Ext.define('SpWebPortal.controller.Image', {
     },
 
     setupImgPreview: function(store) {
-	//console.info('Image setUpImgPreview()');
-
-        //old way
-        //this.thumb.up('panel').setTitle(Ext.String.format(this.previewTitle, store.currentPage, Math.ceil(store.getTotalCount()/store.pageSize)));
-        //new way
         if (store.getTotalCount() > this.imgsPerPage) {
             this.thumb.up('panel').setTitle(Ext.String.format(this.previewTitle, this.imgsPerPage, store.getTotalCount()));
         } else {
@@ -108,25 +103,6 @@ Ext.define('SpWebPortal.controller.Image', {
 	thbStore.removeAll();
 	var imgStore = this.imgView.getImageStore();
 	imgStore.removeAll();
-
-        //the old way...
-	/*for (var r = 0; r < store.getCount(); r++) {
-	    var rec = store.getAt(r);
-	    this.imgView.addImgForSpecRec(rec);
-	}*/
-        //...the old way
-
-        //"paged"...
-        /*if (this.setupPreviewTask != null) {
-            this.setupPreviewTask.destroy();
-        }
-        this.setupPreviewTask = Ext.TaskManager.newTask({
-            run: this.setupPreviewTasked(store),
-            scope: this,
-            interval: 100
-        });
-        this.setupPreviewTask.start();*/
-        //..."paged"
 
         //really paged
         var btnId = this.imgView.getMoreImagesBtnId(); 
@@ -192,19 +168,6 @@ Ext.define('SpWebPortal.controller.Image', {
         }
     },
     
-    /*
-    setupPreviewTasked: function(store) {
-        return function(invocations) {
-            var lo = (invocations - 1) * this.imgsPerPage;
-            var hi = Math.min(lo + this.imgsPerPage, store.getCount());  
-            for (var r = lo; r < hi; r++) {
-                var rec = store.getAt(r);
-                this.imgView.addImgForSpecRec(rec);
-            }
-            return hi < store.getCount();
-        };
-    },*/
-                     
     onPageChange: function(pager) {
 	//console.info('Image onPageChange()');
 	if (this.imgView == null) {

@@ -1084,5 +1084,61 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	        self.onGoogleMarkerClick2(ll);
 	    });
         }
+    },
+
+    markMap: function(records, sortedCoords, mapCtl, fldsOnMap, mapMarkTitleFld, isPopup) {
+	var current = [];
+	var recs = [];
+	current[0] = sortedCoords[0][0];
+	current[1] = sortedCoords[0][1];
+	recs = [sortedCoords[0][2]];
+	//console.info("Mapper: marking " + sortedCoords.length + " points.");
+	for (var p = 1; p < sortedCoords.length; p++) {
+	    if (sortedCoords[p][0] == current[0] && sortedCoords[p][1] == current[1]) {
+		recs[recs.length] = sortedCoords[p][2];
+	    } 
+	    if (!(sortedCoords[p][0] == current[0] && sortedCoords[p][1] == current[1])) {
+		var markRecs = [];
+		for (var mr = 0; mr < recs.length; mr++) {
+		    markRecs[mr] = records[recs[mr]];
+		}    
+		//console.info("  Mapper: marked " + recs.length); 
+		this.addMarker(mapCtl, markRecs, current, fldsOnMap, mapMarkTitleFld);
+		current[0] = sortedCoords[p][0];
+		current[1] = sortedCoords[p][1];
+		recs = [];
+		recs[0] = sortedCoords[p][2];
+	    }
+	}
+	markRecs = [];
+	for (var mr2 = 0; mr2 < recs.length; mr2++) {
+	    markRecs[mr2] = records[recs[mr2]];
+	}    
+	//console.info("  Mapper: marked " + recs.length); 
+	this.addMarker(mapCtl, markRecs, current, fldsOnMap, mapMarkTitleFld, isPopup);
+    },
+
+    addMarker: function (map, record, geoCoords, fldsOnMap, mapMarkTitleFld, isPopup){
+	//worry about lines, boxes etc, later
+        var point = new google.maps.LatLng(geoCoords[0], geoCoords[1]);
+	var titleTxt = this.getMarkerText(record, mapMarkTitleFld);
+
+        var marker = new google.maps.Marker({
+            position: point, 
+            map: map,
+            title: titleTxt
+	});
+	this.mapMarkers[point.toString()] = marker;
+	
+
+	if (isPopup) {
+	    this.addPopupMarkerListener(marker, map, fldsOnMap, geoCoords, record);
+	} else {
+	    var self = this;
+	    google.maps.event.addListener(marker, 'click', function() {
+		self.onGoogleMarkerClick(record);
+	    });
+	}
     }
+    
 });
