@@ -369,9 +369,8 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	    var pnt = [];
 	    pnt[0] = parseFloat(ll[0]);
 	    pnt[1] = parseFloat(ll[1]);
-            pnt[3] = ll[2]; //the collection id, currently the marker label
-	    pnt[2] = facets[f+1];
-	    //result[f/2] = facets[f].split(' ');
+	    pnt[2] = facets[f+1]; //the count at the point
+            pnt[3] = ll[2]; //the collection id
 	    result[f/2] = pnt;
 	}
 	return result;
@@ -432,14 +431,11 @@ Ext.define('SpWebPortal.controller.Mapper', {
     },
 
     onGoogleMarkerClick2: function(geoCoords, count) {
-	//console.info("Mapper.onGoogleMarkerClick2");
-	//console.info(arguments);
 	var store = Ext.getStore('MainSolrStore');
 	var ll = geoCoords.slice(0, geoCoords.length-2);
 	var url = store.getSearchLatLngUrl(ll);
 	var mappane = this.getMapPane();
-	//mappane.setLoading(true);
-	mappane.fireEvent('googlemarkerclick2', url, geoCoords[geoCoords.length-1]);
+	mappane.fireEvent('googlemarkerclick2', url, geoCoords[geoCoords.length-2]);
     },
 
     doMap: function() {
