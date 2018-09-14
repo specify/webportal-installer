@@ -116,16 +116,16 @@ Ext.define('SpWebPortal.view.ImageView', {
 
 	var settingsStore =  Ext.getStore('SettingsStore');
 	var settings = settingsStore.getAt(0);
-	this.setImgDescriptionFlds(this.initImgDescFlds(settings.get('imageInfoFlds')));
+	this.setCollectionName(settings.get('collectionName'));
 	this.setBaseUrl(settings.get('imageBaseUrl'));
+        this.setCollSettings(settings);
+	this.setImgDescriptionFlds(this.initImgDescFlds(settings.get('imageInfoFlds')));
 	this.setPreviewSize(settings.get('imagePreviewSize'));
 	this.setViewSize(settings.get('imageViewSize'));
-	this.setCollectionName(settings.get('collectionName'));
 
 	//this.callParent(arguments);
 	this.superclass.initComponent.apply(this, arguments);
 
-        this.setCollSettings(settings);
     },
 
     setCollSettings: function(settings) {
