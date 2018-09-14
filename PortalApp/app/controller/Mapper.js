@@ -118,7 +118,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
         console.info(settings.get('doClusterFx'));
         if (settings.get('doClusterFx')) {
             this.clusterSets = {};
-            var params = ['gridSize','maxZoom','zoomOnClick','imagePath','imageExtension','averageCenter','minimumClusterSize','styles'];
+            var params = ['gridSize','maxZoom','zoomOnClick','imagePath','imageExtension','averageCenter','minimumClusterSize','styles','minPoints'];
             for (var p = 0; p < params.length; p++) {
                 var param = params[p];
                 console.info(param + " -- " +  'cluster' + param.charAt(0).toUpperCase() + param.slice(1));
@@ -430,12 +430,13 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	mappane.fireEvent('googlemarkerclick', record);
     },
 
-    onGoogleMarkerClick2: function(geoCoords, count) {
+    onGoogleMarkerClick2: function(marker) {
 	var store = Ext.getStore('MainSolrStore');
-	var ll = geoCoords.slice(0, geoCoords.length-2);
+        var data = marker.data;
+	var ll = data.slice(0, data.length-1);
 	var url = store.getSearchLatLngUrl(ll);
 	var mappane = this.getMapPane();
-	mappane.fireEvent('googlemarkerclick2', url, geoCoords[geoCoords.length-2]);
+	mappane.fireEvent('googlemarkerclick2', url, data[data.length-1]);
     },
 
     doMap: function() {
@@ -702,12 +703,12 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	    this.markMap2(sortedCoords, mapCtl, fldsOnMap, mapMarkTitleFld, isPopup);
             if (this.clusterSets) {
                 if (!this.markerCluster) {
-                    this.markerCluster = new MarkerClusterer(mapCtl, this.mapMarkers, this.clusterSets);
+                    this.markerCluster = new MarkerClusterer(mapCtl, [], this.clusterSets);
                 } else {
                     this.markerCluster.clearMarkers();
-                    if (this.shouldCluster(mapCtl)) {
-                        this.markerCluster.addMarkers(this.mapMarkers);
-                    }
+                }
+                if (this.shouldCluster(mapCtl)) {
+                    this.markerCluster.addMarkers(this.mapMarkers);
                 }
             }
 	}	
@@ -715,7 +716,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
 
     shouldCluster: function(mapCtl) {
         if (this.clusterSets) {
-            var minCluster = this.clusterSets['clusterMinPoints'];
+            var minCluster = this.clusterSets['minPoints'];
             if (minCluster && _.size(this.mapMarkers) < minCluster) {
                 return false;
             }
@@ -1077,11 +1078,12 @@ Ext.define('SpWebPortal.controller.Mapper', {
             this.mapMarkers[pointStr] = marker; 
 	    var self = this;
 	    var ll = [];
-	    for (var i = 0; i < geoCoords.length; i++) {
+	    for (var i = 0; i < geoCoords.length-1; i++) {
 	        ll[i] = geoCoords[i];
 	    }
+            marker.data = ll;
 	    google.maps.event.addListener(marker, 'click', function() {
-	        self.onGoogleMarkerClick2(ll);
+	        self.onGoogleMarkerClick2(marker);
 	    });
         }
     },
