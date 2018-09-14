@@ -165,7 +165,7 @@ Ext.define('SpWebPortal.view.ImageView', {
 	    }
 	}
         if (this.getCollIdFld()) {
-            result.push('CollId', this.getCollIdFld(), 'string');
+            result.push(['CollId', this.getCollIdFld(), 'string']);
         }
 	return result;
     },
