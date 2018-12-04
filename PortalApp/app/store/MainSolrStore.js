@@ -97,9 +97,11 @@ Ext.define('SpWebPortal.store.MainSolrStore', {
     getLatLngFilter: function(geoCoords) {
 	var result = '';
 	for (var i = 0; i < geoCoords.length; i++) {
-	    if (i > 0) result += '+AND+';
-	    result += this.getGeoCoordFlds()[i] + ':\\"' + geoCoords[i] + ' \\"';
+	    if (i > 0) result += ' AND ';
+	    result += this.getGeoCoordFlds()[i] + ':\"' + geoCoords[i] + '\"';
 	}
+	//result = result.replace("-", "\\-");
+	console.info(result);
 	return result;
     },
 
@@ -141,7 +143,7 @@ Ext.define('SpWebPortal.store.MainSolrStore', {
     },
 	
     getImageRequirementFilter: function() {
-	return 'img:[\\"\\" TO ^]';
+	return 'img:*';
     },
 
     getGeoCoordRequirementFilter: function() {
