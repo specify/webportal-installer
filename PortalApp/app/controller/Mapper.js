@@ -41,7 +41,6 @@ Ext.define('SpWebPortal.controller.Mapper', {
     mapTaskPage: 0,
     mapReadyTasks: [],
     buildMapTask: null,
-    useFacets: true,
     lastFacetUrl: '',
     collMarkerIcons: {},
     
@@ -479,29 +478,17 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	    }				 
 	    var pageSize = store.pageSize;
 	    var url = store.getProxy().url.replace("rows="+pageSize, "rows="+this.lilMapStore.pageSize);
-	    if (this.useFacets) {
-		url = url.replace("fl=*", "fl=l1,l11");
-
-		url += '&facet=on&facet.field=geoc&facet.limit=-1&facet.mincount=1';
-	    } else {
-		url = url.replace("fl=*", "fl=cn,l1,l11");
-		url = url + '&sort=l1+asc&l2+asc';
-	    }
+ 	    url = url.replace("fl=*", "fl=l1,l11");
+	    url += '&facet=on&facet.field=geoc&facet.limit=-1&facet.mincount=1';
 	    //Only remap if url/search has changed. This might not be completely
 	    //safe. Currently Advanced and Express searches will re-execute even url is UN-changed.
 	    //Technically, it would be better to track whether a search has been executed since last mapping.
 	    //BUT With facets, currently, remapping always occurs
-	    if ((this.useFacets && this.lastFacetUrl != url) 
-		|| (!this.useFacets && (url != this.lilMapStore.getProxy().url || this.lastSearchCancelled))) {
+	    if (this.lastFacetUrl != url) {
 		this.clearMarkers2();
 		this.lastSearchCancelled = false;
 		this.recordsBeingMapped = [];
-		if (this.useFacets) {
-		    this.getDistinctPoints(url);
-		} else {
-		    this.lilMapStore.getProxy().url = url;
-		    this.loadMapStore(1);S
-		}
+		this.getDistinctPoints(url);
 	    } else {
  		this.progBar.setVisible(false);
 		this.cancelBtn.setVisible(false);
@@ -838,49 +825,40 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	var lastCoords = [];
 	for (var r = 0; r < records.length; r++) {
 	    var coords = [];
-	    if (this.useFacets) {
-		coords[0] = records[r][0];
-		coords[1] = records[r][1];
-		coords[2] = records[r][2];
-                coords[3] = records[r][3];
-	    } else {
-		coords[0] = records[r].get(geoCoordFlds[0]);
-		coords[1] = records[r].get(geoCoordFlds[1]);
-	    }
-	    if (this.useFacets || r == 0 || coords[0] != lastCoords[0] || coords[1] != lastCoords[1]) {
-		lastCoords[0] = coords[0];
-		lastCoords[1] = coords[1];
-		if (this.areMappable(coords)) {
-		    //worry about lines, boxes etc, later
-		    var point = new google.maps.LatLng(coords[0], coords[1]).toString();
-		    //having the results sorted by geoCoord and checking for changes in the above if
-		    //should make looking up in mapMarkers unnecessary - right?
-		    //But it doesn't...
-		    if (this.useFacets || (!this.mapMarkers[point.toString()] && !added[point])) {
-			//XXX just need to add the point now
-			geoCoords[p] = [];
-			geoCoords[p][0] = coords[0];
-			geoCoords[p][1] = coords[1];
-			geoCoords[p][2] = coords[2];
-                        geoCoords[p][3] = coords[3];
-			added[point] = 'y';
-			if (checkBounds) {
-			    if (this.minMappedLat > coords[0]) {
-				this.minMappedLat = coords[0];
-			    } 
-			    if (this.maxMappedLat < coords[0]) {
-				this.maxMappedLat = coords[0];
-			    }
-			    if (this.minMappedLng > coords[1]) {
-				this.minMappedLng = coords[1];
-			    } 
-			    if (this.maxMappedLng < coords[1]) {
-				this.maxMappedLng = coords[1];
-			    }
-			}
-			p++;
+	    coords[0] = records[r][0];
+	    coords[1] = records[r][1];
+	    coords[2] = records[r][2];
+            coords[3] = records[r][3];
+	    lastCoords[0] = coords[0];
+	    lastCoords[1] = coords[1];
+	    if (this.areMappable(coords)) {
+		//worry about lines, boxes etc, later
+		var point = new google.maps.LatLng(coords[0], coords[1]).toString();
+		//having the results sorted by geoCoord and checking for changes in the above if
+		//should make looking up in mapMarkers unnecessary - right?
+		//But it doesn't...
+		//XXX just need to add the point now
+		geoCoords[p] = [];
+		geoCoords[p][0] = coords[0];
+		geoCoords[p][1] = coords[1];
+		geoCoords[p][2] = coords[2];
+                geoCoords[p][3] = coords[3];
+		added[point] = 'y';
+		if (checkBounds) {
+		    if (this.minMappedLat > coords[0]) {
+			this.minMappedLat = coords[0];
+		    } 
+		    if (this.maxMappedLat < coords[0]) {
+			this.maxMappedLat = coords[0];
+		    }
+		    if (this.minMappedLng > coords[1]) {
+			this.minMappedLng = coords[1];
+		    } 
+		    if (this.maxMappedLng < coords[1]) {
+			this.maxMappedLng = coords[1];
 		    }
 		}
+		p++;
 	    }
 	}
 	added = {};
