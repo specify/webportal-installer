@@ -31,11 +31,41 @@ var solrPort = settings.get('solrPort');
 var solrPageSize = settings.get('solrPageSize');
 var maxPageSizeSetting = settings.get('maxSolrPageSize');
 var solrCore = settings.get('solrCore');
-var solrUrlTemplate = solrURL + ':' + solrPort + '/' + (solrCore  ? solrCore + '/': '') + 'select?indent=on&version=2.2&fq=&rows=' + solrPageSize + '&fl=*%2Cscore&qt=&wt=json&explainOther=&hl.fl=&q=';
+var solrUrlTemplate = solrURL + ':' + solrPort + '/' + (solrCore  ? solrCore + '/': '') + 'select?df=contents&indent=on&version=2.2&fq=&rows=' + solrPageSize + '&fl=*%2Cscore&qt=&wt=json&explainOther=&hl.fl=';
 //ideally we would want to use the csv.mv.escape parameter to set the escape to 'none' for what solr thinks are multivalued fields but seem to be any fields with commas,
 //but according to sources on the web, there is no way to set sv.escape to none. So we end up with all commas preceded by \ in the csv output.
 //csv.mv.separator=%09 means that only tabs will be preceded by \, which we can live with.
-var solrUrlTemplateCsv = solrURL + ':' + solrPort + '/' + (solrCore  ? solrCore + '/': '') + 'select?indent=on&version=2.2&fq=&rows=99999999&fl=*&qt=&wt=csv&csv.mv.separator=%09&explainOther=&hl.fl=&q=';
+var solrUrlTemplateCsv = solrURL + ':' + solrPort + '/' + (solrCore  ? solrCore + '/': '') + 'select?df=contents&indent=on&version=2.2&fq=&rows=99999999&fl=*&qt=&wt=csv&csv.mv.separator=%09&explainOther=&hl.fl=&q=';
+
+Ext.override(Ext.data.proxy.Ajax, {
+                
+            doRequest: function(operation, callback, scope) {
+                var writer  = this.getWriter(),
+                    request = this.buildRequest(operation, callback, scope);
+                
+                if (operation.allowWrite()) {
+                    request = writer.write(request);
+                }
+                
+                Ext.apply(request, {
+                    headers       : this.headers,
+                    timeout       : this.timeout,
+                    scope         : this,
+                    callback      : this.createRequestCallback(request, operation, callback, scope),
+                    method        : this.getMethod(request),
+                    disableCaching: false // explicitly set it to false, ServerProxy handles caching
+                });
+                
+                //Added... jsonData is handled already
+                if(this.jsonData) {
+                    request.jsonData = Ext.encode(this.qparams);
+                }
+                
+                Ext.Ajax.request(request);
+                
+                return request;
+            }
+});
 
 Ext.define('SpWebPortal.store.MainSolrStore', {
     extend: 'Ext.data.Store',
@@ -69,9 +99,13 @@ Ext.define('SpWebPortal.store.MainSolrStore', {
     model: 'SpWebPortal.model.MainModel',
 
     proxy: {
-	type: 'jsonp',
+	type: 'ajax',
 	callbackKey: 'json.wrf',
 	url: solrUrlTemplate,
+        jsonData: true,
+        actionMethods: {
+            read: 'POST'
+        },
 	reader: {
 	    root: 'response.docs',
 	    totalProperty: 'response.numFound'
@@ -83,7 +117,7 @@ Ext.define('SpWebPortal.store.MainSolrStore', {
     },
 
     getLatLngFitFilter: function(lat, lng, sw, ne) {
-	var result = lat + ':[' + this.roundNumber(sw.lat(), 4) + ' TO ' + this.roundNumber(ne.lat(), 4) + ']+AND+';
+	var result = lat + ':[' + this.roundNumber(sw.lat(), 4) + ' TO ' + this.roundNumber(ne.lat(), 4) + '] AND ';
 	if ((sw.lng() > 0 && ne.lng() < 0) ||
             (((sw.lng() < 0 && ne.lng() < 0) || (sw.lng() >= 0 && ne.lng() >=0)) && sw.lng() > ne.lng())) {
 	    result += 'NOT ' + lng + ':[' + this.roundNumber(ne.lng(), 4) + ' TO ' + this.roundNumber(sw.lng(), 4) + ']';
@@ -100,11 +134,13 @@ Ext.define('SpWebPortal.store.MainSolrStore', {
 	    if (i > 0) result += ' AND ';
 	    result += this.getGeoCoordFlds()[i] + ':\"' + geoCoords[i] + '\"';
 	}
-	//result = result.replace("-", "\\-");
-	console.info(result);
 	return result;
     },
 
+    getSolrUrlTemplate: function() {
+        return solrUrlTemplate;
+    },
+    
     getMapFitFilter: function() {
 	var map = Ext.getCmp('spwpmainmappane').getMapCmp();
 	var bnds = map.getBounds();
@@ -146,19 +182,19 @@ Ext.define('SpWebPortal.store.MainSolrStore', {
 	return 'img:*';
     },
 
-    getGeoCoordRequirementFilter: function() {
+    getGeoCoordRequirementFilter: function(forJSON) {
 	var result = '';
 	var gFlds = this.getGeoCoordFlds();
 	for (var f = 0; f < gFlds.length; f++) {
 	    if (f > 0) {
-		result += '+AND+';
+		result += forJSON ? ' AND ' : '+AND+';
 	    }
 	    //result += gFlds[f] + ':[\\"\\" TO ^]';
 	    result += gFlds[f] + ':[-180 TO 180]';
 	}
 	return result;
     },
-
+    
     getSearchLatLngUrl: function(geoCoords) {
 	return this.getSearchUrl(this.getImages(), this.getMaps(), this.getMainTerm(), 
                                  this.getFilterToMap(), this.getMatchAll(), geoCoords);
@@ -193,6 +229,48 @@ Ext.define('SpWebPortal.store.MainSolrStore', {
 	this.setMatchAll(matchAll);
 
 	return result;
+    },
+
+    getSearchSpecs4J: function(images, maps, mainTerm, filterToMap, matchAll, geoCoords, csv) {
+	this.setImages(images);
+	this.setMaps(maps);
+	this.setMainTerm(mainTerm);
+	this.setFilterToMap(filterToMap);
+	this.setMatchAll(matchAll);
+        return {
+            query: this.getJSONQuery(images, maps, mainTerm, filterToMap, matchAll, geoCoords),
+            url: this.getSearchUrl4J(csv)
+        };
+    },
+    
+    getJSONQuery: function(images, maps, mainTerm, filterToMap, matchAll, geoCoords) {
+	var mainQ = mainTerm;
+	var mapFilter = filterToMap || typeof geoCoords !== "undefined";
+	if (images) {
+	    mainQ += ' AND ' + this.getImageRequirementFilter();
+	}
+        if (maps) {
+            mainQ += ' AND ' + this.getGeoCoordRequirementFilter(true);
+        }
+        if (mapFilter) {
+	    var mapFitter = typeof geoCoords === "undefined"
+		? this.getMapFitFilter()
+		    : this.getLatLngFilter(geoCoords);
+	    mainQ += ' AND ' + mapFitter;
+	    this.setCurrentMapFitFilter(mapFitter);
+        } else {
+	    this.setCurrentMapFitFilter('');
+	}
+        return mainQ;        
+    },
+
+    getSearchUrl4J: function(csv) {
+	var url = (csv ? this.urlTemplateCsv.replace('&fl=*', this.getCsvFldParam()) : this.urlTemplate);
+        //not sure how matchAll will work???
+        //if (matchAll) { 
+	//    url += "&q.op=AND";
+	//} 
+	return url;
     },
 
     getSearchUrl: function(images, maps, mainTerm, filterToMap, matchAll, geoCoords, csv) {
