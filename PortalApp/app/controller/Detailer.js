@@ -164,12 +164,12 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	//Ext.getCmp('spwpmainmappane').setLoading(false);
     },
 
-    onGoogleMarkerClick2: function(url, count) {
+    onGoogleMarkerClick2: function(srchSpec, count) {
 	//console.info("Detailer.onGoogleMarkerClick2" + " " + count + " " + url);
 	if (count > 1) {
-	    this.popupDetails2(url, false);
+	    this.popupDetails2(srchSpec, false);
 	} else {
-	    this.popupDetailFromUrl(url, false);
+	    this.popupDetailFromSrchSpec(srchSpec, false);
 	}
     },
 
@@ -410,7 +410,7 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	this.detailsPopWin.toFront();
     },
 
-    popupDetails2: function(url, showMap) {
+    popupDetails2: function(srchSpec, showMap) {
 	if (this.detailsPopWin == null) {
 	    this.detailsForm = Ext.widget('spdetailspanel', {
 		showMap: showMap
@@ -441,7 +441,7 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	}
 
 	this.ignoreDetailsPageChange = true;
-	this.detailsForm.getAndLoadRecords(url);
+	this.detailsForm.getAndLoadRecords(srchSpec);
 	
 	if (!this.detailsPopWin.isVisible()) {
 	    this.detailsPopWin.show(null, function() {
@@ -452,21 +452,26 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	}  
     },
 	
-    popupDetailFromUrl: function(url, showMap) {
+    popupDetailFromSrchSpec: function(srchSpec, showMap) {
 	var theRecStore = Ext.create('Ext.data.Store', {
 	    model: "SpWebPortal.model.MainModel",
 	    pageSize: 50,
 	    remoteSort: true,
 	    proxy: {
-		type: 'jsonp',
+		type: 'ajax',
 		callbackKey: 'json.wrf',
+                jsonData: true,
+                actionMethods: {
+                    read: 'POST'
+                },
 		reader: {
 		    root: 'response.docs',
 		    totalProperty: 'response.numFound'
 		}
 	    }
 	});
-	theRecStore.getProxy().url = url;
+	theRecStore.getProxy().url = srchSpec.url;
+        theRecStore.getProxy().qparams =  {query: srchSpec.query};
 	theRecStore.loadPage(1, {
 	    scope: this,
 	    callback: function(records) {

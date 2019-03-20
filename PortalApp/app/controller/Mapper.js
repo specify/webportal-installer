@@ -42,6 +42,7 @@ Ext.define('SpWebPortal.controller.Mapper', {
     mapReadyTasks: [],
     buildMapTask: null,
     lastFacetUrl: '',
+    lastFacetQparams: '',
     collMarkerIcons: {},
     
     minMappedLat: 90.0, 
@@ -296,21 +297,25 @@ Ext.define('SpWebPortal.controller.Mapper', {
     },
 
 
-    getDistinctPoints: function(url) {
-	//var url = 'http://stooge:8983/solr/core3/select/?q=*%3A*&version=2.2&start=0&rows=0&indent=on&qt=&wt=json&fl=cn,l1,l11&facet=on&facet.field=geoc&facet.limit=-1';
+    getDistinctPoints: function(url, JSONquery) {
         var me = this;
 	me.lastFacetUrl = '';
+        me.lastFacetQparams = '';
 	me.initUICmps();
 	me.getMapPane().setLoading(true);
 	me.progBar.setVisible(false);
 	me.statusTextCtl.setVisible(true);
 	me.statusTextCtl.setText(me.loadingGeoCoordsText);
 	$.ajax({url: url,
-                jsonp: 'json.wrf',
-                dataType: 'jsonp'
+                //jsonp: 'json.wrf',
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                type: 'POST',
+                data: Ext.encode(JSONquery)
 	       }).done(function(data) {
 		   //console.info("Mapper.getDistinctPoints() done");
 		   me.lastFacetUrl = url;
+                   me.lastFacetQparams = JSONquery;
 		   var numFound = data.response.numFound;
 		   me.minMappedLat = 90.0; 
 		   me.maxMappedLat = -90.0;
@@ -331,12 +336,9 @@ Ext.define('SpWebPortal.controller.Mapper', {
 		       }
 		       if (bounds != null) {
 			   me.mainMapCtl.fitBounds(bounds);
-			   //me.mainMapCtl.fitBounds(me.balanceBounds(bounds));
 		       }
 		   }
-		   
 		   me.statusTextCtl.setText(text);
-
 	       });
     },
 
@@ -433,9 +435,9 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	var store = Ext.getStore('MainSolrStore');
         var data = marker.data;
 	var ll = data.slice(0, data.length-1);
-	var url = store.getSearchLatLngUrl(ll);
+	var srchSpec = store.getSearchLatLngUrl4J(ll);
 	var mappane = this.getMapPane();
-	mappane.fireEvent('googlemarkerclick2', url, data[data.length-1]);
+	mappane.fireEvent('googlemarkerclick2', srchSpec, data[data.length-1]);
     },
 
     doMap: function() {
@@ -453,7 +455,9 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	    this.minMappedLng = 180.0; 
 	    this.maxMappedLng = -180.0;
 
-	    if (this.lilMapStore == null) {
+            //lilMapStore is not currently used because 'tasked' point loading is not currently used
+            //not changing its proxy to ajax as for MainSolrStore.
+            if (this.lilMapStore == null) {
 		Ext.define('SpWebPortal.MapModel', {
 		    extend: 'Ext.data.Model',
 		    fields: [
@@ -478,17 +482,18 @@ Ext.define('SpWebPortal.controller.Mapper', {
 	    }				 
 	    var pageSize = store.pageSize;
 	    var url = store.getProxy().url.replace("rows="+pageSize, "rows="+this.lilMapStore.pageSize);
- 	    url = url.replace("fl=*", "fl=l1,l11");
+            var newFl = 'fl=' + this.geoCoordFlds[0] + ',' + this.geoCoordFlds[1];
+            url = url.replace("fl=*", newFl);
 	    url += '&facet=on&facet.field=geoc&facet.limit=-1&facet.mincount=1';
 	    //Only remap if url/search has changed. This might not be completely
 	    //safe. Currently Advanced and Express searches will re-execute even url is UN-changed.
 	    //Technically, it would be better to track whether a search has been executed since last mapping.
 	    //BUT With facets, currently, remapping always occurs
-	    if (this.lastFacetUrl != url) {
+	    if (this.lastFacetUrl != url || this.lastFacetQparams != store.getProxy().qparams) {
 		this.clearMarkers2();
 		this.lastSearchCancelled = false;
 		this.recordsBeingMapped = [];
-		this.getDistinctPoints(url);
+		this.getDistinctPoints(url, store.getProxy().qparams);
 	    } else {
  		this.progBar.setVisible(false);
 		this.cancelBtn.setVisible(false);

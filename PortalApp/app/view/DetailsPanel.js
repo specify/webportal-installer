@@ -127,14 +127,26 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
 	    model: "SpWebPortal.model.MainModel",
 	    pageSize: 50,
 	    remoteSort: true,
-	    proxy: {
+	   /* proxy: {
 		type: 'jsonp',
 		callbackKey: 'json.wrf',
 		reader: {
 		    root: 'response.docs',
 		    totalProperty: 'response.numFound'
 		}
-	    },
+	    },*/
+            proxy: {
+	        type: 'ajax',
+	        callbackKey: 'json.wrf',
+                jsonData: true,
+                actionMethods: {
+                    read: 'POST'
+                },
+	        reader: {
+	            root: 'response.docs',
+	            totalProperty: 'response.numFound'
+	        }
+            },
 	    setGeoCoordFlds: function() {},
 	    //The listener is copied straight from MainSolrStore
 	    listeners: {
@@ -242,11 +254,13 @@ Ext.define('SpWebPortal.view.DetailsPanel', {
 	return result;
     },
 
-    getAndLoadRecords: function(url) {
+    getAndLoadRecords: function(srchSpec) {
 	var rowStr = '&rows=' + Ext.getStore('MainSolrStore').pageSize;
 	var newRowStr = '&rows=' + this.getRecStore().pageSize;
-	var adjustedUrl = url.replace(rowStr, newRowStr);
+        var url = srchSpec.url;
+        var adjustedUrl = url.replace(rowStr, newRowStr);
 	this.getRecStore().getProxy().url = adjustedUrl;
+        this.getRecStore().getProxy().qparams = {query: srchSpec.query};
 	this.getRecStore().loadPage(1, {
 	    scope: this,
 	    callback: function(records) {

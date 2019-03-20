@@ -132,9 +132,9 @@ Ext.define('SpWebPortal.store.MainSolrStore', {
 	var result = '';
 	for (var i = 0; i < geoCoords.length; i++) {
 	    if (i > 0) result += ' AND ';
-	    result += this.getGeoCoordFlds()[i] + ':\"' + geoCoords[i] + '\"';
+	    result += this.getGeoCoordFlds()[i] + ':' + geoCoords[i] + '';
 	}
-	return result;
+	return result.replace(/-/g, "\\-");;
     },
 
     getSolrUrlTemplate: function() {
@@ -200,6 +200,11 @@ Ext.define('SpWebPortal.store.MainSolrStore', {
                                  this.getFilterToMap(), this.getMatchAll(), geoCoords);
     },
 
+    getSearchLatLngUrl4J: function(geoCoords) {
+	return this.getSearchSpecs4J(this.getImages(), this.getMaps(), this.getMainTerm(), 
+                                 this.getFilterToMap(), this.getMatchAll(), geoCoords);
+    },
+    
     getIdUrl: function(ids) {
 	var images = this.getImages();
 	var maps = this.getMaps();
