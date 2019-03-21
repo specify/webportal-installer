@@ -31,6 +31,7 @@ Ext.define('SpWebPortal.controller.Image', {
     //...localizable text
 
     mainImgStore: null,
+    requireImages: false,
     imgView: null,
     solrImgFl: null,
     thumb: null,
@@ -196,6 +197,7 @@ Ext.define('SpWebPortal.controller.Image', {
 	if (this.thumb == null) {
 	    this.thumb = tabPanel.down('spimageview').down('spthumbnail');
 	}
+        //this.doImages();
     },
 
     doImages: function() {
@@ -226,7 +228,8 @@ Ext.define('SpWebPortal.controller.Image', {
 		this.mainImgStore = Ext.create('Ext.data.Store', {
 		    model: "SpWebPortal.MainImgModel",
 		    pageSize: 10000,
-		    proxy: {
+                    /*
+                    proxy: {
 			type: 'jsonp',
 			callbackKey: 'json.wrf',
 			url: store.solrUrlTemplate,
@@ -234,27 +237,49 @@ Ext.define('SpWebPortal.controller.Image', {
 			    root: 'response.docs',
 			    totalProperty: 'response.numFound'
 			}
-		    }
+		    }*/
+                    proxy: {
+	                type: 'ajax',
+	                callbackKey: 'json.wrf',
+	                url: solrUrlTemplate,
+                        jsonData: true,
+                        actionMethods: {
+                            read: 'POST'
+                        },
+	                reader: {
+	                    root: 'response.docs',
+	                    totalProperty: 'response.numFound'
+	                }
+                    }
 		});
 	    }				 
 	    var pageSize = store.pageSize;
-	    var url;
-	    if (!store.getImages()) {
-		url = store.getSearchUrl(true, store.getMaps(), store.getMainTerm(), store.getFilterToMap(), store.getMatchAll());
+	    var srchSpecs;
+            /*
+            if (!store.getImages()) {
+		srchSpecs = store.getSearchSpecs4J(true, store.getMaps(), store.getMainTerm(), store.getFilterToMap(), store.getMatchAll());
 		store.setImages(false);
 	    } else {
-		url = store.getProxy().url;
+                srchSpecs = {
+		    url: store.getProxy().url,
+                    query: store.getProxy().qparams.query
+                };
+                
 	    }
-	    url = url.replace("rows="+pageSize, "rows="+this.mainImgStore.pageSize);
-	    url = url.replace("fl=*", "fl="+this.solrImgFl); //XXX instead of cn need to add fields needed for customized image description settings
+             */
+	    srchSpecs = store.getSearchSpecs4J(true, store.getMaps(), store.getMainTerm(), store.getFilterToMap(), store.getMatchAll());
+            
+	    srchSpecs.url = srchSpecs.url.replace("rows="+pageSize, "rows="+this.mainImgStore.pageSize);
+	    srchSpecs.url = srchSpecs.url.replace("fl=*", "fl="+this.solrImgFl); //XXX instead of cn need to add fields needed for customized image description settings
 	    
-	    //Only remap if url/search has changed. This might not be completely
+	    //Only redo images if url/search has changed. This might not be completely
 	    //safe. Currently Advanced and Express searches will re-execute even url is UN-changed.
 	    //Technically, it would be better to track whether a search has been executed since last mapping.
-	    if (url != this.mainImgStore.getProxy().url || this.lastSearchCancelled) {
+	    if (srchSpecs.url != this.mainImgStore.getProxy().url || srchSpecs.query != this.mainImgStore.getProxy().qparams.query || this.lastSearchCancelled) {
 		this.lastSearchCancelled = false;
 		this.mainImgRecords = [];
-		this.mainImgStore.getProxy().url = url;
+		this.mainImgStore.getProxy().url = srchSpecs.url;
+                this.mainImgStore.getProxy().qparams = {query: srchSpecs.query};
 		this.loadMainImgStore(1);
 	    }
 	}

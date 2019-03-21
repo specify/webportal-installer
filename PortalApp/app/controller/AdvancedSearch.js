@@ -108,14 +108,15 @@ Ext.define('SpWebPortal.controller.AdvancedSearch', {
 	    } else {
 		var solr = this.getMainSolrStoreStore();
 		var dummy_geocoords;		
-		var url = solr.getSearchUrl(images, maps, filterStr, filterToMap, this.getMatchAll(), dummy_geocoords, this.getWriteToCsv());
+		var srchSpecs = solr.getSearchSpecs4J(images, maps, filterStr, filterToMap, this.getMatchAll(), dummy_geocoords, this.getWriteToCsv());
 		if (this.getWriteToCsv()) {
                     this.exportToCsv(url, this.getCsvFileName(filterStr));
                 } else {
                     this.adjustFitToMapStuff();
                     Ext.apply(Ext.getCmp('spwpexpcsvbtn'), {srch: 'adv'});
 
-		    solr.getProxy().url = url; 
+		    solr.getProxy().url = srchSpecs.url;
+                    solr.getProxy().qparams = {query: srchSpecs.query};
 		    solr.setSearched(true);
 		    solr.loadPage(1);
 		    this.searchLaunched();
@@ -131,7 +132,7 @@ Ext.define('SpWebPortal.controller.AdvancedSearch', {
             return;
         }
 	var ctrls = this.getSearch().query('spsearchcriterion');
-	var connector = this.getSolr() ? ' +' : ', ';
+	var connector = this.getSolr() ? (this.getMatchAll() ? ' AND ' : ' OR ') : ', ';
 	var filterStr = '', c;
 	for (c = 0; c < ctrls.length; c++) {
 	    var filter = this.getSolr() ? ctrls[c].solrFilter(this.getMatchAll(), this) : ctrls[c].sqlPhpFilter();
@@ -152,6 +153,6 @@ Ext.define('SpWebPortal.controller.AdvancedSearch', {
 	if (filterStr.length == 0) {
 	    filterStr = "*";
 	}
-        this.searchFor(filterStr, images, maps, filterToMap);
+        this.searchFor('(' + filterStr + ')', images, maps, filterToMap);
     }
 });

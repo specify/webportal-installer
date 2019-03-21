@@ -246,7 +246,7 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	attacheeIDs[0] = attacheeData;
 	
 	var store = Ext.getStore('MainSolrStore');
-	this.popupDetails2(store.getIdUrl(attacheeIDs), true);
+	this.popupDetails2(store.getIdSearchSpecs4J(attacheeIDs), true);
 
     },
 

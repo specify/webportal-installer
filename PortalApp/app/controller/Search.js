@@ -128,8 +128,11 @@ Ext.define('SpWebPortal.controller.Search', {
 
     escapeForSolr: function(srchText, isFullText) {
 	//assuming srchText is defined and non-null
-	var result = isFullText ? srchText.toLowerCase() : srchText;
-	result = result.replace('&', '%26');
+        //fulltext seems case-insensitive, and advanced search which is not incorrectly flagged FullText, is case-sensitive,
+        //so not changing case, for now...
+        //var result = isFullText ? srchText.toLowerCase() : srchText;
+        var result = srchText;
+        result = result.replace('&', '%26');
 	//etc...
 	return result;
     },

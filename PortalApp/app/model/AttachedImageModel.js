@@ -22,7 +22,7 @@ Ext.define('SpWebPortal.model.AttachedImageModel', {
     fields: [
 	{name: 'AttachmentID', type: 'int'},
 	{name: 'AttachedToTable', type: 'string'},
-	{name: 'AttachedTo', type: 'int'},
+	{name: 'AttachedTo', type: 'string'},
 	{name: 'AttachedToDescr', type: 'string'},
 	{name: 'AttachmentLocation', type: 'string'},
         {name: 'CollName', type: 'string'},
