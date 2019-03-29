@@ -31,11 +31,11 @@ var solrPort = settings.get('solrPort');
 var solrPageSize = settings.get('solrPageSize');
 var maxPageSizeSetting = settings.get('maxSolrPageSize');
 var solrCore = settings.get('solrCore');
-var solrUrlTemplate = solrURL + ':' + solrPort + '/' + (solrCore  ? solrCore + '/': '') + 'select?df=contents&indent=on&version=2.2&fq=&rows=' + solrPageSize + '&fl=*%2Cscore&qt=&wt=json&explainOther=&hl.fl=';
+var solrUrlTemplate = solrURL + ':' + solrPort + '/' + (solrCore  ? solrCore + '/': '') + 'select?indent=on&version=2.2&fq=&rows=' + solrPageSize + '&fl=*%2Cscore&qt=&wt=json&explainOther=&hl.fl=';
 //ideally we would want to use the csv.mv.escape parameter to set the escape to 'none' for what solr thinks are multivalued fields but seem to be any fields with commas,
 //but according to sources on the web, there is no way to set sv.escape to none. So we end up with all commas preceded by \ in the csv output.
 //csv.mv.separator=%09 means that only tabs will be preceded by \, which we can live with.
-var solrUrlTemplateCsv = solrURL + ':' + solrPort + '/' + (solrCore  ? solrCore + '/': '') + 'select?df=contents&indent=on&version=2.2&fq=&rows=99999999&fl=*&qt=&wt=csv&csv.mv.separator=%09&explainOther=&hl.fl=&q=';
+var solrUrlTemplateCsv = solrURL + ':' + solrPort + '/' + (solrCore  ? solrCore + '/': '') + 'select?indent=on&version=2.2&fq=&rows=99999999&fl=*&qt=&wt=csv&csv.mv.separator=%09&explainOther=&hl.fl=&q=';
 
 Ext.override(Ext.data.proxy.Ajax, {
                 

@@ -73,6 +73,7 @@ Ext.define('SpWebPortal.controller.ExpressSearch', {
 	var mainQ = (typeof control[0].value === "undefined" || control[0].value == null || control[0].value == '') 
 	    ? '*' 
 	        : this.escapeForSolr(control[0].value,true);
+        mainQ = "contents:" + mainQ;
 	var filterToMap = (this.getForceFitToMap() || this.getFitToMap()) && (this.mapViewIsActive() || this.getWriteToCsv());
         var dummy_geocoords;
 
