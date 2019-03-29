@@ -21,7 +21,7 @@ Ext.define('SpWebPortal.model.FieldDefModel', {
     extend: 'Ext.data.Model',
     fields: [
 	{name: 'colname', type: 'string'},
-	{name: 'solrname', type: 'string'},
+	{name: 'solrname', type: 'string', defaultvalue: 'string'},
 	{name: 'solrtype', type: 'string'},
 	{name: 'solrtitle', type: 'string'},
 	{name: 'title', type: 'string'},

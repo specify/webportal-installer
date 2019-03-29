@@ -88,6 +88,10 @@ Ext.define('SpWebPortal.view.widget.SearchCriterion', {
     },
 
     solrFilter: function(matchAll, searcher) {
+        return this.isFullText() ? this.solrFilterText(matchAll, searcher) : this.solrFilterNonText(searcher);
+    },
+
+    solrFilterNonText: function(searcher) {
 	var entries = this.entries();
 	var result = '';
 	if (entries != null && entries.length > 0) {
@@ -119,19 +123,7 @@ Ext.define('SpWebPortal.view.widget.SearchCriterion', {
 		    result = '[' + result + ' TO ' + result2 + ']';
 		}
 	    } else if (op == 'in') {
-		var listItems = entries[0].split(" ");
-		var sep = " ";
-		if (matchAll) {
-		    sep += "OR ";
-		}
-		result = "(";
-		for (i = 0; i < listItems.length; i++){
-		    if (i > 0) {
-			result += sep;
-		    }
-		    result += listItems[i].toLowerCase();
-		}
-		result += ")";
+                result = this.listTerms(' OR ', true);
 	    }
 	    result = this.itemid + ':' + result;
 	    var notId = '#' + this.itemid + '-not';
@@ -142,8 +134,22 @@ Ext.define('SpWebPortal.view.widget.SearchCriterion', {
 	}
 	return result;
     },
-
-    getEntry: function (entry) {
+    solrFilterText: function(matchAll, searcher) {
+    },
+    
+    listTerms: function(separator, includeItemId) {
+	var listItems = entries[0].split(" ");
+	var result = "(";
+	for (var i = 0; i < listItems.length; i++){
+	    if (i > 0) {
+		result += separator;;
+	    }
+	    result += (includeItemId ? this.itemid + ':' : '') + listItems[i];
+	}
+	return result += ")";
+    },
+            
+    getEntry: function(entry) {
 	if (!this.isText) {
 	    return entry;
 	} else {
@@ -155,11 +161,14 @@ Ext.define('SpWebPortal.view.widget.SearchCriterion', {
 	//XXX need to add a way to configure this, and other stuff
 	//cheap fix for cases people have complained about
         //this function needs to produce same results as Sp6's ExportMappingInfo.isFullTextSearch() method
-	var fldName = fld.get('spfld');
+        /*
+        var fldName = fld.get('spfld');
 	return fldName.indexOf("number") == -1 //StationFieldNumber, CatalogNumber, FieldNumber, ...
 	    && fldName.indexOf("date") == -1 //StartDate, EndDate, ... 
 	    && fldName.indexOf("timestamp") != 0
-	    && fldName.toLowerCase() != "guid";  
+	    && fldName.toLowerCase() != "guid";
+         */
+        return fld.get('solrtype').indexOf("text_") == 0;
     },
     
     isFullText: function() {
