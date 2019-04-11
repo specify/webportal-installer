@@ -26,7 +26,7 @@ Ext.application({
     autoCreateViewport: true,
 
     models: ['FieldDefModel','AttachedImageModel'],
-    stores: ['SettingsStore', 'FieldDefStore', 'NumericOps', 'DateOps', 'StringOps', 'Sorts'],
+    stores: ['SettingsStore', 'FieldDefStore', 'NumericOps', 'DateOps', 'StringOps', 'FulltextOps', 'Sorts'],
     controllers: ['Mapper', 'ExpressSearch', 'AdvancedSearch', 'Detailer',
 		 'Image', 'Settings'],
     

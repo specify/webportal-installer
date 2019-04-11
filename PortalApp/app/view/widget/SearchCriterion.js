@@ -134,7 +134,28 @@ Ext.define('SpWebPortal.view.widget.SearchCriterion', {
 	}
 	return result;
     },
+    
     solrFilterText: function(matchAll, searcher) {
+	var entries = this.entries();
+        var result = '';
+	if (entries != null && entries.length > 0) {
+	    var opId = '#' + this.itemid + '-op';
+	    var op = this.query(opId)[0].value;
+	    var entry = searcher.escapeForSolr(entries[0], this.isFullText());
+            if (op == 'containsany') {
+		var terms = entry.split(' ');
+		result = '';
+		for (var t = 0; t < terms.length; t++) {
+		    if (t > 0) {
+			result += ' OR ';
+		    }
+                    result += this.fld.get('solrname') + ':' + terms[t];
+		}
+            } else {
+                result =  this.fld.get('solrname') + ':' + entry;
+            }
+        }
+        return result;
     },
     
     listTerms: function(separator, includeItemId) {
@@ -158,33 +179,16 @@ Ext.define('SpWebPortal.view.widget.SearchCriterion', {
     },
 
     isFullTextFld: function(fld) {
-	//XXX need to add a way to configure this, and other stuff
-	//cheap fix for cases people have complained about
-        //this function needs to produce same results as Sp6's ExportMappingInfo.isFullTextSearch() method
-        /*
-        var fldName = fld.get('spfld');
-	return fldName.indexOf("number") == -1 //StationFieldNumber, CatalogNumber, FieldNumber, ...
-	    && fldName.indexOf("date") == -1 //StartDate, EndDate, ... 
-	    && fldName.indexOf("timestamp") != 0
-	    && fldName.toLowerCase() != "guid";
-         */
         return fld.get('solrtype').indexOf("text_") == 0;
     },
     
     isFullText: function() {
         if (this.fulltext == '?') {
-	    var fieldStore = Ext.getStore('FieldDefStore');
-	    for (var c = 1; c < fieldStore.count(); c++) {
-	        var fld = fieldStore.getAt(c);
-	        if (this.itemid == fld.get('solrname')) {
-                    if (this.isFullTextFld(fld)) {
-                        this.fulltext = 'true';
-                    } else {
-                        this.fulltext = 'false';
-                    }
-                    break;
-	        }
-	    }		 
+            if (this.isFullTextFld(this.fld)) {
+                this.fulltext = 'true';
+            } else {
+                this.fulltext = 'false';
+            }
         }
         return this.fulltext == 'true' ? true : false;
     }

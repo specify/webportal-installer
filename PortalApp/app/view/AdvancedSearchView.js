@@ -47,12 +47,13 @@ Ext.define('SpWebPortal.view.AdvancedSearchView', {
 	for (var s = 1; s < fieldStore.count(); s++) {
 	    var fld = fieldStore.getAt(s);
 	    if (fld.get('advancedsearch')) {
+                var ops = this.getOps(fld);
 		var adv = Ext.create('SpWebPortal.view.widget.SearchCriterion', {
 		    layout: {
 			align: 'stretch',
 			type: 'hbox'
 		    },
-		    //layout: 'column',
+		    fld: fld,
 		    itemid: fld.get('solrname'),
 		    items: [
 			{
@@ -103,8 +104,8 @@ Ext.define('SpWebPortal.view.AdvancedSearchView', {
 			    //columnWidth: 0.1,
 
 			    id: fld.get('solrname') + '-op',
-			    store: this.getOps(fld),
-			    value: '='
+			    store: ops,
+			    value: ops.getAt(0).get('display')
 			}),
 			Ext.create('SpWebPortal.view.widget.SortButton', {
 			    //flex: 1,
@@ -145,14 +146,17 @@ Ext.define('SpWebPortal.view.AdvancedSearchView', {
     getOps: function(fld) {
 	var solrType = fld.get('solrtype');
 	var spType = fld.get('type');
-//	console.info("getOps: " + solrType + ", " + spType);
 	if (spType == 'java.util.Calendar') {
 	    return Ext.getStore('DateOps');
 	} else if (solrType == 'string') {
 	    return Ext.getStore('StringOps');
 	} else if (solrType == 'tdouble' || solrType == 'int') {
 	    return Ext.getStore('NumericOps');
-	}
+	} else if (solrType == 'text_general') {
+            console.info(Ext.getStore('FulltextOps'));
+            return Ext.getStore('FulltextOps');
+        }
 	return Ext.getStore('DateOps');
     }
+        
 });
