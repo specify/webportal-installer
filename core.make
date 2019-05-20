@@ -1,3 +1,7 @@
+# 
+# Use 'schema.xml' if solr will be used to create the core
+# Use 'managed-schema' if pre-configuring core 
+SCHEMA_FILE := schema.xml
 
 all: webapp core
 
@@ -16,7 +20,7 @@ SolrFldSchema.xml: PortalFiles/SolrFldSchema.xml
 	cat $< >> $@
 	echo "</fields>" >> $@
 
-schema.xml: $(TOPDIR)/patch_schema_xml.py \
+$(SCHEMA_FILE): $(TOPDIR)/patch_schema_xml.py \
 		$(TOPDIR)/$(SOLR_DIST)/example/solr/collection1/conf/schema.xml \
 		SolrFldSchema.xml
 	# Patching Solr schema with fields from Specify export.
