@@ -1,11 +1,5 @@
 
-all: solr-home setting_templates
-
-ifeq ($(DISABLE_ADMIN),true)
-WEB_XML := ../no_admin_web.xml
-else
-WEB_XML := ../with_admin_web.xml
-endif
+all: solr-home setting_templates html html/index.html
 
 cores: $(TOPDIR)/core.make $(TOPDIR)/$(SOLR_DIST) \
 		 $(TOPDIR)/specify_exports  $(TOPDIR)/specify_exports/*.zip
@@ -33,47 +27,19 @@ setting_templates: $(TOPDIR)/make_settings_template.py $(TOPDIR)/make_fields_tem
 			> "$@/$$corename/fldmodel.json" ; \
 	done
 
-index.html: $(TOPDIR)/make_toplevel_index.py $(TOPDIR)/index_skel.html cores
+
+html/index.html: $(TOPDIR)/make_toplevel_index.py $(TOPDIR)/index_skel.html cores html
 	python $(TOPDIR)/make_toplevel_index.py $(TOPDIR)/index_skel.html \
 		cores/*/webapp/resources/config/settings.json > $@
 
-specify-solr.war: $(TOPDIR)/unpacked-war $(TOPDIR)/$(SOLR_DIST) index.html \
-		$(TOPDIR)/PortalApp $(TOPDIR)/log4j.properties $(WEB_XML) cores
-
-	# Building directory for WAR file.
-	rm -rf specify-solr
-	mkdir -p specify-solr
-
-	# Copy example WAR contents.
-	cp -r $(TOPDIR)/unpacked-war/* specify-solr
-
-ifeq ($(DISABLE_ADMIN),true)
-	# Removing admin page.
-	rm specify-solr/admin.html
-endif
-
-	# Include correct web.xml.
-	cp $(WEB_XML) specify-solr/WEB-INF/web.xml
-
-	# Copy logging libraries used by SOLR.
-	cp $(TOPDIR)/$(SOLR_DIST)/example/lib/ext/* specify-solr/WEB-INF/lib/
-
-	# Configure the logging.
-	mkdir -p specify-solr/WEB-INF/classes/
-	cp $(TOPDIR)/log4j.properties specify-solr/WEB-INF/classes/
-
-	# Copy the webapp instances into place.
+html: cores
+	# Put the webapps in the html folder.
+	mkdir -p html
 	for core in cores/* ; do \
-		cp -r $$core/webapp specify-solr/`basename $$core` ; \
+		cp -r $$core/webapp html/`basename $$core` ; \
 	done
 
-	# Copy toplevel index.html into place.
-	cp index.html specify-solr/
-
-	# Packaging the Solr WAR file.
-	jar -cf specify-solr.war -C specify-solr/ .
-
-solr-home: $(TOPDIR)/$(SOLR_DIST) cores specify-solr.war solr.xml
+solr-home: $(TOPDIR)/$(SOLR_DIST) cores solr.xml
 	# Build the Solr home directory.
 	rm -rf solr-home
 	cp -r $(TOPDIR)/$(SOLR_DIST)/example/multicore solr-home
@@ -82,8 +48,6 @@ solr-home: $(TOPDIR)/$(SOLR_DIST) cores specify-solr.war solr.xml
 	for core in cores/* ; do \
 		cp -r $$core/core solr-home/`basename $$core` ; \
 	done
-	# Copy war file into place.
-	cp specify-solr.war solr-home/
 	# Copy top level Solr configuration into place.
 	cp solr.xml solr-home/
 
