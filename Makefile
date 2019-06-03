@@ -1,16 +1,3 @@
-# Directory where Solr indices are stored.
-SOLR_HOME := /var/lib/specify-solr
-
-# Running 'make install-solr-home' will copy the built web app into
-# this directory.  Should generally be the same as SOLR_HOME, but can
-# be set to user writable location and symbolically linked to
-# SOLR_HOME to allow 'make install-solr-home' to be ran by a
-# non-privileged user.
-INSTALL_DIR := $(SOLR_HOME)
-
-# Example user writable INSTALL_DIR:
-#INSTALL_DIR := $(HOME)/specify-solr
-
 # Mirror for downloading Apache Solr.
 SOLR_MIRROR := http://archive.apache.org/dist/lucene/solr
 
