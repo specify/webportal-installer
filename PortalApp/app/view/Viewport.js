@@ -103,6 +103,14 @@ Ext.define('SpWebPortal.view.Viewport', {
 	    itemid: 'spwpsettingsbtn',
 	    id: 'spwpsettingsbtn'
 	});
+	var infoBtn = Ext.create('Ext.button.Button', {
+	    xtype: 'button',
+	    icon: 'resources/images/info.png',
+	    itemid: 'spwpinfobtn',
+            //align: 'right',
+	    id: 'spwpinfobtn',
+            hidden: false
+	});
 
 	mapBtn.setVisible(false);
 	mapCancelBtn.setVisible(false);
@@ -168,7 +176,8 @@ Ext.define('SpWebPortal.view.Viewport', {
 		mapProg,
 		mapStatText,
                 expStatText,
-		loadingBtn
+		loadingBtn,
+                infoBtn
 	    ],
 	    items: [
 		{

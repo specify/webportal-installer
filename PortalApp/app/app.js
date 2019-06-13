@@ -28,7 +28,7 @@ Ext.application({
     models: ['FieldDefModel','AttachedImageModel'],
     stores: ['SettingsStore', 'FieldDefStore', 'NumericOps', 'DateOps', 'StringOps', 'FulltextOps', 'Sorts'],
     controllers: ['Mapper', 'ExpressSearch', 'AdvancedSearch', 'Detailer',
-		 'Image', 'Settings'],
+		  'Image', 'Settings', 'About'],
     
     init: function () {
 	Ext.getBody().setHTML("");
