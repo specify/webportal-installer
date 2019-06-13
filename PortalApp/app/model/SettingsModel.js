@@ -20,6 +20,7 @@
 Ext.define('SpWebPortal.model.SettingsModel', {
     extend: 'Ext.data.Model',
     fields: [
+        {name: 'version', type: 'string', defaultValue: '2.0'}, //this is the web portal product version!
 	{name: 'portalInstance', type: 'string', defaultValue: 'spwp'},
 	{name: 'solrURL', type: 'string'},
 	{name: 'solrPort', type: 'string'},
