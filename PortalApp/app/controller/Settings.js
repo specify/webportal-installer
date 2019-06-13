@@ -79,9 +79,6 @@ Ext.define('SpWebPortal.controller.Settings', {
 		if (store.changePageSize(pageSize)) {
 		    Ext.getStore('SettingsStore').getAt(0).set('solrPageSize', pageSize);
 		    Ext.state.Manager.set('solrPageSize', pageSize);
-		    return true;
-		} else {
-		    return false;
 		}
 	    } else {
 		//the settings form should never let us get here, but
@@ -89,6 +86,7 @@ Ext.define('SpWebPortal.controller.Settings', {
 		alert(msg);
 		return false;
 	    }
+            return true;
 	}
 	return false;
    },
@@ -97,7 +95,7 @@ Ext.define('SpWebPortal.controller.Settings', {
 	//console.info("Settings.onSettingsBtnClick");
 	this.popupSettings();
     },
-
+    
     popupSettings: function() {
 	var form = Ext.widget('spwpsettings');
 	var popupWin =  Ext.create('Ext.window.Window', {

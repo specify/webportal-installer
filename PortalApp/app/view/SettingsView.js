@@ -25,7 +25,7 @@ Ext.define('SpWebPortal.view.SettingsView', {
     autoScroll: true,
 
     //localizable text...
-    saveSettingsBtn: 'Save',
+    saveSettingsBtn: 'Close',
     //..localizable text
 
     isReadOnly: function(field) {
@@ -39,34 +39,51 @@ Ext.define('SpWebPortal.view.SettingsView', {
 	return field.name != 'id';
     },
 
+    loadRecord: function(record) {
+        this.callParent(arguments);
+        this.saveButton.formBind = true;
+    },
+    
     initComponent: function() {
 	var setsStore = Ext.getStore('SettingsStore');
 	var settings = setsStore.getAt(0);
 	var sets = setsStore.model.getFields();
 	var flds = [];
-	for (var f = 0; f < sets.length; f++) {
+        this.layout =  {
+            type: 'vbox',
+            align: 'left',
+            stretchMaxPartner: true
+        };
+        for (var f = 0; f < sets.length; f++) {
 	    var set = sets[f];
 	    if (this.isViewable(set)) {
-		flds[flds.length] = Ext.create('Ext.form.field.Text', {
-		    fieldLabel: set.name,
-		    name: set.name,
-		    lableAlign: 'right',
-		    anchor: '100%',
-		    type: set.type,
-		    allowBlank: false,
-		    readOnly: this.isReadOnly(set),
-		    disabled: this.isReadOnly(set)
-		});
+                if (this.isReadOnly(set)) {
+		    flds[flds.length] = Ext.create('Ext.form.field.Display', {
+		        fieldLabel: set.name,
+		        name: set.name,
+                        type: set.type,
+		        labelAlign: 'right',
+                        labelWidth: 150
+		    });
+                } else {
+		    flds[flds.length] = Ext.create('Ext.form.field.Text', {
+		        fieldLabel: set.name,
+		        name: set.name,
+		        labelAlign: 'right',
+                        labelWidth: 150,
+		        type: set.type,
+		        allowBlank: false
+		    });
+                }
 	    }
 	}
 
 	this.items = flds;
 
-	var btns = [];
-	btns[0] = Ext.create('Ext.button.Button', {
+	this.saveButton = Ext.create('Ext.button.Button', {
 	    itemid: 'spwpsettingsavebtn',
 	    text: this.saveSettingsBtn,
-	    formBind: true,
+	    formBind: false,
 	    disabled: true,
 	    handler: function() {
 		var form = this.up('form').getForm();
@@ -79,7 +96,7 @@ Ext.define('SpWebPortal.view.SettingsView', {
 	    }
 	});
 	
-	this.buttons = btns;
+	this.buttons = [this.saveButton];
 
 	this.callParent(arguments);
     }
