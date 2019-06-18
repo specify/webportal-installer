@@ -1,7 +1,7 @@
 # 
 # Use 'schema.xml' if solr will be used to create the core
 # Use 'managed-schema' if pre-configuring core 
-SCHEMA_FILE := schema.xml
+SCHEMA_FILE := 'managed-schema'
 
 all: webapp core
 
@@ -27,9 +27,11 @@ $(SCHEMA_FILE): $(TOPDIR)/patch_schema_xml.py \
 	python $^ > $@
 
 web.xml: $(TOPDIR)/patch_web_xml.py \
-		$(TOPDIR)/$(SOLR_DIST)/server/solr/solr-webapp/webapp/WEB-INF/web.xml 
+		$(TOPDIR)/$(SOLR_DIST)/server/solr-webapp/webapp/WEB-INF/web.xml 
 	# Patching solr server app for cross-domain access to enable extjs ajax stores to POST solr query params.
-	python $^ > $(TOPDIR)/$(SOLR_DIST)/server/solr/solr-webapp/webapp/WEB-INF/web.xml
+	#python $^ > $(TOPDIR)/$(SOLR_DIST)/server/solr-webapp/webapp/WEB-INF/web.xml
+	python $^ > $@
+	sudo cp $@ $(TOPDIR)/$(SOLR_DIST)/server/solr-webapp/webapp/WEB-INF/web.xml
  
 solrconfig.xml: $(TOPDIR)/patch_solrconfig_xml.py \
 		$(TOPDIR)/$(SOLR_DIST)/server/solr/configsets/_default/conf/solrconfig.xml
@@ -56,10 +58,8 @@ webapp: $(TOPDIR)/PortalApp settings.json fldmodel.json
 	# Fix Solr URL format in WebApp.
 	sed -i "s,solrURL + ':' + solrPort + '/',solrURL," webapp/app/store/MainSolrStore.js
 
-core: $(TOPDIR)/$(SOLR_DIST) PortalFiles solrconfig.xml schema.xml web.xml
+core: $(TOPDIR)/$(SOLR_DIST) PortalFiles solrconfig.xml $(SCHEMA_FILE) web.xml
 	# Setup solr-home subdir for this core.
-	cp -r $(TOPDIR)/$(SOLR_DIST)/example/solr/collection1 core
-	cp solrconfig.xml schema.xml core/conf/
-	rm -rf core/data/
-	mkdir -p core/data
-	cp -r PortalFiles/solr core/data/index
+	mkdir -p core/conf
+	cp solrconfig.xml $(SCHEMA_FILE)  core/conf/
+	#cp -r PortalFiles/solr core/data/index

@@ -1,5 +1,6 @@
 
-all: solr-home setting_templates html html/index.html
+#all: solr-home setting_templates html html/index.html
+all: setting_templates html html/index.html
 
 cores: $(TOPDIR)/core.make $(TOPDIR)/$(SOLR_DIST) \
 		 $(TOPDIR)/specify_exports  $(TOPDIR)/specify_exports/*.zip
@@ -39,19 +40,20 @@ html: cores
 		cp -r $$core/webapp html/`basename $$core` ; \
 	done
 
-solr-home: $(TOPDIR)/$(SOLR_DIST) cores solr.xml
-	# Build the Solr home directory.
-	rm -rf solr-home
-	cp -r $(TOPDIR)/$(SOLR_DIST)/example/multicore solr-home
+#solr-home: $(TOPDIR)/$(SOLR_DIST) cores solr.xml
+#	# Build the Solr home directory.
+#	rm -rf solr-home
+#	cp -r $(TOPDIR)/$(SOLR_DIST)/example/multicore solr-home
 	# Copy each core into place.
-	rm -rf solr-home/core*
-	for core in cores/* ; do \
-		cp -r $$core/core solr-home/`basename $$core` ; \
-	done
+#	rm -rf solr-home/core*
+#	for core in cores/* ; do \
+#		cp -r $$core/core solr-home/`basename $$core` ; \
+#	done
 	# Copy top level Solr configuration into place.
-	cp solr.xml solr-home/
+#	cp solr.xml solr-home/
 
-solr.xml: $(TOPDIR)/make_solr_xml.py $(TOPDIR)/$(SOLR_DIST)/example/multicore/solr.xml cores
+#solr.xml: $(TOPDIR)/make_solr_xml.py $(TOPDIR)/$(SOLR_DIST)/example/multicore/solr.xml cores
 	# Generate top level Solr config that defines the available cores.
-	python $(TOPDIR)/make_solr_xml.py $(TOPDIR)/$(SOLR_DIST)/example/multicore/solr.xml \
-		cores/* > $@
+	#python $(TOPDIR)/make_solr_xml.py $(TOPDIR)/$(SOLR_DIST)/example/multicore/solr.xml \
+	#	cores/* > $@
+

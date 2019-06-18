@@ -24,21 +24,22 @@ from xml.etree import ElementTree
 # http://specifysoftware.org/sites/specifysoftware.org/files/Installing%20the%20Specify%20Web%20Portal.pdf
 
 schema = ElementTree.parse(sys.argv[1])
+root = schema.getroot()
 specify_fields = ElementTree.parse(sys.argv[2])
+example_fields = root.findall('field')
 
-example_fields = schema.find('fields')
+# get rid of _text_, id and _root_ flds.
 
-# Replace example fields with those provided by Specify.
-
-for f in example_fields.findall('./*'):
-    example_fields.remove(f)
+for f in example_fields:
+    if f.get('name') in ['_text_','id','_root_']:
+        root.remove(f)
 
 for f in specify_fields.findall('field'):
-    example_fields.append(f.copy())
+    root.append(f.copy())
 
 # Delete all dynamic fields.
 
-ElementTree.SubElement(example_fields, 'dynamicField',
+ElementTree.SubElement(root, 'dynamicField',
                        attrib={'name':"*", 'type':"ignored"})
 
 # Change uniqueKey to spid.
@@ -49,7 +50,7 @@ for elem in schema.findall('uniqueKey'):
 # Delete all copyFields.
 
 for elem in schema.findall('copyField'):
-    schema.getroot().remove(elem)
+    root.remove(elem)
 
 # Done.
 

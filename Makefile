@@ -16,7 +16,7 @@ realclean: clean
 	rm -rf solr-* unpacked-war
 
 build: $(SOLR_DIST) build.make specify_exports specify_exports/*.zip
-	cp -r $(SOLR_DIST)/example build
+	cp -r $(SOLR_DIST)/ build
 	$(MAKE) -f $(TOPDIR)/build.make -C build
 	touch $@
 

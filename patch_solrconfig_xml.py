@@ -29,16 +29,18 @@ config = ElementTree.parse(sys.argv[1])
 # and change it to: <str name="df">cs</str>
 
 for elem in config.findall('.//str[@name="df"]'):
-    elem.text = "cs"
+    elem.text = "contents"
 
 # Delete the updateHandler
 # Note: All the code beginning with this line:
 # <updateHandler class="solr.DirectUpdateHandler2">
 # and ending with this line: </updateHandler> needs to be deleted
 
-root = config.getroot()
-for elem in root.findall('updateHandler[@class="solr.DirectUpdateHandler2"]'):
-    root.remove(elem)
+# This doesn't seem necessary for solr 7.
+# And since we are doing updates via csv, maybe we actually need this class?
+#root = config.getroot()
+#for elem in root.findall('updateHandler[@class="solr.DirectUpdateHandler2"]'):
+#    root.remove(elem)
 
 # Done.
 
