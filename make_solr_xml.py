@@ -26,9 +26,16 @@ cores = example_solr_xml.find('cores')
 for core in cores.findall('core'):
     cores.remove(core)
 
+"""From server/solr/README.txt: "In addition, you can also declare Solr cores in this file, however
+it is recommended to just use automatic core discovery instead of
+listing cores in solr.xml."
+
+So skip adding entries for the web portal cores, and we probably don't even to bother with the core removal above,
+
 for core_dir in sys.argv[2:]:
     core_name = basename(core_dir)
     core = ElementTree.SubElement(cores, 'core')
     core.attrib.update({'name':core_name, 'instanceDir':core_name})
+"""
 
 example_solr_xml.write(sys.stdout)
