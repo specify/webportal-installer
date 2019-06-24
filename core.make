@@ -13,7 +13,7 @@ settings.json: $(TOPDIR)/patch_settings_json.py \
 		$(TOPDIR)/PortalApp/resources/config/settings.json
 	# Patch web app settings.
 	python $^ $(TOPDIR)/custom_settings/$(CORENAME)/settings.json \
-		PortalFiles/*Setting.json $(CORENAME) > $@
+		 $(CORENAME) PortalFiles/*Setting.json > $@
 
 SolrFldSchema.xml: PortalFiles/SolrFldSchema.xml
 	# Add a root element to the schema field list.
