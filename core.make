@@ -58,7 +58,7 @@ webapp: $(TOPDIR)/PortalApp settings.json fldmodel.json
 	cp settings.json webapp/resources/config/
 
 	# Fix Solr URL format in WebApp.
-	sed -i "s,solrURL + ':' + solrPort + '/',solrURL," webapp/app/store/MainSolrStore.js
+	#sed -i "s,solrURL + ':' + solrPort + '/',solrURL," webapp/app/store/MainSolrStore.js
 
 core: $(TOPDIR)/$(SOLR_DIST) PortalFiles solrconfig.xml $(SCHEMA_FILE) web.xml
 	# Setup solr-home subdir for this core.
