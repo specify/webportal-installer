@@ -17,25 +17,16 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
-//var solrURL = 'http://129.237.201.103';
-//var solrURL = 'http://localhost';
-//var solrPort = ':443';
-//var solrPort = ':8983';
-//var solrPageSize = 50;
-//var solrUrlTemplate = solrURL + solrPort + '/solr/select?indent=on&version=2.2&fq=&rows=' + solrPageSize + '&fl=*%2Cscore&qt=&wt=json&explainOther=&hl.fl=&q=';
-
 var settingsStore =  Ext.getStore('SettingsStore');
 var settings = settingsStore.getAt(0);
 var solrURL = settings.get('solrURL');
-var solrPort = settings.get('solrPort');
 var solrPageSize = settings.get('solrPageSize');
 var maxPageSizeSetting = settings.get('maxSolrPageSize');
-var solrCore = settings.get('solrCore');
-var solrUrlTemplate = solrURL + ':' + solrPort + '/' + (solrCore  ? solrCore + '/': '') + 'select?indent=on&version=2.2&fq=&rows=' + solrPageSize + '&fl=*%2Cscore&qt=&wt=json&explainOther=&hl.fl=&q=';
+var solrUrlTemplate = solrURL + 'select?indent=on&version=2.2&fq=&rows=' + solrPageSize + '&fl=*%2Cscore&qt=&wt=json&explainOther=&hl.fl=&q=';
 //ideally we would want to use the csv.mv.escape parameter to set the escape to 'none' for what solr thinks are multivalued fields but seem to be any fields with commas,
 //but according to sources on the web, there is no way to set sv.escape to none. So we end up with all commas preceded by \ in the csv output.
 //csv.mv.separator=%09 means that only tabs will be preceded by \, which we can live with.
-var solrUrlTemplateCsv = solrURL + ':' + solrPort + '/' + (solrCore  ? solrCore + '/': '') + 'select?indent=on&version=2.2&fq=&rows=99999999&fl=*&qt=&wt=csv&csv.mv.separator=%09&explainOther=&hl.fl=&q=';
+var solrUrlTemplateCsv = solrURL + 'select?indent=on&version=2.2&fq=&rows=99999999&fl=*&qt=&wt=csv&csv.mv.separator=%09&explainOther=&hl.fl=&q=';
 
 Ext.define('SpWebPortal.store.MainSolrStore', {
     extend: 'Ext.data.Store',
@@ -129,7 +120,7 @@ Ext.define('SpWebPortal.store.MainSolrStore', {
     changePageSize: function(newPageSize) {
 	if (newPageSize > 0 && newPageSize <= this.getMaxPageSize() && newPageSize != this.pageSize) {
 	    this.pageSize = newPageSize;
-	    var newTemplate = solrURL + ':' + solrPort + '/' + (solrCore  ? solrCore + '/': '') + 'select?indent=on&version=2.2&fq=&rows=' + solrPageSize + '&fl=*%2Cscore&qt=&wt=json&explainOther=&hl.fl=&q=';
+	    var newTemplate = solrURL + 'select?indent=on&version=2.2&fq=&rows=' + solrPageSize + '&fl=*%2Cscore&qt=&wt=json&explainOther=&hl.fl=&q=';
 	    this.proxy.url = this.proxy.url.replace(this.urlTemplate, newTemplate);
 	    this.urlTemplate = newTemplate;
 	    solrUrlTemplate = newTemplate;

@@ -1,7 +1,9 @@
 # 
 # Use 'schema.xml' if solr will be used to create the core
 # Use 'managed-schema' if pre-configuring core 
-SCHEMA_FILE := 'managed-schema'
+SCHEMA_FILE := managed-schema
+#location of default settings files in solr dist
+DEFAULT_SETS := server/solr/configsets/_default
 
 all: webapp core
 
@@ -11,7 +13,7 @@ settings.json: $(TOPDIR)/patch_settings_json.py \
 		$(TOPDIR)/PortalApp/resources/config/settings.json
 	# Patch web app settings.
 	python $^ $(TOPDIR)/custom_settings/$(CORENAME)/settings.json \
-		$(CORENAME) PortalFiles/*Setting.json > $@
+		PortalFiles/*Setting.json $(CORENAME) > $@
 
 SolrFldSchema.xml: PortalFiles/SolrFldSchema.xml
 	# Add a root element to the schema field list.
@@ -21,7 +23,7 @@ SolrFldSchema.xml: PortalFiles/SolrFldSchema.xml
 	echo "</fields>" >> $@
 
 $(SCHEMA_FILE): $(TOPDIR)/patch_schema_xml.py \
-		$(TOPDIR)/$(SOLR_DIST)/server/solr/configsets/_default/conf/managed-schema \
+		$(TOPDIR)/$(SOLR_DIST)/$(DEFAULT_SETS)/conf/$(SCHEMA_FILE) \
 		SolrFldSchema.xml
 	# Patching Solr schema with fields from Specify export.
 	python $^ > $@
@@ -34,7 +36,7 @@ web.xml: $(TOPDIR)/patch_web_xml.py \
 	sudo cp $@ $(TOPDIR)/$(SOLR_DIST)/server/solr-webapp/webapp/WEB-INF/web.xml
  
 solrconfig.xml: $(TOPDIR)/patch_solrconfig_xml.py \
-		$(TOPDIR)/$(SOLR_DIST)/server/solr/configsets/_default/conf/solrconfig.xml
+		$(TOPDIR)/$(SOLR_DIST)/$(DEFAULT_SETS)/conf/solrconfig.xml
 	# Patching Solr config for use with Specify.
 	python $^ > $@
 
@@ -63,3 +65,11 @@ core: $(TOPDIR)/$(SOLR_DIST) PortalFiles solrconfig.xml $(SCHEMA_FILE) web.xml
 	mkdir -p core/conf
 	cp solrconfig.xml $(SCHEMA_FILE)  core/conf/
 	#cp -r PortalFiles/solr core/data/index
+	cp $(TOPDIR)/$(SOLR_DIST)/$(DEFAULT_SETS)/conf/protwords.txt core/conf/
+	cp $(TOPDIR)/$(SOLR_DIST)/$(DEFAULT_SETS)/conf/synonyms.txt core/conf/
+	cp $(TOPDIR)/$(SOLR_DIST)/$(DEFAULT_SETS)/conf/stopwords.txt core/conf/
+	cp -r $(TOPDIR)/$(SOLR_DIST)/$(DEFAULT_SETS)/conf/lang/ core/conf/
+	echo 'dataDir=data' > core/conf/core.properties
+	echo 'name=$(CORENAME)' >> core/conf/core.properties
+	echo 'config=conf/solrconfig.xml' >> core/core.properties
+	mkdir core/data

@@ -123,8 +123,6 @@ Ext.define('SpWebPortal.controller.Settings', {
 	//console.info("Settings.onInitSettings");
 	var settingsStore =  Ext.getStore('SettingsStore');
 	var settings = settingsStore.getAt(0);
-	var solrURL = settings.get('solrURL');
-	var solrPort = settings.get('solrPort');
 	var solrPageSize = settings.get('solrPageSize');
 
 	var localPageSize = Ext.state.Manager.get('solrPageSize', solrPageSize);
@@ -141,9 +139,6 @@ Ext.define('SpWebPortal.controller.Settings', {
 	if (localMapType != mapType) {
 	    settings.set('defMapType', localMapType);
 	}
-
-	var solrCore = settings.get('solrCore');
-	var solrUrlTemplate = solrURL + solrPort + '/' + solrCore + '/select?indent=on&version=2.2&fq=&rows=' + solrPageSize + '&fl=*%2Cscore&qt=&wt=json&explainOther=&hl.fl=&q=';
     },
 
     onMapTypeChanged: function(maptype) {

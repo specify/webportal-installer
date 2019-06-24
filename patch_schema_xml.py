@@ -37,8 +37,9 @@ for f in example_fields:
 for f in specify_fields.findall('field'):
     root.append(f.copy())
 
-# Delete all dynamic fields.
-
+# Delete all dynamic fields. For unknown reasons.
+ElementTree.SubElement(root, 'fieldType',
+                       attrib={'name':"ignored", 'class':"solr.StrField", 'indexed':"false", 'stored':"false", 'multiValued':"true"})
 ElementTree.SubElement(root, 'dynamicField',
                        attrib={'name':"*", 'type':"ignored"})
 

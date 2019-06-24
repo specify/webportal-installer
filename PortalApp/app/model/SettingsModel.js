@@ -22,8 +22,6 @@ Ext.define('SpWebPortal.model.SettingsModel', {
     fields: [
 	{name: 'portalInstance', type: 'string', defaultValue: 'spwp'},
 	{name: 'solrURL', type: 'string'},
-	{name: 'solrPort', type: 'string'},
-	{name: 'solrCore', type: 'string'},
 	{name: 'solrPageSize', type: 'int', defaultValue: 50},
 	{name: 'maxSolrPageSize', type: 'int', defaultValue: 5000},
 	{name: 'imageBaseUrl', type: 'string'},
