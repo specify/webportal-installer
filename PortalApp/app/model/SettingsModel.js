@@ -23,8 +23,6 @@ Ext.define('SpWebPortal.model.SettingsModel', {
         {name: 'version', type: 'string', defaultValue: '2.0'}, //this is the web portal product version!
 	{name: 'portalInstance', type: 'string', defaultValue: 'spwp'},
 	{name: 'solrURL', type: 'string'},
-	{name: 'solrPort', type: 'string'},
-	{name: 'solrCore', type: 'string'},
 	{name: 'solrPageSize', type: 'int', defaultValue: 50},
 	{name: 'maxSolrPageSize', type: 'int', defaultValue: 5000},
 	{name: 'imageBaseUrl', type: 'string'},

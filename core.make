@@ -1,3 +1,9 @@
+# 
+# Use 'schema.xml' if solr will be used to create the core
+# Use 'managed-schema' if pre-configuring core 
+SCHEMA_FILE := managed-schema
+#location of default settings files in solr dist
+DEFAULT_SETS := server/solr/configsets/_default
 
 all: webapp core
 
@@ -7,7 +13,7 @@ settings.json: $(TOPDIR)/patch_settings_json.py \
 		$(TOPDIR)/PortalApp/resources/config/settings.json
 	# Patch web app settings.
 	python $^ $(TOPDIR)/custom_settings/$(CORENAME)/settings.json \
-		$(CORENAME) PortalFiles/*Setting.json > $@
+		 $(CORENAME) PortalFiles/*Setting.json > $@
 
 SolrFldSchema.xml: PortalFiles/SolrFldSchema.xml
 	# Add a root element to the schema field list.
@@ -16,14 +22,21 @@ SolrFldSchema.xml: PortalFiles/SolrFldSchema.xml
 	cat $< >> $@
 	echo "</fields>" >> $@
 
-schema.xml: $(TOPDIR)/patch_schema_xml.py \
-		$(TOPDIR)/$(SOLR_DIST)/example/solr/collection1/conf/schema.xml \
+$(SCHEMA_FILE): $(TOPDIR)/patch_schema_xml.py \
+		$(TOPDIR)/$(SOLR_DIST)/$(DEFAULT_SETS)/conf/$(SCHEMA_FILE) \
 		SolrFldSchema.xml
 	# Patching Solr schema with fields from Specify export.
 	python $^ > $@
 
+web.xml: $(TOPDIR)/patch_web_xml.py \
+		$(TOPDIR)/$(SOLR_DIST)/server/solr-webapp/webapp/WEB-INF/web.xml 
+	# Patching solr server app for cross-domain access to enable extjs ajax stores to POST solr query params.
+	#python $^ > $(TOPDIR)/$(SOLR_DIST)/server/solr-webapp/webapp/WEB-INF/web.xml
+	python $^ > $@
+	sudo cp $@ $(TOPDIR)/$(SOLR_DIST)/server/solr-webapp/webapp/WEB-INF/web.xml
+ 
 solrconfig.xml: $(TOPDIR)/patch_solrconfig_xml.py \
-		$(TOPDIR)/$(SOLR_DIST)/example/solr/collection1/conf/solrconfig.xml
+		$(TOPDIR)/$(SOLR_DIST)/$(DEFAULT_SETS)/conf/solrconfig.xml
 	# Patching Solr config for use with Specify.
 	python $^ > $@
 
@@ -45,12 +58,18 @@ webapp: $(TOPDIR)/PortalApp settings.json fldmodel.json
 	cp settings.json webapp/resources/config/
 
 	# Fix Solr URL format in WebApp.
-	sed -i "s,solrURL + ':' + solrPort + '/',solrURL," webapp/app/store/MainSolrStore.js
+	#sed -i "s,solrURL + ':' + solrPort + '/',solrURL," webapp/app/store/MainSolrStore.js
 
-core: $(TOPDIR)/$(SOLR_DIST) PortalFiles solrconfig.xml schema.xml
+core: $(TOPDIR)/$(SOLR_DIST) PortalFiles solrconfig.xml $(SCHEMA_FILE) web.xml
 	# Setup solr-home subdir for this core.
-	cp -r $(TOPDIR)/$(SOLR_DIST)/example/solr/collection1 core
-	cp solrconfig.xml schema.xml core/conf/
-	rm -rf core/data/
-	mkdir -p core/data
-	cp -r PortalFiles/solr core/data/index
+	mkdir -p core/conf
+	cp solrconfig.xml $(SCHEMA_FILE)  core/conf/
+	#cp -r PortalFiles/solr core/data/index
+	cp $(TOPDIR)/$(SOLR_DIST)/$(DEFAULT_SETS)/conf/protwords.txt core/conf/
+	cp $(TOPDIR)/$(SOLR_DIST)/$(DEFAULT_SETS)/conf/synonyms.txt core/conf/
+	cp $(TOPDIR)/$(SOLR_DIST)/$(DEFAULT_SETS)/conf/stopwords.txt core/conf/
+	cp -r $(TOPDIR)/$(SOLR_DIST)/$(DEFAULT_SETS)/conf/lang/ core/conf/
+	echo 'dataDir=data' > core/conf/core.properties
+	echo 'name=$(CORENAME)' >> core/conf/core.properties
+	echo 'config=conf/solrconfig.xml' >> core/core.properties
+	mkdir core/data

@@ -49,9 +49,7 @@ except ValueError:
     }
 
 full_settings.update({
-    'solrURL': '',     # Use relative path from index.html.
-    'solrPort': None,  # Unused (should be part of URL).
-    'solrCore': None,    # Use the core from the current path.
+    'solrURL': 'http://127.0.0.1:8983/solr/' + corename + "/"     # defaults.
 })
 
 settings[0].update(full_settings)
