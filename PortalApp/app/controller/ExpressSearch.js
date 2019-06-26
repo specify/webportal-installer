@@ -57,7 +57,32 @@ Ext.define('SpWebPortal.controller.ExpressSearch', {
 	    this.setForceFitToMap(false);
 	}
     },
-    
+
+    getSubTerms: function(term) {
+        var pre = term.split(" ");
+        var post = [];
+        var i = 0;
+        while (i < pre.length) {
+            var subterm = pre[i++];
+            var grouper = subterm.substr(0,1);
+            if (("'"+'"').indexOf(grouper) >= 0) {
+                var finalTerm = '';
+                while(i < pre.length) {
+                    subterm += ' ' + pre[i++];
+                    if (subterm.endsWith(grouper)) {
+                        if (grouper == "'") {
+                            subterm[0] = '"';
+                            subterm[subterm.length-1] = '"';
+                        }
+                        break;
+                    }
+                }
+            }
+            post.push(subterm);
+        }
+        return post;
+    },
+            
     doSearch: function(exportSrc) {
 	//console.info("ExpressSearch doSearch()");
 
@@ -73,7 +98,20 @@ Ext.define('SpWebPortal.controller.ExpressSearch', {
 	var mainQ = (typeof control[0].value === "undefined" || control[0].value == null || control[0].value == '') 
 	    ? '*' 
 	        : this.escapeForSolr(control[0].value,true);
-        mainQ = "contents:" + mainQ;
+        if (this.getMatchAll()) {
+            var terms = this.getSubTerms(mainQ);
+            if (terms.length > 0) {
+                mainQ = "";
+                for (var t = 0; t < terms.length; t++) {
+                    if (mainQ.length > 0) {
+                        mainQ += " ";
+                    }
+                    mainQ += "+contents:" + terms[t];
+                }
+            }
+        } else {
+            mainQ = "contents:" + mainQ;
+        }
 	var filterToMap = (this.getForceFitToMap() || this.getFitToMap()) && (this.mapViewIsActive() || this.getWriteToCsv());
         var dummy_geocoords;
 
