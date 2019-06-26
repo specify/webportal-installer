@@ -258,12 +258,14 @@ Ext.define('SpWebPortal.store.MainSolrStore', {
 	return result;
     },
 
-    getSearchSpecs4J: function(images, maps, mainTerm, filterToMap, matchAll, geoCoords, csv) {
-	this.setImages(images);
-	this.setMaps(maps);
-	this.setMainTerm(mainTerm);
-	this.setFilterToMap(filterToMap);
-	this.setMatchAll(matchAll);
+    getSearchSpecs4J: function(images, maps, mainTerm, filterToMap, matchAll, geoCoords, csv, dontSetConditions) {
+        if (!dontSetConditions) {
+            this.setImages(images);
+	    this.setMaps(maps);
+	    this.setMainTerm(mainTerm);
+	    this.setFilterToMap(filterToMap);
+	    this.setMatchAll(matchAll);
+        }
         return {
             query: this.getJSONQuery(images, maps, mainTerm, filterToMap, matchAll, geoCoords),
             url: this.getSearchUrl4J(csv)

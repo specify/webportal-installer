@@ -267,7 +267,7 @@ Ext.define('SpWebPortal.controller.Image', {
                 
 	    }
              */
-	    srchSpecs = store.getSearchSpecs4J(true, store.getMaps(), store.getMainTerm(), store.getFilterToMap(), store.getMatchAll());
+	    srchSpecs = store.getSearchSpecs4J(true, store.getMaps(), store.getMainTerm(), store.getFilterToMap(), store.getMatchAll(), undefined, false, true);
             
 	    srchSpecs.url = srchSpecs.url.replace("rows="+pageSize, "rows="+this.mainImgStore.pageSize);
 	    srchSpecs.url = srchSpecs.url.replace("fl=*", "fl="+this.solrImgFl); //XXX instead of cn need to add fields needed for customized image description settings
