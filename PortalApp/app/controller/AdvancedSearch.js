@@ -110,7 +110,7 @@ Ext.define('SpWebPortal.controller.AdvancedSearch', {
 		var dummy_geocoords;		
 		var srchSpecs = solr.getSearchSpecs4J(images, maps, filterStr, filterToMap, this.getMatchAll(), dummy_geocoords, this.getWriteToCsv());
 		if (this.getWriteToCsv()) {
-                    this.exportToCsv(url, this.getCsvFileName(filterStr));
+                    this.exportToCsv(srchSpecs.url, this.getCsvFileName(filterStr), srchSpecs.query);
                 } else {
                     this.adjustFitToMapStuff();
                     Ext.apply(Ext.getCmp('spwpexpcsvbtn'), {srch: 'adv'});

@@ -32,6 +32,7 @@ Ext.define('SpWebPortal.controller.Search', {
 
     //localizable text...
     downloading: 'Downloading',
+    unableToDownloadPrefix: 'Unable to download: ',
     //...localizable text
     
     init: function() {
@@ -176,7 +177,7 @@ Ext.define('SpWebPortal.controller.Search', {
         }
     },
     
-    exportToCsv: function(url, fileName) {
+    exportToCsv: function(url, fileName, qparam) {
         if (this.doDownload()) {
             Ext.getCmp('spwpexpcsvbtn').setDisabled(true);
             Ext.getCmp('spwpexpcsvstatustext').setText(this.downloading + fileName + '...');
@@ -185,10 +186,13 @@ Ext.define('SpWebPortal.controller.Search', {
                 url: url,
 	        context: this,
 	        crossDomain: true,
-                success: function(src) {
+                type: 'POST',
+                data: "json=" + Ext.encode({query: qparam}),
+                dataType: 'text',
+                success: function(data) {
                     var a = document.createElement("a");
                     var bom = '\uFEFF';
-                    var file = new Blob([bom + src], {type: 'application/csv'});
+                    var file = new Blob([bom + data], {type: 'application/csv'});
                     if (navigator.msSaveOrOpenBlob) {
                         navigator.msSaveOrOpenBlob(file, fileName + '.csv');
                     } else {
@@ -201,6 +205,11 @@ Ext.define('SpWebPortal.controller.Search', {
                             window.URL.revokeObjectURL(url);
                         }, 0);
                     }
+                },
+                error: function(jqXHR, status, error) {
+                    alert(this.unableToDownloadPrefix + " " + status + "\n" + error);
+                },
+                complete: function() {
                     Ext.getCmp('spwpexpcsvbtn').setDisabled(false);
                     Ext.getCmp('spwpexpcsvstatustext').setVisible(false);
                     Ext.getCmp('spwpexpcsvstatustext').setText(this.downloading);

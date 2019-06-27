@@ -95,9 +95,10 @@ Ext.define('SpWebPortal.controller.ExpressSearch', {
 	var solr = this.getMainSolrStoreStore();
 	var images = this.getRequireImages();
 	var maps = this.getRequireGeoCoords();
-	var mainQ = (typeof control[0].value === "undefined" || control[0].value == null || control[0].value == '') 
+        var srchTerm = (typeof control[0].value === "undefined" || control[0].value == null || control[0].value == '') 
 	    ? '*' 
 	        : this.escapeForSolr(control[0].value,true);
+        var mainQ = srchTerm;
         if (this.getMatchAll()) {
             var terms = this.getSubTerms(mainQ);
             if (terms.length > 0) {
@@ -119,20 +120,20 @@ Ext.define('SpWebPortal.controller.ExpressSearch', {
         //var url = solr.getSearchUrl(images, maps, mainQ, filterToMap, this.getMatchAll(), dummy_geocoords, this.getWriteToCsv());
         //
         
+        this.adjustFitToMapStuff();
+        Ext.apply(Ext.getCmp('spwpexpcsvbtn'), {srch: 'expr'});
+        var srchObj = solr.getSearchSpecs4J(images, maps, mainQ, filterToMap, this.getMatchAll(), dummy_geocoords, this.getWriteToCsv());
         
         if (this.getWriteToCsv()) {
             //if not JSON
             //this.exportToCsv(url, this.getCsvFileName(mainQ));
             //else
-            //???
+            this.exportToCsv(srchObj.url, this.getCsvFileName(srchTerm), srchObj.query);
             //
         } else {
-            this.adjustFitToMapStuff();
-            Ext.apply(Ext.getCmp('spwpexpcsvbtn'), {srch: 'expr'});
             //if not JSON queries
             //solr.getProxy().url = url;
             //else
-            var srchObj = solr.getSearchSpecs4J(images, maps, mainQ, filterToMap, this.getMatchAll(), dummy_geocoords, this.getWriteToCsv());
             solr.getProxy().url = srchObj.url;
             solr.getProxy().qparams =  {query: srchObj.query};
             //
