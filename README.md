@@ -19,9 +19,6 @@ The necessary packages can be installed through apt.
 Installation Instructions
 -------------------------
 
-These instructions illustrate the fewest steps needed to install the
-web portal. For a more advanced configuration providing automatic
-updates, see below.
 
 1. Unpack this repository on your server.
 1. Use the Specify Data Export tool to create a Web Portal export zip
