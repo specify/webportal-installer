@@ -96,13 +96,6 @@ Ext.define('SpWebPortal.view.Viewport', {
 	    hidden: true,
 	    id: 'spwpmainmapstatustext'
 	});
-	var settingsBtn = Ext.create('Ext.button.Button', {
-	    xtype: 'button',
-	    tooltip: this.settingsBtnTip,
-	    icon: 'resources/images/system.png',
-	    itemid: 'spwpsettingsbtn',
-	    id: 'spwpsettingsbtn'
-	});
 	var infoBtn = Ext.create('Ext.button.Button', {
 	    xtype: 'button',
 	    icon: 'resources/images/info.png',
@@ -110,6 +103,13 @@ Ext.define('SpWebPortal.view.Viewport', {
             //align: 'right',
 	    id: 'spwpinfobtn',
             hidden: false
+	});
+	var settingsBtn = Ext.create('Ext.button.Button', {
+	    xtype: 'button',
+	    tooltip: this.settingsBtnTip,
+	    icon: 'resources/images/system.png',
+	    itemid: 'spwpsettingsbtn',
+	    id: 'spwpsettingsbtn'
 	});
 
 	mapBtn.setVisible(false);
@@ -169,6 +169,7 @@ Ext.define('SpWebPortal.view.Viewport', {
 		    displayMsg: this.pagerDisplayMsg,
 		    emptyMsg: this.pagerEmptyMsg
 		},
+                infoBtn,
 		settingsBtn,
                 expBtn,
 		mapBtn,
@@ -176,8 +177,7 @@ Ext.define('SpWebPortal.view.Viewport', {
 		mapProg,
 		mapStatText,
                 expStatText,
-		loadingBtn,
-                infoBtn
+		loadingBtn
 	    ],
 	    items: [
 		{
