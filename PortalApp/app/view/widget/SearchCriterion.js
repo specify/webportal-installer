@@ -94,6 +94,7 @@ Ext.define('SpWebPortal.view.widget.SearchCriterion', {
     solrFilterNonText: function(searcher) {
 	var entries = this.entries();
 	var result = '';
+        var includeItemId = true;
 	if (entries != null && entries.length > 0) {
 	    var opId = '#' + this.itemid + '-op';
 	    var op = this.query(opId)[0].value;
@@ -105,7 +106,7 @@ Ext.define('SpWebPortal.view.widget.SearchCriterion', {
 	    } else if (op == 'contains') {
 		result = '*' + result + '*';
 	    } else if (op == 'containsany') {
-		var terms = result.split(' ');
+		var terms = searcher.getSubTerms(result);
 		result = '';
 		for (var t = 0; t < terms.length; t++) {
 		    if (t > 0) {
@@ -123,9 +124,10 @@ Ext.define('SpWebPortal.view.widget.SearchCriterion', {
 		    result = '[' + result + ' TO ' + result2 + ']';
 		}
 	    } else if (op == 'in') {
-                result = this.listTerms(' OR ', true);
+                result = this.listTerms(' OR ', true, searcher);
+                includeItemId = false;
 	    }
-	    result = this.itemid + ':' + result;
+	    result = (includeItemId ? this.itemid + ':' : '') + result;
 	    var notId = '#' + this.itemid + '-not';
 	    var bang = this.query(notId)[0].bang;
 	    if (bang) {
@@ -158,12 +160,12 @@ Ext.define('SpWebPortal.view.widget.SearchCriterion', {
         return result;
     },
     
-    listTerms: function(separator, includeItemId) {
-	var listItems = entries[0].split(" ");
+    listTerms: function(separator, includeItemId, searcher) {
+	var listItems = searcher.getSubTerms(this.entries()[0]);
 	var result = "(";
 	for (var i = 0; i < listItems.length; i++){
 	    if (i > 0) {
-		result += separator;;
+		result += separator;
 	    }
 	    result += (includeItemId ? this.itemid + ':' : '') + listItems[i];
 	}

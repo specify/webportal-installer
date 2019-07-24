@@ -156,6 +156,32 @@ Ext.define('SpWebPortal.controller.Search', {
         }
     },
 
+    getSubTerms: function(term) {
+        var pre = term.split(" ");
+        var post = [];
+        var i = 0;
+        while (i < pre.length) {
+            var subterm = pre[i++];
+            var grouper = subterm.substr(0,1);
+            if (("'"+'"').indexOf(grouper) >= 0) {
+                var finalTerm = '';
+                while(i < pre.length) {
+                    subterm += ' ' + pre[i++];
+                    if (subterm.endsWith(grouper)) {
+                        if (grouper == "'") {
+                            subterm[0] = '"';
+                            subterm[subterm.length-1] = '"';
+                        }
+                        break;
+                    }
+                }
+            }
+            post.push(subterm);
+        }
+        return post;
+    },
+            
+
     isIE: function() {
         var sAgent = window.navigator.userAgent;
         var Idx = sAgent.indexOf("MSIE");
