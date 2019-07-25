@@ -30,7 +30,7 @@ def add_init_param(element, name, value):
 webxml = etree.parse(sys.argv[1])
 root = webxml.getroot()
 
-addcrossorigin = true
+addcrossorigin = True
 for c in root.getchildren():
     if c.tag.endswith('filter'):
         for fn in c.getchildren():
