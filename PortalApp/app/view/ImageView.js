@@ -33,7 +33,7 @@ Ext.define('SpWebPortal.view.ImageView', {
     previewTitle: 'Preview',
     selectedTitle: 'Selected Image',
     thumbPagerDisplayMsg: 'Displaying images {0} - {1} of {2}',
-    thumbPagerEmptyMsg: 'No images to display',
+    thumbPagerEmptyMsg: 'Nothing to see here',
     moreItems: 'More Items',
     
     //...localizable text

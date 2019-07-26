@@ -190,14 +190,17 @@ Ext.define('SpWebPortal.controller.Image', {
     },
 
     onTabChange: function(tabPanel, newCard) {
-	this.setupToolbar(tabPanel, newCard.id == 'spwpmainmappane', newCard.id == 'spwpmaingrid');
+	this.setupToolbar(tabPanel, newCard.id == 'spwpmainimageview', newCard.id == 'spwpmaingrid');
 	if (this.imgView == null) {
 	    this.imgView = tabPanel.down('spimageview');
 	}
 	if (this.thumb == null) {
 	    this.thumb = tabPanel.down('spimageview').down('spthumbnail');
 	}
-        //this.doImages();
+        if (newCard.id == 'spwpmainimageview') {
+            //this fixes bug #26, somehow
+            this.thumb.up('panel').setTitle(this.thumb.up('panel').title);          
+        }
     },
 
     doImages: function() {
