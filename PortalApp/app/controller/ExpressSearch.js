@@ -70,24 +70,27 @@ Ext.define('SpWebPortal.controller.ExpressSearch', {
 	var solr = this.getMainSolrStoreStore();
 	var images = this.getRequireImages();
 	var maps = this.getRequireGeoCoords();
-        var srchTerm = (typeof control[0].value === "undefined" || control[0].value == null || control[0].value == '') 
-	    ? '*' 
-	        : this.escapeForSolr(control[0].value,true);
-        var mainQ = srchTerm;
-        if (this.getMatchAll()) {
-            var terms = this.getSubTerms(mainQ);
-            if (terms.length > 0) {
-                mainQ = "";
-                for (var t = 0; t < terms.length; t++) {
-                    if (mainQ.length > 0) {
-                        mainQ += " ";
-                    }
-                    mainQ += "+contents:" + terms[t];
-                }
-            }
-        } else {
-            mainQ = "contents:" + mainQ;
+        var srchTerm = (typeof control[0].value === "undefined" || control[0].value == null || control[0].value == '' || control[0].value == '*') 
+	        ? '' 
+	        : control[0].value;
+        var mainQ;
+        var terms = this.getSubTerms(srchTerm);
+        for (var t = 0; t < terms.length; t++) {
+            terms[t] = this.escapeForSolr(terms[t], true, '"');
         }
+        if (srchTerm == '' || terms.length == 0) {
+            mainQ = '*';
+        } else {
+            mainQ = this.getMatchAll() ? "" : "contents:";
+            var prefix = this.getMatchAll() ? "+contents:" : "";
+            for (t = 0; t < terms.length; t++) {
+                if (t > 0) {
+                    mainQ += " ";
+                }
+                mainQ += prefix + terms[t]; 
+            }   
+        }
+            
 	var filterToMap = (this.getForceFitToMap() || this.getFitToMap()) && (this.mapViewIsActive() || this.getWriteToCsv());
         var dummy_geocoords;
 

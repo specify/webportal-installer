@@ -127,15 +127,31 @@ Ext.define('SpWebPortal.controller.Search', {
 	//console.info("MatchAll = " + this.getMatchAll());
     },
 
-    escapeForSolr: function(srchText, isFullText) {
+    escapeChars: function(text, toEscape, escapeWith) {
+        var result = text;
+        for (var i = 0; i < toEscape.length; i++) {
+            result = result.split(toEscape[i]).join(escapeWith + toEscape[i]);
+        }
+        return result;
+    },
+
+    escapeSolrSpecialChars: function(text) {
+        //According to http://lucene.apache.org/core/2_9_4/queryparsersyntax.html#Escaping%20Special%20Characters
+        //+ - && || ! ( ) { } [ ] ^ " ~ * ? : \
+        //need to be escaped with \
+        return this.escapeChars(text, '+ - && || ! ( ) { } [ ] ^ " ~ * ?'.split(' '), '\\');
+    },
+    
+    escapeForSolr: function(srchText, isFullText, quoter) {
 	//assuming srchText is defined and non-null
         //fulltext seems case-insensitive, and advanced search which is not incorrectly flagged FullText, is case-sensitive,
         //so not changing case, for now...
         //var result = isFullText ? srchText.toLowerCase() : srchText;
-        var result = srchText;
-        result = result.replace('&', '%26');
-	//etc...
-	return result;
+        
+        if (srchText[0] == quoter && srchText[srchText.length-1] == quoter)
+            return quoter + this.escapeSolrSpecialChars(srchText.slice(1, srchText.length-1)) + quoter;
+        else 
+	    return this.escapeSolrSpecialChars(srchText);
     },
 
     searchLaunched: function() {
@@ -156,7 +172,7 @@ Ext.define('SpWebPortal.controller.Search', {
         }
     },
 
-    getSubTerms: function(term) {
+    getSubTerms: function(term, discardGroupers) {
         var pre = term.split(" ");
         var post = [];
         var i = 0;
@@ -169,8 +185,10 @@ Ext.define('SpWebPortal.controller.Search', {
                     subterm += ' ' + pre[i++];
                     if (subterm.endsWith(grouper)) {
                         if (grouper == "'") {
-                            subterm[0] = '"';
-                            subterm[subterm.length-1] = '"';
+                            subterm = '"' + subterm.slice(1, subterm.length-1) + '"';
+                        }
+                        if (discardGroupers && subterm.endsWith('"')) {
+                            subterm = subterm.slice(1, subterm.length-1);
                         }
                         break;
                     }

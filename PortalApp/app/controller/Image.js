@@ -170,7 +170,6 @@ Ext.define('SpWebPortal.controller.Image', {
     },
     
     onPageChange: function(pager) {
-	//console.info('Image onPageChange()');
 	if (this.imgView == null) {
 	    this.imgView = pager.up('tabpanel').down('spimageview');
 	}

@@ -98,7 +98,11 @@ Ext.define('SpWebPortal.view.widget.SearchCriterion', {
 	if (entries != null && entries.length > 0) {
 	    var opId = '#' + this.itemid + '-op';
 	    var op = this.query(opId)[0].value;
-	    result = searcher.escapeForSolr(entries[0], this.isFullText());
+            var terms = searcher.getSubTerms(entries[0], op.startsWith('contain'));
+            for (var t = 0; t < terms.length; t++) {
+                terms[t] = searcher.escapeForSolr(terms[t], false, '"');
+            }
+            result = terms[0];
 	    if (op == '<=') {
 		result = '[* TO ' + result + ']';
 	    } else if (op == '>=') {
@@ -106,25 +110,21 @@ Ext.define('SpWebPortal.view.widget.SearchCriterion', {
 	    } else if (op == 'contains') {
 		result = '*' + result + '*';
 	    } else if (op == 'containsany') {
-		var terms = searcher.getSubTerms(result);
-		result = '';
-		for (var t = 0; t < terms.length; t++) {
-		    if (t > 0) {
-			result += ' OR ';
-		    }
-		    result += '*' + terms[t] + '*';
-		}   
+                includeItemId = false;
+                result = this.listTerms(' OR ', true, true, terms);
 	    } else if (op == 'between') {
 		if (!(entries.length > 1)) {
 		    var fldName = this.down('textfield').getFieldLabel();
 		    alert('missing second entry for "' + fldName + '"');
 		    return "error";
 		} else {  
-		    result2 = entries[1].toLowerCase();
+		    var terms2 = searcher.getSubTerms(entries[1]);
+                    //assume 1 term
+                    var result2 = terms.length > 0 ? searcher.escapeForSolr(terms[t], false, '"') : '';
 		    result = '[' + result + ' TO ' + result2 + ']';
 		}
 	    } else if (op == 'in') {
-                result = this.listTerms(' OR ', true, searcher);
+                result = this.listTerms(' OR ', true, false, terms);
                 includeItemId = false;
 	    }
 	    result = (includeItemId ? this.itemid + ':' : '') + result;
@@ -160,14 +160,14 @@ Ext.define('SpWebPortal.view.widget.SearchCriterion', {
         return result;
     },
     
-    listTerms: function(separator, includeItemId, searcher) {
-	var listItems = searcher.getSubTerms(this.entries()[0]);
+    listTerms: function(separator, includeItemId, wildCard, listItems) {
 	var result = "(";
 	for (var i = 0; i < listItems.length; i++){
 	    if (i > 0) {
 		result += separator;
 	    }
-	    result += (includeItemId ? this.itemid + ':' : '') + listItems[i];
+	    result += (includeItemId ? this.itemid + ':' : '')
+                + (wildCard ? '*' : '') + listItems[i] + (wildCard ? '*' : '');
 	}
 	return result += ")";
     },
