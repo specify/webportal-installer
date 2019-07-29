@@ -138,12 +138,13 @@ Ext.define('SpWebPortal.view.widget.SearchCriterion', {
     },
     
     solrFilterText: function(matchAll, searcher) {
+        console.info("warning: advanced search for full text searches is not currently supported!");
 	var entries = this.entries();
         var result = '';
 	if (entries != null && entries.length > 0) {
 	    var opId = '#' + this.itemid + '-op';
 	    var op = this.query(opId)[0].value;
-	    var entry = searcher.escapeForSolr(entries[0], this.isFullText());
+	    var entry = searcher.escapeForSolr(entries[0], true);
             if (op == 'containsany') {
 		var terms = entry.split(' ');
 		result = '';
