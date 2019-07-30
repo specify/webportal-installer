@@ -154,6 +154,33 @@ Ext.define('SpWebPortal.controller.Search', {
 	    return this.escapeSolrSpecialChars(srchText);
     },
 
+    getSrchTerm: function(control) {
+        return (typeof control[0].value === "undefined" || control[0].value == null || control[0].value == '' || control[0].value == '*') 
+	    ? '' 
+	    : control[0].value;
+    },
+
+    getSrchQuery: function(srchTerm, matchAll, fldName) {
+        var result;
+        var terms = this.getSubTerms(srchTerm);
+        for (var t = 0; t < terms.length; t++) {
+            terms[t] = this.escapeForSolr(terms[t], true, '"');
+        }
+        if (srchTerm == '' || terms.length == 0) {
+            result = '*';
+        } else {
+            result = matchAll ? "" : fldName + ":";
+            var prefix = matchAll ? "+" + fldName + ":" : "";
+            for (t = 0; t < terms.length; t++) {
+                if (t > 0) {
+                    result += " ";
+                }
+                result += prefix + terms[t]; 
+            }   
+        }
+        return result;
+    },
+    
     searchLaunched: function() {
 	var resultsTab = Ext.getCmp('spwpmaintabpanel');
 	if (!resultsTab.isVisible()) {
@@ -172,14 +199,15 @@ Ext.define('SpWebPortal.controller.Search', {
         }
     },
 
-    getSubTerms: function(term, discardGroupers) {
+    getSubTerms: function(term, discardGroupers, ignoreGroupers) {
         var pre = term.split(" ");
         var post = [];
         var i = 0;
+        var groupers = ignoreGroupers ? "" : "'" + '"';
         while (i < pre.length) {
             var subterm = pre[i++];
             var grouper = subterm.substr(0,1);
-            if (("'"+'"').indexOf(grouper) >= 0) {
+            if ((groupers).indexOf(grouper) >= 0) {
                 var finalTerm = '';
                 while(i < pre.length) {
                     subterm += ' ' + pre[i++];

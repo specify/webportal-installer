@@ -70,26 +70,8 @@ Ext.define('SpWebPortal.controller.ExpressSearch', {
 	var solr = this.getMainSolrStoreStore();
 	var images = this.getRequireImages();
 	var maps = this.getRequireGeoCoords();
-        var srchTerm = (typeof control[0].value === "undefined" || control[0].value == null || control[0].value == '' || control[0].value == '*') 
-	        ? '' 
-	        : control[0].value;
-        var mainQ;
-        var terms = this.getSubTerms(srchTerm);
-        for (var t = 0; t < terms.length; t++) {
-            terms[t] = this.escapeForSolr(terms[t], true, '"');
-        }
-        if (srchTerm == '' || terms.length == 0) {
-            mainQ = '*';
-        } else {
-            mainQ = this.getMatchAll() ? "" : "contents:";
-            var prefix = this.getMatchAll() ? "+contents:" : "";
-            for (t = 0; t < terms.length; t++) {
-                if (t > 0) {
-                    mainQ += " ";
-                }
-                mainQ += prefix + terms[t]; 
-            }   
-        }
+        var srchTerm = this.getSrchTerm(control);
+        var mainQ = this.getSrchQuery(srchTerm, this.getMatchAll(), "contents");
             
 	var filterToMap = (this.getForceFitToMap() || this.getFitToMap()) && (this.mapViewIsActive() || this.getWriteToCsv());
         var dummy_geocoords;

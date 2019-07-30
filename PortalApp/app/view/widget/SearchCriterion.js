@@ -98,7 +98,7 @@ Ext.define('SpWebPortal.view.widget.SearchCriterion', {
 	if (entries != null && entries.length > 0) {
 	    var opId = '#' + this.itemid + '-op';
 	    var op = this.query(opId)[0].value;
-            var terms = searcher.getSubTerms(entries[0], op.startsWith('contain'));
+            var terms = searcher.getSubTerms(entries[0], op.startsWith('contain'), op != 'containsany' && op != 'in');
             for (var t = 0; t < terms.length; t++) {
                 terms[t] = searcher.escapeForSolr(terms[t], false, '"');
             }
@@ -108,10 +108,11 @@ Ext.define('SpWebPortal.view.widget.SearchCriterion', {
 	    } else if (op == '>=') {
 		result = '[' + result + ' TO *]';
 	    } else if (op == 'contains') {
-		result = '*' + result + '*';
+                includeItemId = false;
+                result = this.listTerms(' AND ', true, 'all', terms);		
 	    } else if (op == 'containsany') {
                 includeItemId = false;
-                result = this.listTerms(' OR ', true, true, terms);
+                result = this.listTerms(' OR ', true, 'all', terms);
 	    } else if (op == 'between') {
 		if (!(entries.length > 1)) {
 		    var fldName = this.down('textfield').getFieldLabel();
@@ -138,37 +139,35 @@ Ext.define('SpWebPortal.view.widget.SearchCriterion', {
     },
     
     solrFilterText: function(matchAll, searcher) {
-        console.info("warning: advanced search for full text searches is not currently supported!");
 	var entries = this.entries();
         var result = '';
 	if (entries != null && entries.length > 0) {
 	    var opId = '#' + this.itemid + '-op';
 	    var op = this.query(opId)[0].value;
-	    var entry = searcher.escapeForSolr(entries[0], true);
-            if (op == 'containsany') {
-		var terms = entry.split(' ');
-		result = '';
-		for (var t = 0; t < terms.length; t++) {
-		    if (t > 0) {
-			result += ' OR ';
-		    }
-                    result += this.fld.get('solrname') + ':' + terms[t];
-		}
-            } else {
-                result =  this.fld.get('solrname') + ':' + entry;
-            }
+            result = searcher.getSrchQuery(entries[0], op != 'containsany', this.fld.get('solrname'));
         }
         return result;
+    },
+
+    getWildCard: function(len, idx, wildCard, pos) {
+        if (wildCard == 'all') {
+            return true;
+        } else if (wildCard == 'start-end') {
+            return (idx == 0 && pos == 'pre') || (idx == len-1 && pos == 'post'); 
+        }
     },
     
     listTerms: function(separator, includeItemId, wildCard, listItems) {
 	var result = "(";
+        var len = listItems.length;
 	for (var i = 0; i < listItems.length; i++){
 	    if (i > 0) {
 		result += separator;
 	    }
 	    result += (includeItemId ? this.itemid + ':' : '')
-                + (wildCard ? '*' : '') + listItems[i] + (wildCard ? '*' : '');
+                + (this.getWildCard(len, i, wildCard, 'pre') ? '*' : '')
+                + listItems[i]
+                + (this.getWildCard(len, i, wildCard, 'post') ? '*' : '');
 	}
 	return result += ")";
     },
