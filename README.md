@@ -4,7 +4,6 @@ Specify Web Portal
 Requirements
 ------------
 
-* Ubuntu Server (Tested with 18.04lts)
 * Python 2.7
 * Nginx webserver
 * JRE for running Solr
@@ -12,9 +11,6 @@ Requirements
 * Unzip utility
 * cURL utility
 
-The necessary packages can be installed through apt.
-
-`sudo apt-get install make python2.7 default-jre nginx unzip curl`
 
 Installation Instructions
 -------------------------
@@ -24,33 +20,27 @@ web portal. For a more advanced configuration providing automatic
 updates, see below.
 
 1. Unpack this repository on your server.
-1. Use the Specify Data Export tool to create a Web Portal export zip
+2. Use the Specify Data Export tool to create a Web Portal export zip
    file (see the Specify 6 Data Export documentation) for each collection
    to be hosted in the portal.
-1. Copy the zip files into the `specify_exports` directory in this
+3. Copy the zip files into the `specify_exports` directory in this
    directory. The copied files should be given names that are
    suitable for use in URLs; so no spaces, capital letters, slashes or
    other problematic characters. E.g. `kufish.zip`
-1. Build the SOLR app: `make clean && make`.
-1. Move the built webportal to convenient location: `mv build /home/speciy/webportal`.
-1. Create a *systemd* unit file to run Solr: `sudo nano /etc/systemd/system/webportal-solr.service`
-   ```conf
-   [Unit]
-   Description=Solr server for Specify webportal
-   After=network.target
+4. Build the SOLR app: `make clean && make`.
+5. Copy the solr core to the solr installation:
+    mkdir ../solr-7.5.0/server/solr/[CORENAME]
+    cp -r cores/[CORENAME]/core/* ../solr-7.5.0/server/solr/[CORENAME]
+    cp cores/[CORENAME]/web.xml ../solr-7.5.0/server/solr-webapp/webapp/WEB-INF/web.xml (Only necessary for first core.)
+6. Start solr
+   solr-7.5.0/bin/solr start
+7. Import the csv data:
+curl 'http://localhost:8983/solr/[CORENAME]/update/csv?commit=true&encapsulator="&escape=\&header=true' --data-binary @.../build/cores/[CORENAME]/PortalFiles/PortalData.csv -H 'Content-type:application/csv'
 
-   [Service]
-   User=specify
-   Group=specify
-   WorkingDirectory=/home/specify/webportal
-   ExecStart=/usr/bin/java -Djetty.host=localhost -Dsolr.solr.home=solr-home -jar start.jar
 
-   [Install]
-   WantedBy=multi-user.target
-   ```
-1. Start Solr: `sudo systemctl start webportal-solr`.
-1. Tell Systemd to start Solr at boot: `sudo systemctl enable webportal-solr`.
-1. Configure Nginx to serve the portal: `sudo emacs /etc/nginx/sites-available/webportal.conf`
+
+8. Move the built webportal to convenient location: `mv build /home/speciy/webportal`.
+9. Configure Nginx to serve the portal: `sudo emacs /etc/nginx/sites-available/webportal.conf`
    ```conf
    server {
        listen 80 default_server;
@@ -66,13 +56,40 @@ updates, see below.
         }
    }
    ```
-1. Remove the default Nginx site and enable the portal site: 
+10. Remove the default Nginx site and enable the portal site: 
    ```
    sudo rm /etc/nginx/sites-enabled/default
    sudo ln -l /etc/nginx/sites-available/webportal.conf /etc/nginx/sites-enabled/
    ```
-1. Restart Nginx: `sudo systemctl restart nginx`.
+11. Restart Nginx: `sudo systemctl restart nginx`.
 
-The Portal can be updated by updating the contents of
-`specify_exports` with new exports, rebuilding the portal and
-restarting the webportal-solr service.
+
+Data Only Updates
+-----------------
+
+If the fields used in a portal are unchanged and only data is being updated, delete the current contents of the solr core with:
+
+curl 'http://localhost:8983/solr/hollow/update?commit=true&stream.body=<delete><query>*%3A*</query></delete>'
+(You will probably need to add a requestParsers block to the solrconfig.xml file for the core. Add it to the requestDispatcher block:
+<requestDispatcher>
+    <requestParsers enableRemoteStreaming="true"
+                enableStreamBody="true"
+                multipartUploadLimitInKB="2048"
+                formdataUploadLimitInKB="2048"
+                addHttpRequestToContext="false" />
+
+    
+    <httpCaching never304="true" />
+</requestDispatcher>
+(See http://lucene.apache.org/solr/guide/requestdispatcher-in-solrconfig.html)  
+ 
+Then use the curl csv import command above to add the new data.
+
+
+Schema Definition Updates
+-------------------------
+ 
+In this case you will need to stop solr (solr-7.5.0/bin/solr stop), remove the cores to be updated from your solr server directory, and follow all the installation steps besides the http configuration. 
+
+
+
