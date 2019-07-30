@@ -102,7 +102,10 @@ Ext.define('SpWebPortal.view.widget.SearchCriterion', {
             for (var t = 0; t < terms.length; t++) {
                 terms[t] = searcher.escapeForSolr(terms[t], false, '"');
             }
-            result = terms[0];
+            result = searcher.escapeForSolr(entries[0], false);
+            if (terms.length > 1) {
+                result = '"' + result + '"';
+            }
 	    if (op == '<=') {
 		result = '[* TO ' + result + ']';
 	    } else if (op == '>=') {
