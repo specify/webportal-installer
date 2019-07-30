@@ -122,9 +122,7 @@ Ext.define('SpWebPortal.view.widget.SearchCriterion', {
 		    alert('missing second entry for "' + fldName + '"');
 		    return "error";
 		} else {  
-		    var terms2 = searcher.getSubTerms(entries[1]);
-                    //assume 1 term
-                    var result2 = terms.length > 0 ? searcher.escapeForSolr(terms[t], false, '"') : '';
+                    var result2 = entries.length > 1 ? searcher.escapeForSolr(entries[1], false) : '';
 		    result = '[' + result + ' TO ' + result2 + ']';
 		}
 	    } else if (op == 'in') {
