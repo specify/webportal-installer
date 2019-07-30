@@ -154,6 +154,8 @@ Ext.define('SpWebPortal.view.widget.SearchCriterion', {
             return true;
         } else if (wildCard == 'start-end') {
             return (idx == 0 && pos == 'pre') || (idx == len-1 && pos == 'post'); 
+        } else {
+            return '';
         }
     },
     
