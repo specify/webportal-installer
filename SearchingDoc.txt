@@ -25,7 +25,7 @@ G*form*
 Advanced
 --------
 
-Advanced search allows fields to be searched individually. Advanced searches are case-sensitive. When Any is selected records are retrieved if one or more of the advanced search entries are matched. If All is selected records are retrieved only if all advanced search entries match. An advanced search entry can be negated by clicking the box to the left of the operator.
+Advanced search allows fields to be searched individually. Advanced searches are case-sensitive. When Any is selected records are retrieved if one or more of the advanced search conditions are matched. If All is selected records are retrieved only if all advanced search conditions match. An advanced search condition can be negated by clicking the box to the left of the operator.
 
 Andvanced Search Operators
 --------------------------
