@@ -1,0 +1,50 @@
+Searching
+---------
+
+Options
+-------
+
+Geo Coords: Require all records returned in searches to have geocoordinates.
+Images: Retrieve only records with attachments.
+Fit to Map (map view only): Only return records collected in the area currently displayed in the map.
+
+Express
+-------
+
+Searches for records that contain the entered text in any field. When 'Any' is selected, record are retrieved if they contain any search term. If 'All' is selected, only records that contains all terms are retrieved. The '*' character allows partial matching of search terms to words in records. Phrases can be enclosed in quotation marks. Express searches are case-insensitive.
+
+Run searches by pressing the 'Enter' key or clicking the search button.
+
+Examples:
+Idaho Wyoming Montana
+"black bullhead" Kansas Douglas
+"North Carolina" Wadesbor*
+*formes
+G*form*
+
+Advanced
+--------
+
+Advanced search allows fields to be searched individually. Advanced searches are case-sensitive. When Any is selected records are retrieved if one or more of the advanced search entries are matched. If All is selected records are retrieved only if all advanced search entries match. An advanced search entry can be negated by clicking the box to the left of the operator.
+
+Andvanced Search Operators
+--------------------------
+
+= -- Matches values exactly equal to the search text.
+contains -- Matches values that contain the search text.
+contains -- Matches values that contain any of the terms in the search text.
+in -- Matches values equal to one of the terms in the search text. Quotation marks can be used to delimit phrases.
+before -- Matches values before or less than the search text.
+after -- Matches values after or greater than the search text.
+btw -- Matches values between the search texts.
+
+Map View
+--------
+
+When the Search button in the lower left corner of the map view is clicked or 'Fit to Map' is selected, searches will be restricted to the area currently displayed in the map. Otherwise, when a search is run, the map view will be adjusted to contain the results.
+
+
+
+
+
+
