@@ -135,11 +135,16 @@ Ext.define('SpWebPortal.controller.Search', {
         return result;
     },
 
-    escapeSolrSpecialChars: function(text) {
+    escapeSolrSpecialChars: function(text, isForFullText) {
         //According to http://lucene.apache.org/core/2_9_4/queryparsersyntax.html#Escaping%20Special%20Characters
         //+ - && || ! ( ) { } [ ] ^ " ~ * ? : \
         //need to be escaped with \
-        return this.escapeChars(text, '+ - && || ! ( ) { } [ ] ^ " ~ * ?'.split(' '), '\\');
+        if (isForFullText) {
+            //remove * to allow wildcards
+            return this.escapeChars(text, '+ - && || ! ( ) { } [ ] ^ " ~ ?'.split(' '), '\\');
+        } else {
+            return this.escapeChars(text, '+ - && || ! ( ) { } [ ] ^ " ~ * ?'.split(' '), '\\');
+        }
     },
     
     escapeForSolr: function(srchText, isFullText, quoter) {
@@ -149,9 +154,9 @@ Ext.define('SpWebPortal.controller.Search', {
         //var result = isFullText ? srchText.toLowerCase() : srchText;
         
         if (srchText[0] == quoter && srchText[srchText.length-1] == quoter)
-            return quoter + this.escapeSolrSpecialChars(srchText.slice(1, srchText.length-1)) + quoter;
+            return quoter + this.escapeSolrSpecialChars(srchText.slice(1, srchText.length-1), isFullText) + quoter;
         else 
-	    return this.escapeSolrSpecialChars(srchText);
+	    return this.escapeSolrSpecialChars(srchText, isFullText);
     },
 
     getSrchTerm: function(control) {
