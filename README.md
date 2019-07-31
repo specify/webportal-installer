@@ -92,4 +92,7 @@ Schema Definition Updates
 In this case you will need to stop solr (solr-7.5.0/bin/solr stop), remove the cores to be updated from your solr server directory, and follow all the installation steps besides the http configuration. 
 
 
+Web Portal Application Updates
+------------------------------
 
+If a new version if the Web Portal is being installed it will be necessary to perform step 8 after building.
