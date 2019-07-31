@@ -143,7 +143,8 @@ Ext.define('SpWebPortal.controller.Search', {
             //remove * to allow wildcards
             return this.escapeChars(text, '+ - && || ! ( ) { } [ ] ^ " ~ ?'.split(' '), '\\');
         } else {
-            return this.escapeChars(text, '+ - && || ! ( ) { } [ ] ^ " ~ * ?'.split(' '), '\\');
+            //remove * to allow wildcards for strings too. why be inconsistent?
+            return this.escapeChars(text, '+ - && || ! ( ) { } [ ] ^ " ~ ?'.split(' '), '\\');
         }
     },
     

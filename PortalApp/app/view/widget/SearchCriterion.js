@@ -112,10 +112,10 @@ Ext.define('SpWebPortal.view.widget.SearchCriterion', {
 		result = '[' + result + ' TO *]';
 	    } else if (op == 'contains') {
                 includeItemId = false;
-                result = this.listTerms(' AND ', true, 'all', terms);		
+                result = this.listTerms(' AND ', false, 'all', terms);		
 	    } else if (op == 'containsany') {
                 includeItemId = false;
-                result = this.listTerms(' OR ', true, 'all', terms);
+                result = this.listTerms(' OR ', false, 'all', terms);
 	    } else if (op == 'between') {
 		if (!(entries.length > 1)) {
 		    var fldName = this.down('textfield').getFieldLabel();
@@ -126,7 +126,7 @@ Ext.define('SpWebPortal.view.widget.SearchCriterion', {
 		    result = '[' + result + ' TO ' + result2 + ']';
 		}
 	    } else if (op == 'in') {
-                result = this.listTerms(' OR ', true, false, terms);
+                result = this.listTerms(' OR ', false, false, terms);
                 includeItemId = false;
 	    }
 	    result = (includeItemId ? this.itemid + ':' : '') + result;
