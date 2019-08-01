@@ -112,10 +112,10 @@ Ext.define('SpWebPortal.view.widget.SearchCriterion', {
 		result = '[' + result + ' TO *]';
 	    } else if (op == 'contains') {
                 includeItemId = false;
-                result = this.listTerms(' AND ', false, 'all', terms);		
+                result = this.listTerms(' AND ', true, 'all', terms);		
 	    } else if (op == 'containsany') {
                 includeItemId = false;
-                result = this.listTerms(' OR ', false, 'all', terms);
+                result = this.listTerms(' OR ', true, 'all', terms);
 	    } else if (op == 'between') {
 		if (!(entries.length > 1)) {
 		    var fldName = this.down('textfield').getFieldLabel();
@@ -126,7 +126,7 @@ Ext.define('SpWebPortal.view.widget.SearchCriterion', {
 		    result = '[' + result + ' TO ' + result2 + ']';
 		}
 	    } else if (op == 'in') {
-                result = this.listTerms(' OR ', false, false, terms);
+                result = this.listTerms(' OR ', true, false, this.quoteTerms(terms, '"'));
                 includeItemId = false;
 	    }
 	    result = (includeItemId ? this.itemid + ':' : '') + result;
@@ -138,7 +138,20 @@ Ext.define('SpWebPortal.view.widget.SearchCriterion', {
 	}
 	return result;
     },
-    
+
+    quoteTerms: function(terms, quoter) {
+        var result = [];
+        for (var t = 0; t < terms.length; t++) {
+            var term = terms[t];
+            if (term[0] != quoter && term[term.length-1] != quoter) {
+                result.push('"' + term + '"');
+            } else {
+                result.push(term);
+            }
+        }
+        return result;
+    },
+
     solrFilterText: function(matchAll, searcher) {
 	var entries = this.entries();
         var result = '';
