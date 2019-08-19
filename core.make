@@ -69,7 +69,7 @@ core: $(TOPDIR)/$(SOLR_DIST) PortalFiles solrconfig.xml $(SCHEMA_FILE) web.xml
 	cp $(TOPDIR)/$(SOLR_DIST)/$(DEFAULT_SETS)/conf/synonyms.txt core/conf/
 	cp $(TOPDIR)/$(SOLR_DIST)/$(DEFAULT_SETS)/conf/stopwords.txt core/conf/
 	cp -r $(TOPDIR)/$(SOLR_DIST)/$(DEFAULT_SETS)/conf/lang/ core/conf/
-	echo 'dataDir=data' > core/conf/core.properties
-	echo 'name=$(CORENAME)' >> core/conf/core.properties
+	echo 'dataDir=data' > core/core.properties
+	echo 'name=$(CORENAME)' >> core/core.properties
 	echo 'config=conf/solrconfig.xml' >> core/core.properties
 	mkdir core/data
