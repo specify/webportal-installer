@@ -32,11 +32,11 @@ updates, see below.
     mkdir ../solr-7.5.0/server/solr/[CORENAME]
     cp -r cores/[CORENAME]/core/* ../solr-7.5.0/server/solr/[CORENAME]
     cp cores/[CORENAME]/web.xml ../solr-7.5.0/server/solr-webapp/webapp/WEB-INF/web.xml (Only necessary for first core.)
-6. Start solr
+6. Restrict access to the solr admin web page. This can be done in solr 7.5 by editing /solr/server/etc/jetty-http.xml. In the ServerConnector section replace '<Set name="host"><Property name="jetty.host" /></Set>' with '<Set name="host">127.0.0.1</Set>'
+7. Start solr
    solr-7.5.0/bin/solr start
-7. Import the csv data:
+8. Import the csv data:
 curl 'http://localhost:8983/solr/[CORENAME]/update/csv?commit=true&encapsulator="&escape=\&header=true' --data-binary @.../build/cores/[CORENAME]/PortalFiles/PortalData.csv -H 'Content-type:application/csv'
-8. Restrict access to the solr admin web page. This can be done in solr 7.5 by editing /solr/server/etc/jetty-http.xml. In the ServerConnector section replace '<Set name="host"><Property name="jetty.host" /></Set>' with '<Set name="host">127.0.0.1</Set>'
 
 
 
