@@ -36,11 +36,12 @@ updates, see below.
    solr-7.5.0/bin/solr start
 7. Import the csv data:
 curl 'http://localhost:8983/solr/[CORENAME]/update/csv?commit=true&encapsulator="&escape=\&header=true' --data-binary @.../build/cores/[CORENAME]/PortalFiles/PortalData.csv -H 'Content-type:application/csv'
+8. Restrict access to the solr admin web page. This can be done in solr 7.5 by editing /solr/server/etc/jetty-http.xml. In the ServerConnector section replace '<Set name="host"><Property name="jetty.host" /></Set>' with '<Set name="host">127.0.0.1</Set>'
 
 
 
-8. Move the built webportal to convenient location: `mv build /home/speciy/webportal`.
-9. Configure Nginx to serve the portal: `sudo emacs /etc/nginx/sites-available/webportal.conf`
+9. Move the built webportal to convenient location: `mv build /home/speciy/webportal`.
+10. Configure Nginx to serve the portal: `sudo emacs /etc/nginx/sites-available/webportal.conf`
    ```conf
    server {
        listen 80 default_server;
@@ -56,12 +57,12 @@ curl 'http://localhost:8983/solr/[CORENAME]/update/csv?commit=true&encapsulator=
         }
    }
    ```
-10. Remove the default Nginx site and enable the portal site: 
+11. Remove the default Nginx site and enable the portal site: 
    ```
    sudo rm /etc/nginx/sites-enabled/default
    sudo ln -l /etc/nginx/sites-available/webportal.conf /etc/nginx/sites-enabled/
    ```
-11. Restart Nginx: `sudo systemctl restart nginx`.
+12. Restart Nginx: `sudo systemctl restart nginx`.
 
 
 Data Only Updates
