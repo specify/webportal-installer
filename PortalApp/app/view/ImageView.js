@@ -130,7 +130,7 @@ Ext.define('SpWebPortal.view.ImageView', {
 
     setCollSettings: function(settings) {
         var colls = settings.get('collections');
-        for (var i = 0; i < _.size(colls) > 0; i++) {
+        for (var i = 0; i < _.size(colls); i++) {
             this.collList[colls[i]['code']] = colls[i]['collname'];
             if (colls[i]['attachmentbaseurl']) {
                 this.urlList[colls[i]['collname']] = colls[i]['attachmentbaseurl'];
