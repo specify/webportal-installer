@@ -212,6 +212,7 @@ Ext.define('SpWebPortal.view.Viewport', {
 	var bottomMarginLeft = settings.get('bottomMarginLeft') ? settings.get('bottomMarginLeft') : 'auto';
 	var bottomMarginRight = settings.get('bottomMarginRight') ? settings.get('bottomMarginRight') : 'auto';
 	var bottomWidth = settings.get('bottomWidth') ? settings.get('bottomWidth') : 950;
+        var colls = settings.get("collections");
 	var sideItems = [
 	    this.banner,
 	    {
@@ -253,7 +254,15 @@ Ext.define('SpWebPortal.view.Viewport', {
 				id: 'spwp-fit-to-map-chkbx',
 				checked: false,
 				hidden: true
-			    }
+			    },
+                            {
+	                        xtype: 'button',
+	                        tooltip: '<html>Searching <b>all</b> Collections</html>',
+                                text: 'Collections',
+	                        itemid: 'spwpcollectionsbtn',
+                                id: 'spwpcollectionsbtnid',
+                                hidden: !colls || _.size(colls) < 2
+	                    }
 			]
 		    },
 		    {

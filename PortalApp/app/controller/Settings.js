@@ -24,6 +24,8 @@ Ext.define('SpWebPortal.controller.Settings', {
     //localizable text...
     settingsFormTitle: 'Settings',
     invalidPageSizeErrMsg: 'Invalid page size: {0}. Pagesize must be a number between 1 and {1}',
+    collSearching: 'Searching',
+    collAll: 'all collections',
     //..localizable text
 
     requires: [
@@ -41,6 +43,13 @@ Ext.define('SpWebPortal.controller.Settings', {
 	    '#spwp-webportal-viewport': {
 		initsettings: this.onInitSettings
 	    },
+            //searched collections settings
+            'button[itemid="spwpcollectionsbtn"]' : {
+                click: this.collectionSelect
+            },
+            'window[itemid="spwpcollpop"]' : {
+                beforedestroy: this.collectionSelectClose
+            },
 	    //main grid configs
 	    '#spwpmaingrid': {
 		columnhide: this.onMainGridReconfig,
@@ -56,6 +65,79 @@ Ext.define('SpWebPortal.controller.Settings', {
 	this.callParent(arguments);
     },
 
+    collectionSelect: function() {
+        var settings = Ext.getStore('SettingsStore').getAt(0);
+        var colls = settings.get("collections");
+        var solrStore = Ext.getStore('MainSolrStore');
+        if (!solrStore.collItems) {
+            solrStore.collItems = [];
+            for (var i = 0; i < _.size(colls); i++) {
+                solrStore.collItems.push({boxLabel: colls[i]['collname'], name: colls[i]['code'], inputValue: i+1, checked: true});
+            }
+        };
+        var panel = Ext.create('Ext.form.Panel', {
+            width: 250,
+            height: 180,
+            bodyPadding: 10,
+            items:[{
+                xtype: 'checkboxgroup',
+                itemid: 'spwpcollgroup',
+                columns: 1,
+                vertical: true,
+                items: solrStore.collItems
+            }]
+        });        
+	this.popupWin =  Ext.create('Ext.window.Window', {
+	    title: 'Collections',
+	    height: 260,
+	    width: 280,
+	    maximizable: false,
+	    resizable: true,
+            itemid: 'spwpcollpop',
+	    closeAction: 'destroy',
+	    layout: 'fit',
+	    items: [
+		panel
+	    ]
+	});
+	this.popupWin.setPosition(1,1);
+	this.popupWin.show();
+	this.popupWin.toFront();
+    },
+
+    collectionSelectClose: function(collPanel) {
+        var collGroup = collPanel.down('checkboxgroup');
+        var tipSeparator = ' ';
+        var tipText = this.collSearching;
+        if (collGroup) {
+            var collItemSets = collGroup.items.items;
+            var all = true;
+            var none = true;
+            var solrStore = Ext.getStore('MainSolrStore');
+            for (var i = 0; i < collItemSets.length; i++) {
+                solrStore.collItems[i].checked = collItemSets[i].checked;
+                if (solrStore.collItems[i].checked) {
+                    tipText += tipSeparator + solrStore.collItems[i].boxLabel;
+                    tipSeparator = ', ';
+                    none = false;
+                } else {
+                    all = false;
+                }
+            }
+            if (all || none) {
+                tipText = this.collSearching + ' ' + this.collAll;
+                if (none) {
+                    for (i = 0; i < solrStore.collItems.length; i++) {
+                        solrStore.colItems[i].checked = true;
+                    }
+                }
+            }
+            Ext.getCmp('spwpcollectionsbtnid').setTooltip(tipText);
+        } else {
+            console.log("Collection search UI was null. Settings were not applied.");
+        }
+    },
+    
     isValidPageSize: function(pageSize, maxPageSize) {
 	return 0 < pageSize && pageSize <= maxPageSize;
     },

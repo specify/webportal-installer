@@ -63,8 +63,7 @@ Ext.define('SpWebPortal.controller.Search', {
 
 	this.callParent(arguments);
     },
-
-
+    
     onSpecialKey: function(field, e) {
 	if (e.getKey() == e.ENTER) {
             console.info("doSearch()?");

@@ -290,9 +290,40 @@ Ext.define('SpWebPortal.store.MainSolrStore', {
         } else {
 	    this.setCurrentMapFitFilter('');
 	}
+        if (this.collItems) {
+            console.info("Oh! Look! CollItems!");
+            var collectionFilter = this.getCollectionFilter4J();
+            if (collectionFilter) {
+                mainQ += ' AND ' + collectionFilter;
+            }
+        }
         return mainQ;        
     },
 
+    getCollectionFilter4J: function() {
+        var collCodeFld = Ext.getStore('SettingsStore').getAt(0).get('collCodeSolrFld');
+        var result;
+        if (collCodeFld) {
+            var codes = [];
+            for (var i = 0; i < this.collItems.length; i++) {
+                if (this.collItems[i].checked) {
+                    codes.push('"' + this.collItems[i].name + '"');
+                }
+            }
+            if (codes.length < this.collItems.length) {
+                result = '(';
+                for (i = 0; i < codes.length; i++) {
+                    if (i > 0) {
+                        result += ' OR ';
+                    }
+                    result += collCodeFld + ':' + codes[i];
+                }
+                result += ')';
+            }
+        }
+        return result;
+    },
+    
     getSearchUrl4J: function(csv) {
 	var url = (csv ? this.urlTemplateCsv.replace('&fl=*', this.getCsvFldParam()) : this.urlTemplate);
         //not sure how matchAll will work???
