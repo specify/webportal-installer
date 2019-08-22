@@ -291,7 +291,6 @@ Ext.define('SpWebPortal.store.MainSolrStore', {
 	    this.setCurrentMapFitFilter('');
 	}
         if (this.collItems) {
-            console.info("Oh! Look! CollItems!");
             var collectionFilter = this.getCollectionFilter4J();
             if (collectionFilter) {
                 mainQ += ' AND ' + collectionFilter;

@@ -128,7 +128,7 @@ Ext.define('SpWebPortal.controller.Settings', {
                 tipText = this.collSearching + ' ' + this.collAll;
                 if (none) {
                     for (i = 0; i < solrStore.collItems.length; i++) {
-                        solrStore.colItems[i].checked = true;
+                        solrStore.collItems[i].checked = true;
                     }
                 }
             }
