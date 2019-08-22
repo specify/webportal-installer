@@ -20,8 +20,9 @@ sed -i "1s/.*/spid,contents,img,geoc,CollectionType,Catalog_,Class,Code,Continen
 Import the file with:
 curl '[COREURL]/csv?commit=true&encapsulator="&escape=\&header=true' --data-binary @[PATH_TO_CSVFILE] -H 'Content-type:application/csv'
 For example:
-curl 'http://localhost:8983/solr/hollow/update/csv?commit=true&encapsulator="&escape=\&header=true' --data-binary @/home/timo/voucherwebsearchcsv/PortalFiles/PortalData.csv -H 'Content-type:application/csv'
- 
+curl 'http://localhost:8983/solr/hollow/update/csv?commit=true&encapsulator="&escape=\&header=true' --data-binary @/home/omit/voucherwebsearchcsv/PortalFiles/PortalData.csv -H 'Content-type:application/csv'
+
+Extremely large files (300k+ records) may need to be split to avoid out-of-memory errors in curl. This can be done with the split command, eg: "split -l120000 PortalData.csv PortalDataSplit". Headers can be added to split files with sed, eg: "sed -i '1i[HEADER-LINE]' PortalDataSplitab".
 
 e) Configure the Portal Application 
 
