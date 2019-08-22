@@ -60,6 +60,7 @@ Ext.define('SpWebPortal.model.SettingsModel', {
         {name: 'clusterImageExtension', type: 'string'},
         {name: 'clusterAverageCenter', type: 'boolean'},
         {name: 'clusterMinimumClusterSize', type: 'int'},
+        {name: 'clusterIgnoreHiddenMarkers', type: 'boolean', defaultValue: true},
         {name: 'clusterStyles', type: 'json'}
    ],
 

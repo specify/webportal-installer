@@ -118,17 +118,14 @@ Ext.define('SpWebPortal.controller.Mapper', {
         console.info(settings.get('doClusterFx'));
         if (settings.get('doClusterFx')) {
             this.clusterSets = {};
-            var params = ['gridSize','maxZoom','zoomOnClick','imagePath','imageExtension','averageCenter','minimumClusterSize','styles','minPoints'];
-            for (var p = 0; p < params.length; p++) {
-                var param = params[p];
-                console.info(param + " -- " +  'cluster' + param.charAt(0).toUpperCase() + param.slice(1));
-                var setting = settings.get('cluster' + param.charAt(0).toUpperCase() + param.slice(1));
-                console.info(setting);
-                if (setting) {
-                    this.clusterSets[param] = setting;
-                }
-                console.info(this.clusterSets);
-            }
+            _.each(_.filter(settings.store.model.getFields(), function(f){ return f.name.startsWith('cluster') && settings.get(f.name); }),
+                   function(f){
+                       var param = f.name.replace('cluster','');
+                       param = param.charAt(0).toLowerCase() + param.slice(1);
+                       this.clusterSets[param] = settings.get(f.name);
+                   },
+                   this
+                  );
         }
     },
     
