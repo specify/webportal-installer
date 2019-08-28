@@ -58,7 +58,7 @@ Ext.define('SpWebPortal.model.SettingsModel', {
         {name: 'clusterZoomOnClick', type: 'boolean'},
         {name: 'clusterImagePath', type: 'string', defaultValue: 'resources/images/m'},
         {name: 'clusterImageExtension', type: 'string'},
-        {name: 'clusterAverageCenter', type: 'boolean'},
+        {name: 'clusterAverageCenter', type: 'boolean', defaultValue: true},
         {name: 'clusterMinimumClusterSize', type: 'int'},
         {name: 'clusterIgnoreHiddenMarkers', type: 'boolean', defaultValue: true},
         {name: 'clusterStyles', type: 'json'}
