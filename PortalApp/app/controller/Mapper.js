@@ -693,11 +693,12 @@ Ext.define('SpWebPortal.controller.Mapper', {
             if (this.clusterSets) {
                 if (!this.markerCluster) {
                     this.markerCluster = new MarkerClusterer(mapCtl, [], this.clusterSets);
+                    console.info(this.markerCluster);
                 } else {
                     this.markerCluster.clearMarkers();
                 }
                 if (this.shouldCluster(mapCtl)) {
-                    this.markerCluster.addMarkers(this.mapMarkers);
+                    this.markerCluster.addMarkers(_.toArray(this.mapMarkers));
                 }
             }
 	}	
