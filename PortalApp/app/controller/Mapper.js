@@ -709,10 +709,6 @@ Ext.define('SpWebPortal.controller.Mapper', {
             var minCluster = this.clusterSets['minPoints'];
             if (minCluster && _.size(this.mapMarkers) < minCluster) {
                 return false;
-            }
-            var maxZoom = this.clusterSets['maxZoom'];
-            if (maxZoom) {
-                return mapCtl.getZoom() <= maxZoom;
             } else {
                 return true;
             }
