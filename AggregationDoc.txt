@@ -1,6 +1,8 @@
 How to Setup an Aggregated Portal
 
-1. Create a common mapping for the collections you want to be aggregated. The mapping must contain a field which identifies which collection a record belongs to.
+These instructions assume a common mapping is being used for all collections. It is possible to use different mappings, and to adjust the csv file in step d to make the data fit into the mapping used by the solr instance.
+
+1. Create a common mapping for the collections you want to be aggregated. The mapping must contain a field which identifies which collection a record belongs to. (See section e below.)
 
 2. For one collection, use the Exporter App to build the mapping and export for the web portal, then use the web portaller installer to set up solr and the portal application. (See README.md)
 
@@ -13,11 +15,6 @@ b) Use the Exporter application to build the cache table for the mapping and Exp
 c) Unzip the file exported in step b.
 
 d) Import the PortalData.csv file into solr. 
-The header lines for all collections' csv files must be identical. 
-If the header for the first collection is 
-"spid,contents,img,geoc,CollectionType,Catalog_,Class,Code,Continent,Country,County,Latitude1,Longitude1", the following sed command will replace the header in other collections' csv files: 
-sed -i "1s/.*/spid,contents,img,geoc,CollectionType,Catalog_,Class,Code,Continent,Country,County,Latitude1,Longitude1/" PortalData.csv
-Import the file with:
 curl '[COREURL]/csv?commit=true&encapsulator="&escape=\&header=true' --data-binary @[PATH_TO_CSVFILE] -H 'Content-type:application/csv'
 For example:
 curl 'http://localhost:8983/solr/hollow/update/csv?commit=true&encapsulator="&escape=\&header=true' --data-binary @/home/omit/voucherwebsearchcsv/PortalFiles/PortalData.csv -H 'Content-type:application/csv'
@@ -76,5 +73,3 @@ The doClusterFx setting may also be relevant for large aggregations. Setting it 
         {name: 'clusterStyles', type: 'json'}
 
 See https://github.com/gmaps-marker-clusterer/gmaps-marker-clusterer for more information.
-
-
