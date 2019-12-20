@@ -31,9 +31,15 @@ webxml = etree.parse(sys.argv[1])
 root = webxml.getroot()
 
 addcrossorigin = True
-for c in root.getchildren():
+for c in root:
+    if c.tag == etree.Comment:
+        continue
+
     if c.tag.endswith('filter'):
-        for fn in c.getchildren():
+        for fn in c:
+            if fn.tag == etree.Comment:
+                continue
+
             if fn.tag.endswith('filter-name') and fn.text == 'cross-origin':
                 addcrossorigin = False
                 break
