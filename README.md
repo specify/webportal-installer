@@ -26,7 +26,7 @@ updates, see below.
 3. Copy the zip files into the `specify_exports` directory in this
    directory. The copied files should be given names that are
    suitable for use in URLs; so no spaces, capital letters, slashes or
-   other problematic characters. E.g. `kufish.zip`
+   other problematic characters. E.g. `kufish.zip` (In this case CORENAME would be `kufish` - name of the exported archive without the file extension)
 4. Build the SOLR app: `make clean && make`.
 5. Copy the solr core to the solr installation:
     mkdir ../solr-7.5.0/server/solr/[CORENAME]
@@ -34,7 +34,7 @@ updates, see below.
     cp cores/[CORENAME]/web.xml ../solr-7.5.0/server/solr-webapp/webapp/WEB-INF/web.xml (Only necessary for first core.)
 6. Restrict access to the solr admin web page. This can be done in solr 7.5 by editing /solr/server/etc/jetty-http.xml. In the ServerConnector section replace '<Set name="host"><Property name="jetty.host" /></Set>' with '<Set name="host">127.0.0.1</Set>'
 7. Start solr
-   solr-7.5.0/bin/solr start
+   ../solr-7.5.0/bin/solr start
 8. Import the csv data:
 curl 'http://localhost:8983/solr/[CORENAME]/update/csv?commit=true&encapsulator="&escape=\&header=true' --data-binary @.../build/cores/[CORENAME]/PortalFiles/PortalData.csv -H 'Content-type:application/csv'
 
@@ -42,7 +42,7 @@ curl 'http://localhost:8983/solr/[CORENAME]/update/csv?commit=true&encapsulator=
 
 9. Move the built webportal to convenient location: `mv build /home/speciy/webportal`.
 10. Configure Nginx to serve the portal: `sudo emacs /etc/nginx/sites-available/webportal.conf`
-   ```conf
+   ```
    server {
        listen 80 default_server;
 
@@ -60,7 +60,7 @@ curl 'http://localhost:8983/solr/[CORENAME]/update/csv?commit=true&encapsulator=
 11. Remove the default Nginx site and enable the portal site: 
    ```
    sudo rm /etc/nginx/sites-enabled/default
-   sudo ln -l /etc/nginx/sites-available/webportal.conf /etc/nginx/sites-enabled/
+   sudo ln -L /etc/nginx/sites-available/webportal.conf /etc/nginx/sites-enabled/
    ```
 12. Restart Nginx: `sudo systemctl restart nginx`.
 
@@ -96,4 +96,4 @@ In this case you will need to stop solr (solr-7.5.0/bin/solr stop), remove the c
 Web Portal Application Updates
 ------------------------------
 
-If a new version if the Web Portal is being installed it will be necessary to perform step 8 after building.
+If a new version of the Web Portal is being installed it will be necessary to perform step 8 after building.
