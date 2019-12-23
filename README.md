@@ -29,8 +29,11 @@ updates, see below.
    other problematic characters. E.g. `kufish.zip`
 4. Build the SOLR app: `make clean && make`.
 5. Copy the solr core to the solr installation:
-[CORENAME] - the name of the exported archive without the file extension. (E.g. `kufish`)
-[SOLRVERSION] - the version of Solr. (E.g. `7.5.0`)
+
+   [CORENAME] - the name of the exported archive without the file extension. (E.g. `kufish`)
+
+   [SOLRVERSION] - the version of Solr. (E.g. `7.5.0`)
+
 ```
     mkdir build/solr-7.5.0/server/solr/[CORENAME]
     cp -r build/cores/[CORENAME]/core/* solr-[SOLRVERSION]/server/solr/[CORENAME]
@@ -40,7 +43,7 @@ updates, see below.
 7. Start solr
    `solr-[SOLRVERSION]/bin/solr start`
 8. Import the csv data:
-curl 'http://localhost:8983/solr/[CORENAME]/update/csv?commit=true&encapsulator="&escape=\&header=true' --data-binary @build/cores/[CORENAME]/PortalFiles/PortalData.csv -H 'Content-type:application/csv'
+`curl 'http://localhost:8983/solr/[CORENAME]/update/csv?commit=true&encapsulator="&escape=\&header=true' --data-binary @build/cores/[CORENAME]/PortalFiles/PortalData.csv -H 'Content-type:application/csv'`
 
 
 
