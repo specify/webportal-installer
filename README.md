@@ -26,19 +26,21 @@ updates, see below.
 3. Copy the zip files into the `specify_exports` directory in this
    directory. The copied files should be given names that are
    suitable for use in URLs; so no spaces, capital letters, slashes or
-   other problematic characters. E.g. `kufish.zip` (In this case CORENAME would be `kufish` - name of the exported archive without the file extension)
+   other problematic characters. E.g. `kufish.zip`
 4. Build the SOLR app: `make clean && make`.
 5. Copy the solr core to the solr installation:
+[CORENAME] - the name of the exported archive without the file extension. (E.g. `kufish`)
+[SOLRVERSION] - the version of Solr. (E.g. `7.5.0`)
 ```
-    mkdir ../solr-7.5.0/server/solr/[CORENAME]
-    cp -r cores/[CORENAME]/core/* ../solr-7.5.0/server/solr/[CORENAME]
-    cp cores/[CORENAME]/web.xml ../solr-7.5.0/server/solr-webapp/webapp/WEB-INF/web.xml (Only necessary for first core.)
+    mkdir build/solr-7.5.0/server/solr/[CORENAME]
+    cp -r build/cores/[CORENAME]/core/* solr-[SOLRVERSION]/server/solr/[CORENAME]
+    cp build/cores/[CORENAME]/web.xml solr-[SOLRVERSION]/server/solr-webapp/webapp/WEB-INF/web.xml # Only necessary for the first core.
 ```
-6. Restrict access to the solr admin web page. This can be done in solr 7.5 by editing /solr/server/etc/jetty-http.xml. In the ServerConnector section replace '<Set name="host"><Property name="jetty.host" /></Set>' with '<Set name="host">127.0.0.1</Set>'
+6. Restrict access to the solr admin web page. This can be done in solr 7.5 by editing `solr-[SOLRVERSION]/server/etc/jetty-http.xml`. In the ServerConnector section replace: `<Set name="host"><Property name="jetty.host" /></Set>` with `<Set name="host">127.0.0.1</Set>`
 7. Start solr
-   ../solr-7.5.0/bin/solr start
+   `solr-[SOLRVERSION]/bin/solr start`
 8. Import the csv data:
-curl 'http://localhost:8983/solr/[CORENAME]/update/csv?commit=true&encapsulator="&escape=\&header=true' --data-binary @.../build/cores/[CORENAME]/PortalFiles/PortalData.csv -H 'Content-type:application/csv'
+curl 'http://localhost:8983/solr/[CORENAME]/update/csv?commit=true&encapsulator="&escape=\&header=true' --data-binary @build/cores/[CORENAME]/PortalFiles/PortalData.csv -H 'Content-type:application/csv'
 
 
 
@@ -72,8 +74,9 @@ Data Only Updates
 
 If the fields used in a portal are unchanged and only data is being updated, delete the current contents of the solr core with:
 
-curl 'http://localhost:8983/solr/hollow/update?commit=true&stream.body=<delete><query>*%3A*</query></delete>'
+`curl 'http://localhost:8983/solr/hollow/update?commit=true&stream.body=<delete><query>*%3A*</query></delete>'`
 (You will probably need to add a requestParsers block to the solrconfig.xml file for the core. Add it to the requestDispatcher block:
+```
 <requestDispatcher>
     <requestParsers enableRemoteStreaming="true"
                 enableStreamBody="true"
@@ -84,6 +87,7 @@ curl 'http://localhost:8983/solr/hollow/update?commit=true&stream.body=<delete><
     
     <httpCaching never304="true" />
 </requestDispatcher>
+```
 (See http://lucene.apache.org/solr/guide/requestdispatcher-in-solrconfig.html)  
  
 Then use the curl csv import command above to add the new data.
@@ -92,7 +96,7 @@ Then use the curl csv import command above to add the new data.
 Schema Definition Updates
 -------------------------
  
-In this case you will need to stop solr (solr-7.5.0/bin/solr stop), remove the cores to be updated from your solr server directory, and follow all the installation steps besides the http configuration. 
+In this case you will need to stop solr (solr-[SOLRVERSION]/bin/solr stop), remove the cores to be updated from your solr server directory, and follow all the installation steps besides the http configuration. 
 
 
 Web Portal Application Updates
