@@ -75,7 +75,7 @@ Data Only Updates
 If the fields used in a portal are unchanged and only data is being updated, delete the current contents of the solr core with:
 
 `curl 'http://localhost:8983/solr/hollow/update?commit=true&stream.body=<delete><query>*%3A*</query></delete>'`
-(You will probably need to add a requestParsers block to the solrconfig.xml file for the core. Add it to the requestDispatcher block:
+(You will probably need to add/edit a requestParsers block in the `solr-[SOLRVERSION]/server/solr/[CORENAME]/config/solrconfig.xml` file for the core. Add it to the requestDispatcher block:
 ```
 <requestDispatcher>
     <requestParsers enableRemoteStreaming="true"
