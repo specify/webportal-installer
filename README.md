@@ -29,9 +29,11 @@ updates, see below.
    other problematic characters. E.g. `kufish.zip` (In this case CORENAME would be `kufish` - name of the exported archive without the file extension)
 4. Build the SOLR app: `make clean && make`.
 5. Copy the solr core to the solr installation:
+```
     mkdir ../solr-7.5.0/server/solr/[CORENAME]
     cp -r cores/[CORENAME]/core/* ../solr-7.5.0/server/solr/[CORENAME]
     cp cores/[CORENAME]/web.xml ../solr-7.5.0/server/solr-webapp/webapp/WEB-INF/web.xml (Only necessary for first core.)
+```
 6. Restrict access to the solr admin web page. This can be done in solr 7.5 by editing /solr/server/etc/jetty-http.xml. In the ServerConnector section replace '<Set name="host"><Property name="jetty.host" /></Set>' with '<Set name="host">127.0.0.1</Set>'
 7. Start solr
    ../solr-7.5.0/bin/solr start
