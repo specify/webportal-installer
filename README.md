@@ -10,6 +10,7 @@ Requirements
 * GNUMake
 * Unzip utility
 * cURL utility
+* python-lxml
 
 
 Installation Instructions
