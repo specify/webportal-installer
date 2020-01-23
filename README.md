@@ -35,7 +35,7 @@ updates, see below.
    [SOLRVERSION] - the version of Solr. (E.g. `7.5.0`)
 
 ```
-    mkdir build/solr-7.5.0/server/solr/[CORENAME]
+    mkdir solr-[SOLRVERSION]/server/solr/[CORENAME]
     cp -r build/cores/[CORENAME]/core/* solr-[SOLRVERSION]/server/solr/[CORENAME]
     cp build/cores/[CORENAME]/web.xml solr-[SOLRVERSION]/server/solr-webapp/webapp/WEB-INF/web.xml # Only necessary for the first core.
 ```
