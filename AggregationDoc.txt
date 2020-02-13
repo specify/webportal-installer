@@ -1,10 +1,10 @@
 How to Setup an Aggregated Portal
 
-These instructions assume a common mapping is being used for all collections. It is possible to use different mappings, and to adjust the csv file in step d to make the data fit into the mapping used by the solr instance.
+These instructions assume a common mapping is being used for all collections. It is possible to use different mappings and to adjust the CSV file in step d to make the data fit into the mapping used by the Solr instance.
 
-1. Create a common mapping for the collections you want to be aggregated. The mapping must contain a field which identifies which collection a record belongs to. (See section e below.)
+1. Create a common mapping for the collections you want to be aggregated. The mapping must contain a field that identifies which collection a record belongs to. (See section e below.)
 
-2. For one collection, use the Exporter App to build the mapping and export for the web portal, then use the web portaller installer to set up solr and the portal application. (See README.md)
+2. For one collection, use the Exporter App to build the mapping and export for the web portal, then use the web portal installer to set up Solr and the portal application. (See README.md)
 
 3. For each additional collection:
 
@@ -14,19 +14,19 @@ b) Use the Exporter application to build the cache table for the mapping and Exp
 
 c) Unzip the file exported in step b.
 
-d) Import the PortalData.csv file into solr. 
+d) Import the PortalData.csv file into solr.
 curl '[COREURL]/csv?commit=true&encapsulator="&escape=\&header=true' --data-binary @[PATH_TO_CSVFILE] -H 'Content-type:application/csv'
 For example:
 curl 'http://localhost:8983/solr/hollow/update/csv?commit=true&encapsulator="&escape=\&header=true' --data-binary @/home/omit/voucherwebsearchcsv/PortalFiles/PortalData.csv -H 'Content-type:application/csv'
 
 Extremely large files (300k+ records) may need to be split to avoid out-of-memory errors in curl. This can be done with the split command, eg: "split -l120000 PortalData.csv PortalDataSplit". Headers can be added to split files with sed, eg: "sed -i '1i[HEADER-LINE]' PortalDataSplitab".
 
-e) Configure the Portal Application 
+e) Configure the Portal Application
 
-In the resources/config/settings.json file, set collCodeSolrFld to the name in the solr schema of the field chosen to indicate a record's collection. You can find the field's solr name in resources/config/fldmodel.json. 
-For each collection create an entry in the collections setting. Entries contain three fields. The code field contains the value of collCodeSolrFld that identifies the collection. The collName field is the equivalent of the collectionName field, and is used to determine the address of attachments to records in the collection. It is usually the same as the collection name in the Specify database. The mapicon field indicates the map marker icon for objects in the collection. If it is not present the default marker is used.
+In the resources/config/settings.json file, set collCodeSolrFld to the name in the Solr schema of the field chosen to indicate a record's collection. You can find the field's Solr name in resources/config/fldmodel.json.
+For each collection create an entry in the collections setting. Entries contain three fields. The code field contains the value of collCodeSolrFld that identifies the collection. The collName field is the equivalent of the collectionName field and is used to determine the address of attachments to records in the collection. It is usually the same as the collection name in the Specify database. The mapicon field indicates the map marker icon for objects in the collection. If it is not present the default marker is used.
 
-Example: 
+Example:
 
     "collCodeSolrFld": "Code",
     "collections": [

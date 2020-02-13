@@ -28,8 +28,8 @@ updates, see below.
    directory. The copied files should be given names that are
    suitable for use in URLs; so no spaces, capital letters, slashes or
    other problematic characters. E.g. `kufish.zip`
-4. Build the SOLR app: `make clean && make`.
-5. Copy the solr core to the solr installation:
+4. Build the Solr app: `make clean && make`.
+5. Copy the Solr core to the Solr installation:
 
    [CORENAME] - the name of the exported archive without the file extension. (E.g. `kufish`)
 
@@ -65,7 +65,7 @@ updates, see below.
         }
    }
    ```
-11. Remove the default Nginx site and enable the portal site: 
+11. Remove the default Nginx site and enable the portal site:
    ```
    sudo rm /etc/nginx/sites-enabled/default
    sudo ln -L /etc/nginx/sites-available/webportal.conf /etc/nginx/sites-enabled/
@@ -88,19 +88,19 @@ If the fields used in a portal are unchanged and only data is being updated, del
                 formdataUploadLimitInKB="2048"
                 addHttpRequestToContext="false" />
 
-    
+
     <httpCaching never304="true" />
 </requestDispatcher>
 ```
-(See http://lucene.apache.org/solr/guide/requestdispatcher-in-solrconfig.html)  
- 
-Then use the curl csv import command above to add the new data.
+(See http://lucene.apache.org/solr/guide/requestdispatcher-in-solrconfig.html)
+
+Then use the curl CSV import command above to add the new data.
 
 
 Schema Definition Updates
 -------------------------
- 
-In this case you will need to stop solr (solr-[SOLRVERSION]/bin/solr stop), remove the cores to be updated from your solr server directory, and follow all the installation steps besides the http configuration. 
+
+In this case, you will need to stop Solr (solr-[SOLRVERSION]/bin/solr stop), remove the cores to be updated from your Solr server directory, and follow all the installation steps besides the HTTP configuration.
 
 
 Web Portal Application Updates
