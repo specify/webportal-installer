@@ -39,7 +39,7 @@ Ext.define('SpWebPortal.model.FieldDefModel', {
 	{name: 'displaycolidx', type: 'int'},
 	{name: 'displaywidth', type: 'int', defaultvalue: 100},
 	{name: 'hiddenbydefault', type: 'boolean', defaultvalue: false},
-        {name: 'linkify', type: 'boolean', defaultvalue: false},
+        {name: 'linkify', type: 'boolean', defaultvalue: true},
 	{name: 'displayinmap', type: 'boolean', defaultvalue: true},
 	{name: 'mapmarkertitle', type: 'boolean', defaultvalue: false},
 	{name: 'treeid', type: 'string'},
