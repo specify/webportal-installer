@@ -6,7 +6,7 @@ Options
 
 Geo Coords: Require all records retrieved in searches to have geocoordinates.
 Images: Retrieve only records with attachments.
-Search Locally (map view only): Only retrieve records collected in the area currently displayed on the map.
+Limit to map (map view only): Only retrieve records collected in the area currently displayed on the map.
 
 Express
 -------
@@ -41,7 +41,7 @@ btw -- Matches values between the search texts.
 Map View
 --------
 
-When the Search button in the lower-left corner of the map view is clicked or 'Search Locally' is selected, searches will be restricted to the area currently displayed on the map. Otherwise, when a search is run, the map view will be adjusted to contain the results.
+When the Search button in the lower-left corner of the map view is clicked or 'Limit to map' is selected, searches will be restricted to the area currently displayed on the map. Otherwise, when a search is run, the map view will be adjusted to contain the results.
 
 
 
