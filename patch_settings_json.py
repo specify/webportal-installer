@@ -49,7 +49,7 @@ except ValueError:
     }
 
 full_settings.update({
-    'solrURL': 'http://127.0.0.1:8983/solr/' + corename + "/"     # defaults.
+    'solrURL': ''     # defaults.
 })
 
 settings[0].update(full_settings)
