@@ -35,7 +35,7 @@ Ext.define('SpWebPortal.view.Viewport', {
     mapsCheckBoxTip: 'Check to select only records with geo-coordinates',
     imagesCheckBox: 'Images',
     imagesCheckBoxTip: 'Check to select only records with images',
-    fitToMapCheckBox:'Search Locally',
+    fitToMapCheckBox:'Limit to map',
     fitToMapCheckBoxTip: 'Check to apply search criteria within map region',
     settingsBtnTip: 'Settings',
     mapSearchBtn: 'Search',
