@@ -76,7 +76,7 @@ Ext.define('SpWebPortal.view.AboutView', {
         "<p>The Specify Software Project is "+ //$NON-NLS-1$
         "funded by the Advances in Biological Informatics Program, " + //$NON-NLS-1$
         "U.S. National Science Foundation  (Grant NSF/BIO: 1565098 and earlier awards).<br><br>" + //$NON-NLS-1$
-        "Copyright \u00A9 2019 University of Kansas Center for Research. " +
+        "Copyright \u00A9 2020 University of Kansas Center for Research. " +
         "This software comes with ABSOLUTELY NO WARRANTY.<br><br>" + //$NON-NLS-1$
         "This is free software licensed under GNU General Public License 2 (GPL2).</P></html>"; //$NON-NLS-1$
     }
