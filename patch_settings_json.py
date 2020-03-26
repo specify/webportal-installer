@@ -1,7 +1,7 @@
-"""/* Copyright (C) 2018, University of Kansas Center for Research
+"""/* Copyright (C) 2020, Specify Collections Consortium
  * 
- * Specify Software Project, specify@ku.edu, Biodiversity Institute,
- * 1345 Jayhawk Boulevard, Lawrence, Kansas, 66045, USA
+ * Specify Collections Consortium, Biodiversity Institute, University of Kansas,
+ * 1345 Jayhawk Boulevard, Lawrence, Kansas, 66045, USA, support@specifysoftware.org
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -49,7 +49,7 @@ except ValueError:
     }
 
 full_settings.update({
-    'solrURL': 'http://127.0.0.1:8983/solr/' + corename + "/"     # defaults.
+    'solrURL': ''     # defaults.
 })
 
 settings[0].update(full_settings)
