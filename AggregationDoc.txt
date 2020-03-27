@@ -8,7 +8,7 @@ These instructions assume a common mapping is being used for all collections. It
 
 3. For each additional collection:
 
-a) Import the mapping
+a) Import the common mapping if necessary
 
 b) Use the Exporter application to build the cache table for the mapping and Export for the web portal
 
