@@ -77,7 +77,7 @@ Ext.define('SpWebPortal.view.AboutView', {
             "product of the Specify Collections Consortium that is funded by its member institutions. " +
 	    "Consortium Founding Members include: University of Michigan, University of Florida, " +
 	    "Denmark Consortium of Museums, and the University of Kansas. The Consortium operates under " +
-	    "the non-profit U.S. tax status of the University of Kansas Center for Research. " +
+	    "the non-profit, 501(c)3, U.S. tax status of the University of Kansas Center for Research. " +
 	    "Specify was supported previously by multiple awards from the U.S. National Science Foundation." + //$NON-NLS-1$
         "Copyright \u00A9 2020 Specify Collections Consortium. " +
         "This software comes with ABSOLUTELY NO WARRANTY.<br><br>" + //$NON-NLS-1$
