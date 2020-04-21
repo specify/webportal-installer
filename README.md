@@ -48,8 +48,7 @@ updates, see below.
 2. Use the Specify Data Export tool to create a Web Portal export zip
    file (see the Specify 6 Data Export documentation) for each collection
    to be hosted in the portal. During the initial Web Portal 2.0 setup use an export file for a single collection. If aggregated collections are desired replace the single collection with the aggregated collections.
-3. Copy the zip files into the `specify_exports` directory in this
-   directory. The copied files should be given names that are
+3. Create a specify_exports directory in the web portal directory and copy the zip files into it. The copied files should be given names that are
    suitable for use in URLs; so no spaces, capital letters, slashes or
    other problematic characters. E.g. `kufish.zip`
 4. Build the Solr app: `make clean && make`.
@@ -67,6 +66,18 @@ updates, see below.
 6. Restrict access to the solr admin web page. This can be done in solr 7.5 by editing `solr-[SOLRVERSION]/server/etc/jetty-http.xml`. In the ServerConnector section replace: `<Set name="host"><Property name="jetty.host" /></Set>` with `<Set name="host">127.0.0.1</Set>`
 7. Start solr
    `solr-[SOLRVERSION]/bin/solr start`
+   
+   When completing this step the following warnings may be issued and can safely be ignored:
+   
+   *** [WARN] *** Your open file limit is currently 1024.
+ It should be set to 65000 to avoid operational disruption.
+ If you no longer wish to see this warning, set SOLR_ULIMIT_CHECKS to false in your profile or solr.in.sh
+*** [WARN] ***  Your Max Processes Limit is currently 63590.
+ It should be set to 65000 to avoid operational disruption.
+ If you no longer wish to see this warning, set SOLR_ULIMIT_CHECKS to false in your profile or solr.in.sh
+Waiting up to 180 seconds to see Solr running on port 8983 [|]
+Started Solr server on port 8983 (pid=15422). Happy searching! 
+
 8. Import the csv data:
 `curl 'http://localhost:8983/solr/[CORENAME]/update/csv?commit=true&encapsulator="&escape=\&header=true' --data-binary @build/cores/[CORENAME]/PortalFiles/PortalData.csv -H 'Content-type:application/csv'`
 
