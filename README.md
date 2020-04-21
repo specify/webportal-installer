@@ -47,7 +47,7 @@ updates, see below.
 
 2. Use the Specify Data Export tool to create a Web Portal export zip
    file (see the Specify 6 Data Export documentation) for each collection
-   to be hosted in the portal.
+   to be hosted in the portal. During the initial Web Portal 2.0 setup use an export file for a single collection. If aggregated collections are desired replace the single collection with the aggregated collections.
 3. Copy the zip files into the `specify_exports` directory in this
    directory. The copied files should be given names that are
    suitable for use in URLs; so no spaces, capital letters, slashes or
