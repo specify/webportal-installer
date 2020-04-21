@@ -54,6 +54,7 @@ updates, see below.
 4. Build the Solr app: 
 
   `make clean && make`
+
 5. Copy the Solr core to the Solr installation:
 
    [CORENAME] - the name of the exported archive without the file extension. (E.g. `kufish`)
