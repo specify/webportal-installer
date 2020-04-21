@@ -104,7 +104,7 @@ When completing this step you may receive output similar to the following:
 
 10. Create the Nginx configuration file to serve the portal: 
 
-`sudo emacs /etc/nginx/sites-available/webportal.conf`
+`sudo nano /etc/nginx/sites-available/webportal.conf`
    ```
    server {
        listen 80 default_server;
