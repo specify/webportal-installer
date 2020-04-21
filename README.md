@@ -4,7 +4,7 @@ Specify Web Portal (Version 2.0)
   The Specify Collections Consortium is funded by
   its member institutions. The Consortium web site is: http://wwww.specifysoftware.org
     
-  Specify 7 Copyright © 2020 Specify Collections Consortium. Specify comes with ABSOLUTELY NO WARRANTY.  This is
+  Specify Web Portal Copyright © 2020 Specify Collections Consortium. Specify comes with ABSOLUTELY NO WARRANTY.  This is
   free software licensed under GNU General Public License 2
   (GPL2).
 
