@@ -22,8 +22,8 @@ After completing these instructions you will be able to run Specify Web Portal 2
 These instructions are for deployment on a server running Ubuntu. An export file for a single collection is required for setting up the Specify Web Portal. This can be accomplished using the Schema Mappging tool tool within the Specify 6 application together with the stand alone Specify Data Export tool. 
 
 
-Requirements
-------------
+Install system dependencies.
+-----------------------------------
 
 * Python 2.7
 * Nginx webserver
