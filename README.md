@@ -51,9 +51,7 @@ updates, see below.
 3. Create a specify_exports directory in the web portal directory and copy the zip files into it. The copied files should be given names that are
    suitable for use in URLs; so no spaces, capital letters, slashes or
    other problematic characters. E.g. `kufish.zip`
-4. Build the Solr app: 
-
-  `make clean && make`
+4. Build the Solr app: `make clean && make`
 
 5. Copy the Solr core to the Solr installation:
 
@@ -67,8 +65,7 @@ updates, see below.
     cp build/cores/[CORENAME]/web.xml solr-[SOLRVERSION]/server/solr-webapp/webapp/WEB-INF/web.xml # Only necessary for the first core.
 ```
 6. Restrict access to the solr admin web page. This can be done in solr 7.5 by editing:
-
-  `solr-[SOLRVERSION]/server/etc/jetty-http.xml` 
+`solr-[SOLRVERSION]/server/etc/jetty-http.xml` 
 
   In the ServerConnector section replace:
 
@@ -81,16 +78,15 @@ updates, see below.
    When completing this step the following warnings may be issued and can safely be ignored:
    
    *** [WARN] *** Your open file limit is currently 1024.
- It should be set to 65000 to avoid operational disruption.
- If you no longer wish to see this warning, set SOLR_ULIMIT_CHECKS to false in your profile or solr.in.sh
-*** [WARN] ***  Your Max Processes Limit is currently 63590.
- It should be set to 65000 to avoid operational disruption.
- If you no longer wish to see this warning, set SOLR_ULIMIT_CHECKS to false in your profile or solr.in.sh
-Waiting up to 180 seconds to see Solr running on port 8983 [|]
-Started Solr server on port 8983 (pid=15422). Happy searching! 
+   It should be set to 65000 to avoid operational disruption.
+   If you no longer wish to see this warning, set SOLR_ULIMIT_CHECKS to false in your profile or solr.in.sh
+   *** [WARN] ***  Your Max Processes Limit is currently 63590.
+   It should be set to 65000 to avoid operational disruption.
+   If you no longer wish to see this warning, set SOLR_ULIMIT_CHECKS to false in your profile or solr.in.s
+   Waiting up to 180 seconds to see Solr running on port 8983 [|]
+   Started Solr server on port 8983 (pid=15422). Happy searching! 
 
 8. Import the csv data:
-
 `curl 'http://localhost:8983/solr/[CORENAME]/update/csv?commit=true&encapsulator="&escape=\&header=true' --data-binary @build/cores/[CORENAME]/PortalFiles/PortalData.csv -H 'Content-type:application/csv'`
 
 When completing this step you may receive output similar to the following:
@@ -131,7 +127,6 @@ When completing this step you may receive output similar to the following:
    sudo ln -L /etc/nginx/sites-available/webportal.conf /etc/nginx/sites-enabled/
    ```
 12. Restart Nginx:
-
 `sudo systemctl restart nginx`
 
   The Web Portal is now running and can be tested.
