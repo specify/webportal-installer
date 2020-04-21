@@ -41,7 +41,10 @@ These instructions illustrate the fewest steps needed to install the
 web portal. For a more advanced configuration providing automatic
 updates, see below.
 
-1. Unpack this repository on your server.
+1. Clone the Web Portal 2.0 repository by clicking on the green button (Clone or Download) at the top of the page and unpack it on your server.
+
+  This will install Solr on the server.
+
 2. Use the Specify Data Export tool to create a Web Portal export zip
    file (see the Specify 6 Data Export documentation) for each collection
    to be hosted in the portal.
