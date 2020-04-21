@@ -81,10 +81,22 @@ Started Solr server on port 8983 (pid=15422). Happy searching!
 8. Import the csv data:
 `curl 'http://localhost:8983/solr/[CORENAME]/update/csv?commit=true&encapsulator="&escape=\&header=true' --data-binary @build/cores/[CORENAME]/PortalFiles/PortalData.csv -H 'Content-type:application/csv'`
 
+When completing this step you may receive output similar to the following:
 
+{
+  "responseHeader":{
+    "status":0,
+    "QTime":1153}} 
 
-9. Move the built webportal to convenient location: `mv build /home/specify/webportal`.
-10. Configure Nginx to serve the portal: `sudo emacs /etc/nginx/sites-available/webportal.conf`
+9. Move the built webportal to convenient location:
+
+[WPPATH] - the directory where the web portal files reside. (E.g. /home/specify/webportl)
+
+  `mv build [WPPATH]`
+
+10. Create the Nginx configuration file to serve the portal: 
+
+`sudo emacs /etc/nginx/sites-available/webportal.conf`
    ```
    server {
        listen 80 default_server;
@@ -96,7 +108,7 @@ Started Solr server on port 8983 (pid=15422). Happy searching!
         }
 
        location / {
-                root /home/specify/webportal/html;
+                root [WPPATH]/html;
         }
    }
    ```
@@ -107,6 +119,7 @@ Started Solr server on port 8983 (pid=15422). Happy searching!
    ```
 12. Restart Nginx: `sudo systemctl restart nginx`.
 
+  The Web Portal is now running and can be tested.
 
 Data Only Updates
 -----------------
