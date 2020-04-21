@@ -59,7 +59,8 @@ web portal. For updating existing installations, se the 'Data Only Updates' sect
 ```
     mkdir solr-[SOLRVERSION]/server/solr/[CORENAME]
     cp -r build/cores/[CORENAME]/core/* solr-[SOLRVERSION]/server/solr/[CORENAME]
-    cp build/cores/[CORENAME]/web.xml solr-[SOLRVERSION]/server/solr-webapp/webapp/WEB-INF/web.xml # Only necessary for the first core.
+    cp build/cores/[CORENAME]/web.xml solr-[SOLRVERSION]/server/solr-webapp/webapp/WEB-INF/web.xml 
+    # Only necessary for the first core.
 ```
 6. Restrict access to the solr admin web page. This can be done in solr 7.5 by editing solr:
 
@@ -74,7 +75,8 @@ web portal. For updating existing installations, se the 'Data Only Updates' sect
 
    When completing this step the following warnings may be issued and can be safely ignored:
 
-   `*** [WARN] *** Your open file limit is currently 1024.` 
+   `*** [WARN] *** Your open file limit is currently 1024.`
+  
     `It should be set to 65000 to avoid operational disruption.` 
     `If you no longer wish to see this warning, set SOLR_ULIMIT_CHECKS to  false in your profile or solr.in.sh` 
    `*** [WARN] *** Your Max Processes Limit is currently 63590.` 
