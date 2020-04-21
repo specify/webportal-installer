@@ -1,6 +1,27 @@
 Specify Web Portal (Version 2.0)
 ================================
 
+  The Specify Collections Consortium is funded by
+  its member institutions. The Consortium web site is: http://wwww.specifysoftware.org
+    
+  Specify 7 Copyright © 2020 Specify Collections Consortium. Specify comes with ABSOLUTELY NO WARRANTY.  This is
+  free software licensed under GNU General Public License 2
+  (GPL2).
+
+    Specify Collections Consortium
+    Biodiversity Institute
+    University of Kansas
+    1345 Jayhawk Blvd.
+    Lawrence, KS 66045 USA
+
+Developer Instructions
+========================
+
+After completing these instructions you will be able to run Specify Web Portal 2.0.
+
+These instructions are for deployment on a server running Ubuntu. An export file for a single collection is required for setting up the Specify Web Portal. This can be accomplished using the Schema Mappging tool tool within the Specify 6 application together with the stand alone Specify Data Export tool. 
+
+
 Requirements
 ------------
 
