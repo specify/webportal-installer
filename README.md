@@ -113,9 +113,9 @@ web portal. For updating existing installations, se the 'Data Only Updates' sect
 
        rewrite ^/([^/]+)/select /solr/$1/select;
 
-       location /solr/ {
-                proxy_pass http://localhost:8983/solr/;
-        }
+       location ~ ^/solr/([^/]+)/select {
+         proxy_pass http://localhost:8983;
+       }
 
        location / {
                 root [WPPATH]/html;
