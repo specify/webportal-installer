@@ -29,12 +29,10 @@ $(SCHEMA_FILE): $(TOPDIR)/patch_schema_xml.py \
 	python2 $^ > $@
 
 web.xml: $(TOPDIR)/patch_web_xml.py \
-		$(TOPDIR)/$(SOLR_DIST)/server/solr-webapp/webapp/WEB-INF/web.xml 
+		$(TOPDIR)/$(SOLR_DIST)/server/solr-webapp/webapp/WEB-INF/web.xml
 	# Patching solr server app for cross-domain access to enable extjs ajax stores to POST solr query params.
-	#python $^ > $(TOPDIR)/$(SOLR_DIST)/server/solr-webapp/webapp/WEB-INF/web.xml
 	python2 $^ > $@
-	sudo cp $@ $(TOPDIR)/$(SOLR_DIST)/server/solr-webapp/webapp/WEB-INF/web.xml
- 
+
 solrconfig.xml: $(TOPDIR)/patch_solrconfig_xml.py \
 		$(TOPDIR)/$(SOLR_DIST)/$(DEFAULT_SETS)/conf/solrconfig.xml
 	# Patching Solr config for use with Specify.
@@ -56,9 +54,6 @@ webapp: $(TOPDIR)/PortalApp settings.json fldmodel.json
 
 	# Copy patched settings into place.
 	cp settings.json webapp/resources/config/
-
-	# Fix Solr URL format in WebApp.
-	#sed -i "s,solrURL + ':' + solrPort + '/',solrURL," webapp/app/store/MainSolrStore.js
 
 core: $(TOPDIR)/$(SOLR_DIST) PortalFiles solrconfig.xml $(SCHEMA_FILE) web.xml
 	# Setup solr-home subdir for this core.

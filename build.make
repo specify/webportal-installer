@@ -1,6 +1,14 @@
 
-#all: solr-home setting_templates html html/index.html
-all: setting_templates html html/index.html
+.PHONY: link-cores
+
+all: setting_templates html html/index.html link-cores server/solr-webapp/webapp/WEB-INF/web.xml
+
+
+server/solr-webapp/webapp/WEB-INF/web.xml: $(TOPDIR)/patch_web_xml.py \
+					   $(TOPDIR)/$(SOLR_DIST)/server/solr-webapp/webapp/WEB-INF/web.xml
+	# Patching solr server app for cross-domain access to enable extjs ajax stores to POST solr query params.
+	python2 $^ > $@
+
 
 cores: $(TOPDIR)/core.make $(TOPDIR)/$(SOLR_DIST) \
 		 $(TOPDIR)/specify_exports  $(TOPDIR)/specify_exports/*.zip
@@ -40,20 +48,9 @@ html: cores
 		cp -r $$core/webapp html/`basename $$core` ; \
 	done
 
-#solr-home: $(TOPDIR)/$(SOLR_DIST) cores solr.xml
-#	# Build the Solr home directory.
-#	rm -rf solr-home
-#	cp -r $(TOPDIR)/$(SOLR_DIST)/example/multicore solr-home
-	# Copy each core into place.
-#	rm -rf solr-home/core*
-#	for core in cores/* ; do \
-#		cp -r $$core/core solr-home/`basename $$core` ; \
-#	done
-	# Copy top level Solr configuration into place.
-#	cp solr.xml solr-home/
-
-#solr.xml: $(TOPDIR)/make_solr_xml.py $(TOPDIR)/$(SOLR_DIST)/example/multicore/solr.xml cores
-	# Generate top level Solr config that defines the available cores.
-	#python $(TOPDIR)/make_solr_xml.py $(TOPDIR)/$(SOLR_DIST)/example/multicore/solr.xml \
-	#	cores/* > $@
+link-cores: cores
+	# Link the cores into the solr home folder.
+	for core in cores/* ; do \
+		ln -s ../../$$core server/solr/ ; \
+	done
 
