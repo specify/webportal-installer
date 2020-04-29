@@ -28,11 +28,6 @@ $(SCHEMA_FILE): $(TOPDIR)/patch_schema_xml.py \
 	# Patching Solr schema with fields from Specify export.
 	python2 $^ > $@
 
-web.xml: $(TOPDIR)/patch_web_xml.py \
-		$(TOPDIR)/$(SOLR_DIST)/server/solr-webapp/webapp/WEB-INF/web.xml
-	# Patching solr server app for cross-domain access to enable extjs ajax stores to POST solr query params.
-	python2 $^ > $@
-
 solrconfig.xml: $(TOPDIR)/patch_solrconfig_xml.py \
 		$(TOPDIR)/$(SOLR_DIST)/$(DEFAULT_SETS)/conf/solrconfig.xml
 	# Patching Solr config for use with Specify.
@@ -55,11 +50,10 @@ webapp: $(TOPDIR)/PortalApp settings.json fldmodel.json
 	# Copy patched settings into place.
 	cp settings.json webapp/resources/config/
 
-core: $(TOPDIR)/$(SOLR_DIST) PortalFiles solrconfig.xml $(SCHEMA_FILE) web.xml
+core: $(TOPDIR)/$(SOLR_DIST) PortalFiles solrconfig.xml $(SCHEMA_FILE)
 	# Setup solr-home subdir for this core.
 	mkdir -p core/conf
 	cp solrconfig.xml $(SCHEMA_FILE)  core/conf/
-	#cp -r PortalFiles/solr core/data/index
 	cp $(TOPDIR)/$(SOLR_DIST)/$(DEFAULT_SETS)/conf/protwords.txt core/conf/
 	cp $(TOPDIR)/$(SOLR_DIST)/$(DEFAULT_SETS)/conf/synonyms.txt core/conf/
 	cp $(TOPDIR)/$(SOLR_DIST)/$(DEFAULT_SETS)/conf/stopwords.txt core/conf/
