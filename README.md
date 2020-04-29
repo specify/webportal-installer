@@ -121,7 +121,7 @@ web portal.
 
   When completing this step you will receive output similar to the following: 
 
-    ```json
+    ```
     {
     "responseHeader":{
     "status":0,
