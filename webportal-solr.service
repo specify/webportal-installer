@@ -1,0 +1,14 @@
+[Unit]
+Description=Solr server for Specify Web Portal
+After=network.target
+
+[Service]
+User=specify
+Group=specify
+PIDFile=/home/specify/webportal-installer/build/bin/solr-8983.pid
+ExecStart=/home/specify/webportal-installer/build/bin/solr start
+ExecStop=/home/specify/webportal-installer/build/bin/solr stop
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

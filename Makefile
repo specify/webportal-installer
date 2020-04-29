@@ -7,11 +7,11 @@ export SOLR_VERSION := $(shell curl -s $(SOLR_MIRROR)/ | python2 get_latest_solr
 export SOLR_DIST := solr-$(SOLR_VERSION)
 export TOPDIR := $(shell pwd)
 
-.PHONY: all clean realclean update-data
+.PHONY: all clean realclean load-data
 
 all: build
 
-update-data: build
+load-data: build
 	for core in build/cores/* ; do \
 		corename=`basename "$$core"` ; \
 		curl -X POST 'http://localhost:8983/solr/vimsfish/update?commit=true' \
