@@ -114,13 +114,13 @@ web portal.
     
 7. Load the Specify data into Solr:
 
-    ```console
-    specify@wp:~/webportal-installer$ make load-data
-    ```
-
-  When completing this step you will receive output consisting of
-  blocks of JSON. This is normal unless one of the blocks includes an
-  error message.
+   ```console
+   specify@wp:~/webportal-installer$ make load-data
+   ```
+   
+   When completing this step you will receive output consisting of
+   blocks of JSON. This is normal unless one of the blocks includes an
+   error message.
   
 8. The Web Portal is now running and can be tested by visiting the
    server's address with a web browser.
