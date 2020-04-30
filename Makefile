@@ -14,7 +14,7 @@ all: build
 load-data: build
 	for core in build/cores/* ; do \
 		corename=`basename "$$core"` ; \
-		curl -X POST 'http://localhost:8983/solr/$$corename/update?commit=true' \
+		curl -X POST "http://localhost:8983/solr/$$corename/update?commit=true" \
 	 		-d '{ "delete": {"query":"*:*"} }' \
 			-H 'Content-Type: application/json' ; \
 		curl "http://localhost:8983/solr/$$corename/update/csv?commit=true&encapsulator=\"&escape=\&header=true" \
