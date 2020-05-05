@@ -11,15 +11,9 @@ export TOPDIR := $(shell pwd)
 
 all: build
 
-load-data: build
+load-data:
 	for core in build/cores/* ; do \
-		corename=`basename "$$core"` ; \
-		curl -X POST "http://localhost:8983/solr/$$corename/update?commit=true" \
-	 		-d '{ "delete": {"query":"*:*"} }' \
-			-H 'Content-Type: application/json' ; \
-		curl "http://localhost:8983/solr/$$corename/update/csv?commit=true&encapsulator=\"&escape=\&header=true" \
-			--data-binary @$$core/PortalFiles/PortalData.csv \
-			-H 'Content-type:application/csv' ; \
+		make $$core/load-data; \
 	done
 
 clean:
@@ -45,3 +39,17 @@ $(SOLR_DIST): $(SOLR_DIST).tgz
 	tar -zxf $<
 
 $(SOLR_DIST)/%: $(SOLR_DIST)
+
+build/cores/%/rebuild-webapp:
+	make CORENAME=$* -B -f $(TOPDIR)/core.make -C build/cores/$* webapp
+
+build/cores/%/unpack:
+	unzip -o -d build/cores/$* specify_exports/$*.zip
+
+build/cores/%/load-data:
+	curl -X POST "http://localhost:8983/solr/$*/update?commit=true" \
+		-d '{ "delete": {"query":"*:*"} }' \
+		-H 'Content-Type: application/json'
+	curl "http://localhost:8983/solr/$*/update/csv?commit=true&encapsulator=\"&escape=\&header=true" \
+		--data-binary @build/cores/$*/PortalFiles/PortalData.csv \
+		-H 'Content-type:application/csv'

@@ -42,15 +42,15 @@ html/index.html: $(TOPDIR)/make_toplevel_index.py $(TOPDIR)/index_skel.html core
 		cores/*/webapp/resources/config/settings.json > $@
 
 html: cores
-	# Put the webapps in the html folder.
+	# Link the webapps into the html folder.
 	mkdir -p html
 	for core in cores/* ; do \
-		cp -r $$core/webapp html/`basename $$core` ; \
+		ln -sfT ../$$core/webapp html/`basename $$core` ; \
 	done
 
 link-cores: cores
 	# Link the cores into the solr home folder.
 	for core in cores/* ; do \
-		ln -s ../../$$core server/solr/ ; \
+		ln -sf ../../$$core server/solr/ ; \
 	done
 
