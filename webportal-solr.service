@@ -8,6 +8,8 @@ Group=specify
 PIDFile=/home/specify/webportal-installer/build/bin/solr-8983.pid
 ExecStart=/home/specify/webportal-installer/build/bin/solr start
 ExecStop=/home/specify/webportal-installer/build/bin/solr stop
+LimitNOFILE=65000
+LimitNPROC=65000
 Restart=always
 
 [Install]
