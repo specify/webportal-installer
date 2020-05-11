@@ -13,7 +13,7 @@ all: build
 
 load-data:
 	for core in build/cores/* ; do \
-		make $$core/load-data; \
+		make $$core/webapp/load-data; \
 	done
 
 clean:
@@ -46,10 +46,11 @@ build/cores/%/rebuild-webapp:
 build/cores/%/unpack:
 	unzip -o -d build/cores/$* specify_exports/$*.zip
 
-build/cores/%/load-data:
+build/cores/%/webapp/load-data: build/cores/%/unpack specify_exports/%.zip
 	curl -X POST "http://localhost:8983/solr/$*/update?commit=true" \
 		-d '{ "delete": {"query":"*:*"} }' \
 		-H 'Content-Type: application/json'
 	curl "http://localhost:8983/solr/$*/update/csv?commit=true&encapsulator=\"&escape=\&header=true" \
 		--data-binary @build/cores/$*/PortalFiles/PortalData.csv \
 		-H 'Content-type:application/csv'
+	date > $@
