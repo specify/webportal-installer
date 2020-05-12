@@ -33,6 +33,8 @@ usage:
 	@echo make build-cores  -- Builds the solr cores for all collections.
 	@echo make load-data    -- Loads the collection data into solr.
 	@echo make load-data-COLLECTION  -- Loads the data for COLLECTION into solr.
+	@echo make force-load-data    -- Loads the collection data into solr even if up-to-date.
+	@echo make force-load-data-COLLECTION  -- Loads the data for COLLECTION into solr even if up-to-date.
 	@echo
 	@echo The build-all and build-cores targets should only be used when solr is
 	@echo not running. The build-html and load-data* targets maybe used freely.
@@ -47,6 +49,7 @@ build-cores: $(SOLR_CORES)
 build-html: $(WEBAPPS) build/html/index.html
 build-setting-templates: $(SETTING_TEMPLATES)
 load-data: $(addprefix load-data-, $(COLLECTIONS))
+force-load-data: $(addprefix force-load-data-, $(COLLECTIONS))
 
 ##### Cleaning targets #####
 
@@ -191,6 +194,10 @@ build/html/%/load-timestamp.txt: build/col/%/PortalFiles | build/html/%
 		-H 'Content-type:application/csv' \
 		| grep '"status":0'
 	date > $@
+
+force-load-data-%:
+	rm -f build/html/$*/load-timestamp.txt
+	$(MAKE) build/html/$*/load-timestamp.txt
 
 ##### Settings templates #####
 
