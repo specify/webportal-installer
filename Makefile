@@ -185,7 +185,7 @@ load-data-%: build/html/%/load-timestamp.txt ;
 .PRECIOUS: build/html/%/load-timestamp.txt
 build/html/%/load-timestamp.txt: build/col/%/PortalFiles | build/html/%
 	@printf "\n\n### Loading data into $*.\n\n"
-	curl -X POST "http://localhost:8983/solr/$*/update?commit=true" \
+	curl -X POST "http://localhost:8983/solr/$*/update" \
 		-d '{ "delete": {"query":"*:*"} }' \
 		-H 'Content-Type: application/json' \
 		| grep '"status":0'
