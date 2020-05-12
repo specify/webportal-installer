@@ -8,7 +8,6 @@ SCHEMA_FILE := managed-schema
 #location of default settings files in solr dist
 DEFAULT_SETS := server/solr/configsets/_default
 
-
 PYTHON := python2
 
 # Use latest available version of Solr 4.
@@ -22,12 +21,14 @@ PORTALFILES := $(foreach c, $(COLLECTIONS), build/col/$c/PortalFiles)
 WEBAPPS := $(addprefix build/html/, $(COLLECTIONS))
 SOLR_CORES := $(addprefix build/server/solr/, $(COLLECTIONS))
 
-# .SILENT:
+###### Usage Information #####
 
 .PHONY: usage
 usage:
 	@echo Usage:
 	@echo make build-all  -- Do everything.
+
+##### Main build targets ####
 
 .PHONY: build-all build-cores build-html load-data
 build-all: build-cores build-html
@@ -35,12 +36,7 @@ build-cores: $(SOLR_CORES)
 build-html: $(WEBAPPS) build/html/index.html
 load-data: $(addprefix load-data-, $(COLLECTIONS))
 
-.PHONY: solr-start solr-stop
-solr-start:
-	build/bin/solr start
-
-solr-stop:
-	build/bin/solr stop
+##### Cleaning targets #####
 
 .PHONY: clean realclean
 clean:
@@ -48,6 +44,18 @@ clean:
 
 realclean: clean
 	rm -rf solr-*
+
+##### Common building steps #####
+
+$(SOLR_DIST).tgz:
+	@printf "\n\n### Fetching Solr distribution tar ball.\n\n"
+	wget $(SOLR_MIRROR)/$(SOLR_VERSION)/$@
+
+$(SOLR_DIST): $(SOLR_DIST).tgz
+	@printf "\n\n### Unpacking Solr distribution.\n\n"
+	rm -rf $@
+	tar -zxf $<
+	touch $@
 
 build: $(SOLR_DIST)
 	@printf "\n\n### Copying solr to build directory.\n\n"
@@ -64,6 +72,8 @@ build/col: | build
 build/col/%/PortalFiles: specify_exports/%.zip | build/col
 	@printf "\n\n### Extracting $@.\n\n"
 	unzip -DD -qq -o -d build/col/$* $^
+
+##### Solr core building #####
 
 build/server/solr/%: build/col/%/SolrFldSchema.xml | build
 	@printf "\n\n### Generating $@.\n\n"
@@ -96,6 +106,8 @@ build/col/%/SolrFldSchema.xml: build/col/%/PortalFiles
 	cat $</SolrFldSchema.xml >> $@
 	echo "</fields>" >> $@
 
+##### Website building #####
+
 build/html: | build
 	@printf "\n\n"
 	mkdir build/html
@@ -122,14 +134,7 @@ build/html/%: build/col/%/PortalFiles | build/html
 		> $@/resources/config/settings.json
 	touch $@
 
-$(SOLR_DIST).tgz:
-	@printf "\n\n### Fetching Solr distribution tar ball.\n\n"
-	wget $(SOLR_MIRROR)/$(SOLR_VERSION)/$@
-
-$(SOLR_DIST): $(SOLR_DIST).tgz
-	@printf "\n\n### Unpacking Solr distribution.\n\n"
-	rm -rf $@
-	tar -zxf $<
+##### Loading data #####
 
 .PHONY: load-data-%
 load-data-%: build/html/%/load-data ;
