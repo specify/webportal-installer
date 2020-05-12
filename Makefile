@@ -148,7 +148,7 @@ build/html/index.html: $(WEBAPPS) | build/html
 		$(addsuffix /resources/config/settings.json, $(WEBAPPS)) \
 		> $@
 
-build/html/%: build/col/%/PortalFiles | build/html
+build/html/%: build/col/%/PortalFiles custom_settings/%/fldmodel.json custom_settings/%/settings.json | build/html
 	@printf "\n\n### Generating $@.\n\n"
 	mkdir -p $@
 	cp -r PortalApp/* $@
@@ -162,6 +162,16 @@ build/html/%: build/col/%/PortalFiles | build/html
 		$* \
 		build/col/$*/PortalFiles/*Setting.json \
 		> $@/resources/config/settings.json
+	touch $@
+
+custom_settings/%/fldmodel.json:
+	@printf "\n\n### Generating empty $@.\n\n"
+	mkdir -p custom_settings/$*
+	touch $@
+
+custom_settings/%/settings.json:
+	@printf "\n\n### Generating empty $@.\n\n"
+	mkdir -p custom_settings/$*
 	touch $@
 
 ##### Loading data #####
