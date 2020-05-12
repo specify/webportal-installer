@@ -61,4 +61,4 @@ core: $(TOPDIR)/$(SOLR_DIST) PortalFiles solrconfig.xml $(SCHEMA_FILE)
 	echo 'dataDir=data' > core/core.properties
 	echo 'name=$(CORENAME)' >> core/core.properties
 	echo 'config=conf/solrconfig.xml' >> core/core.properties
-	mkdir core/data
+	mkdir -p core/data
