@@ -18,10 +18,9 @@ SOLR_DIST := solr-$(SOLR_VERSION)
 
 INPUTS := $(wildcard specify_exports/*.zip)
 COLLECTIONS := $(patsubst specify_exports/%.zip, %, $(INPUTS))
-CORES := $(addprefix build/cores/, $(COLLECTIONS))
-PORTALFILES := $(addsuffix /PortalFiles, $(CORES))
+PORTALFILES := $(foreach c, $(COLLECTIONS), build/col/$c/PortalFiles)
 WEBAPPS := $(addprefix build/html/, $(COLLECTIONS))
-CCORES := $(addprefix build/server/solr/, $(COLLECTIONS))
+SOLR_CORES := $(addprefix build/server/solr/, $(COLLECTIONS))
 
 # .SILENT:
 
@@ -32,7 +31,7 @@ usage:
 
 .PHONY: build-all build-cores build-html load-data
 build-all: build-cores build-html
-build-cores: $(CCORES)
+build-cores: $(SOLR_CORES)
 build-html: $(WEBAPPS) build/html/index.html
 load-data: $(addprefix load-data-, $(COLLECTIONS))
 
@@ -57,16 +56,16 @@ build: $(SOLR_DIST)
 		$(SOLR_DIST)/server/solr-webapp/webapp/WEB-INF/web.xml\
 		> $@/server/solr-webapp/webapp/WEB-INF/web.xml
 
-build/cores: | build
+build/col: | build
 	@printf "\n\n"
-	mkdir build/cores
+	mkdir build/col
 
-.PRECIOUS: build/cores/%/PortalFiles
-build/cores/%/PortalFiles: specify_exports/%.zip | build/cores
+.PRECIOUS: build/col/%/PortalFiles
+build/col/%/PortalFiles: specify_exports/%.zip | build/col
 	@printf "\n\n### Extracting $@.\n\n"
-	unzip -DD -qq -o -d build/cores/$* $^
+	unzip -DD -qq -o -d build/col/$* $^
 
-build/server/solr/%: build/cores/%/SolrFldSchema.xml | build
+build/server/solr/%: build/col/%/SolrFldSchema.xml | build
 	@printf "\n\n### Generating $@.\n\n"
 	mkdir -p $@/conf $@/data
 
@@ -76,7 +75,7 @@ build/server/solr/%: build/cores/%/SolrFldSchema.xml | build
 
 	$(PYTHON) patch_schema_xml.py \
 		$(SOLR_DIST)/$(DEFAULT_SETS)/conf/$(SCHEMA_FILE) \
-		build/cores/$*/SolrFldSchema.xml \
+		build/col/$*/SolrFldSchema.xml \
 		> $@/conf/$(SCHEMA_FILE)
 
 	cp $(SOLR_DIST)/$(DEFAULT_SETS)/conf/protwords.txt $@/conf/
@@ -90,7 +89,7 @@ build/server/solr/%: build/cores/%/SolrFldSchema.xml | build
 
 	touch $@
 
-build/cores/%/SolrFldSchema.xml: build/cores/%/PortalFiles
+build/col/%/SolrFldSchema.xml: build/col/%/PortalFiles
 	@printf "\n\n### Generating $@.\n\n"
 	echo '<?xml version="1.0" encoding="UTF-8" ?>' > $@
 	echo "<fields>" >> $@
@@ -107,19 +106,19 @@ build/html/index.html: $(WEBAPPS) | build/html
 		$(addsuffix /resources/config/settings.json, $(WEBAPPS)) \
 		> $@
 
-build/html/%: build/cores/%/PortalFiles | build/html
+build/html/%: build/col/%/PortalFiles | build/html
 	@printf "\n\n### Generating $@.\n\n"
 	mkdir -p $@
 	cp -r PortalApp/* $@
 	$(PYTHON) make_fldmodel_json.py \
-		build/cores/$*/PortalFiles/*flds.json \
+		build/col/$*/PortalFiles/*flds.json \
 		custom_settings/$*/fldmodel.json \
 		> $@/resources/config/fldmodel.json
 	$(PYTHON) patch_settings_json.py \
 		PortalApp/resources/config/settings.json \
 		custom_settings/$*/settings.json \
 		$* \
-		build/cores/$*/PortalFiles/*Setting.json \
+		build/col/$*/PortalFiles/*Setting.json \
 		> $@/resources/config/settings.json
 	touch $@
 
@@ -136,12 +135,12 @@ $(SOLR_DIST): $(SOLR_DIST).tgz
 load-data-%: build/html/%/load-data ;
 
 .PRECIOUS: build/html/%/load-data
-build/html/%/load-data: build/cores/%/PortalFiles
+build/html/%/load-data: build/col/%/PortalFiles
 	@printf "\n\n### Loading data into $*.\n\n"
 	curl -X POST "http://localhost:8983/solr/$*/update?commit=true" \
 		-d '{ "delete": {"query":"*:*"} }' \
 		-H 'Content-Type: application/json'
 	curl "http://localhost:8983/solr/$*/update/csv?commit=true&encapsulator=\"&escape=\&header=true" \
-		--data-binary @build/cores/$*/PortalFiles/PortalData.csv \
+		--data-binary @build/col/$*/PortalFiles/PortalData.csv \
 		-H 'Content-type:application/csv'
 	date > $@
