@@ -28,7 +28,7 @@
           if (a == null) return;
 
           var xhr = new XMLHttpRequest();
-          xhr.open('GET', a.getAttribute('href') + '/load-data');
+          xhr.open('GET', a.getAttribute('href') + '/load-timestamp.txt');
           xhr.onload = function() {
               if (xhr.status === 200) {
                   var update = document.createElement('span');

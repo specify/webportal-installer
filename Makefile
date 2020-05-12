@@ -167,10 +167,10 @@ build/html/%: build/col/%/PortalFiles | build/html
 ##### Loading data #####
 
 .PHONY: load-data-%
-load-data-%: build/html/%/load-data ;
+load-data-%: build/html/%/load-timestamp.txt ;
 
-.PRECIOUS: build/html/%/load-data
-build/html/%/load-data: build/col/%/PortalFiles | build/html/%
+.PRECIOUS: build/html/%/load-timestamp.txt
+build/html/%/load-timestamp.txt: build/col/%/PortalFiles | build/html/%
 	@printf "\n\n### Loading data into $*.\n\n"
 	curl -X POST "http://localhost:8983/solr/$*/update?commit=true" \
 		-d '{ "delete": {"query":"*:*"} }' \
@@ -195,3 +195,4 @@ build/setting_templates/%: build/html/% | build/setting_templates
 	$(PYTHON) make_fields_template.py \
 		build/html/$*/resources/config/fldmodel.json \
 		> $@/fldmodel.json
+	touch $@

@@ -50,7 +50,7 @@ for settings_file in settings_files:
     with open(settings_file) as f:
         settings = json.load(f)
 
-    core_dir = splitall(settings_file)[1]
+    core_dir = splitall(settings_file)[2]
     core_name = settings[0]['collectionName'] or core_dir
 
     li = ElementTree.SubElement(collections, 'li')
