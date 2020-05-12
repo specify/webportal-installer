@@ -195,6 +195,7 @@ build/html/%/load-timestamp.txt: build/col/%/PortalFiles | build/html/%
 		| grep '"status":0'
 	date > $@
 
+.PHONY: force-load-data-%
 force-load-data-%:
 	rm -f build/html/$*/load-timestamp.txt
 	$(MAKE) build/html/$*/load-timestamp.txt
