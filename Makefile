@@ -19,7 +19,7 @@ INPUTS := $(wildcard specify_exports/*.zip)
 COLLECTIONS := $(patsubst specify_exports/%.zip, %, $(INPUTS))
 PORTALFILES := $(foreach c, $(COLLECTIONS), build/col/$c/PortalFiles)
 WEBAPPS := $(addprefix build/html/, $(COLLECTIONS))
-SETTING_TEMPLATES := $(addprefix build/setting_templates/$c, $(COLLECTIONS))
+SETTING_TEMPLATES := $(addprefix build/setting_templates/, $(COLLECTIONS))
 SOLR_CORES := $(addprefix build/server/solr/, $(COLLECTIONS))
 
 ###### Usage Information #####
