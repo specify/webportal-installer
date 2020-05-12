@@ -29,9 +29,9 @@ usage:
 	@echo Usage:
 	@echo make build-all  -- Do everything.
 
-##### Main build targets #####
+##### Main targets #####
 
-.PHONY: build-all build-cores build-html load-data
+.PHONY: build-all build-cores build-html build-setting-templates load-data
 build-all: build-cores build-html build-setting-templates
 build-cores: $(SOLR_CORES)
 build-html: $(WEBAPPS) build/html/index.html
@@ -40,12 +40,30 @@ load-data: $(addprefix load-data-, $(COLLECTIONS))
 
 ##### Cleaning targets #####
 
-.PHONY: clean realclean
-clean:
-	rm -rf build/
+.PHONY: clean-all clean-build clean-solr clean-cores clean-html clean-*-html clean-*-core clean-setting-templates
 
-realclean: clean
+clean-all: clean-build clean-solr
+
+clean-build:
+	rm -rf build
+
+clean-solr:
 	rm -rf solr-*
+
+clean-cores:
+	rm -rf $(SOLR_CORES)
+
+clean-html:
+	rm -rf build/html
+
+clean-%-html:
+	rm -rf build/html/$*
+
+clean-%-core:
+	rm -rf build/server/solr/$*
+
+clean-setting-templates:
+	rm -rf build/setting-templates
 
 ##### Common building steps #####
 
