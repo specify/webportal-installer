@@ -184,10 +184,12 @@ build/html/%/load-timestamp.txt: build/col/%/PortalFiles | build/html/%
 	@printf "\n\n### Loading data into $*.\n\n"
 	curl -X POST "http://localhost:8983/solr/$*/update?commit=true" \
 		-d '{ "delete": {"query":"*:*"} }' \
-		-H 'Content-Type: application/json'
+		-H 'Content-Type: application/json' \
+		| grep '"status":0'
 	curl "http://localhost:8983/solr/$*/update/csv?commit=true&encapsulator=\"&escape=\&header=true" \
 		--data-binary @build/col/$*/PortalFiles/PortalData.csv \
-		-H 'Content-type:application/csv'
+		-H 'Content-type:application/csv' \
+		| grep '"status":0'
 	date > $@
 
 ##### Settings templates #####
