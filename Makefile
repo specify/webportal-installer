@@ -19,6 +19,7 @@ INPUTS := $(wildcard specify_exports/*.zip)
 COLLECTIONS := $(patsubst specify_exports/%.zip, %, $(INPUTS))
 PORTALFILES := $(foreach c, $(COLLECTIONS), build/col/$c/PortalFiles)
 WEBAPPS := $(addprefix build/html/, $(COLLECTIONS))
+SETTING_TEMPLATES := $(addprefix build/setting_templates/$c, $(COLLECTIONS))
 SOLR_CORES := $(addprefix build/server/solr/, $(COLLECTIONS))
 
 ###### Usage Information #####
@@ -28,12 +29,13 @@ usage:
 	@echo Usage:
 	@echo make build-all  -- Do everything.
 
-##### Main build targets ####
+##### Main build targets #####
 
 .PHONY: build-all build-cores build-html load-data
-build-all: build-cores build-html
+build-all: build-cores build-html build-setting-templates
 build-cores: $(SOLR_CORES)
 build-html: $(WEBAPPS) build/html/index.html
+build-setting-templates: $(SETTING_TEMPLATES)
 load-data: $(addprefix load-data-, $(COLLECTIONS))
 
 ##### Cleaning targets #####
@@ -140,7 +142,7 @@ build/html/%: build/col/%/PortalFiles | build/html
 load-data-%: build/html/%/load-data ;
 
 .PRECIOUS: build/html/%/load-data
-build/html/%/load-data: build/col/%/PortalFiles
+build/html/%/load-data: build/col/%/PortalFiles | build/html/%
 	@printf "\n\n### Loading data into $*.\n\n"
 	curl -X POST "http://localhost:8983/solr/$*/update?commit=true" \
 		-d '{ "delete": {"query":"*:*"} }' \
@@ -149,3 +151,19 @@ build/html/%/load-data: build/col/%/PortalFiles
 		--data-binary @build/col/$*/PortalFiles/PortalData.csv \
 		-H 'Content-type:application/csv'
 	date > $@
+
+##### Settings templates #####
+
+build/setting_templates: | build
+	@printf "\n\n"
+	mkdir $@
+
+build/setting_templates/%: build/html/% | build/setting_templates
+	@printf "\n\n### Generating $@.\n\n"
+	mkdir -p $@
+	$(PYTHON) make_settings_template.py \
+		PortalApp/resources/config/settings.json \
+		> $@/settings.json
+	$(PYTHON) make_fields_template.py \
+		build/html/$*/resources/config/fldmodel.json \
+		> $@/fldmodel.json
