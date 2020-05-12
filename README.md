@@ -91,7 +91,7 @@ web portal.
 
 4. Build the Solr app: 
    ```console
-   specify@wp:~/webportal-installer$ make clean && make
+   specify@wp:~/webportal-installer$ make clean-all && make build-all
    ```
 
 5. Copy the provided `webportal-solr.service` systemd unit file to
@@ -136,17 +136,61 @@ web portal.
     root@wp:~# ufw allow http
     root@wp:~# ufw --force enable
     ```
-   
 
 Customization
 -------------
 
-TODO
+Certain customizations of the webportal are possible such as
+background images. To enable customizations, after the webportal is
+built with `make build-all`, copy the folders inside
+`webportal-installer/build/setting_templates/` into
+`webportal-installer/custom_settings/` and edit the files in each
+folder as desired. Afterwards, `make build-html` will incorporate the
+customizations into the portal without restarting any services.
 
-Updating
+The provided `webportal-nginx.conf` serves the directory
+`/home/specify/custom-images/` at `/custom-images/` allowing files
+place there to be used in customization.
+
+Data-only Updates
 --------
 
+The portal can be updated with new data from exported collections
+without restarting the Solr service if the export mappings are the
+same.
+
 To update the Specify data in the webportal follow these steps.
+
+
+2. Use the Specify Data Export tool to create a Web Portal export zip
+   file (see the Specify 6 Data Export documentation) for each
+   collection to be updated. If aggregated collections
+   are desired, replace the single colleciton with the aggregated
+   collections file after the initial Web Portal installation.
+
+
+3. Copy the zip files from the Specify Data Export into the
+   `webportal-installer/specify_exports` directory. The copied files
+   in the `specify_exports` directory must have the same names as the
+   original exports.
+   
+7. Load the Specify data into Solr:
+
+    ```console
+    specify@wp:~/webportal-installer$ make load-data
+    ```
+    
+8. Only export files newer than the last update will be loaded. The
+   target `make force-load-data` will force all collections to be
+   reloaded.
+
+Full Updates
+--------
+
+If new collections are to be added to the portal or mappings of
+existing collections change, the Solr service has to be stopped and
+the cores rebuilt.
+
 
 1. Stop the webportal-solr systemd service:
 
@@ -170,7 +214,7 @@ To update the Specify data in the webportal follow these steps.
 4. Build the Solr app: 
 
     ```console
-    specify@wp:~/webportal-installer$ make clean && make
+    specify@wp:~/webportal-installer$ make build-all
     ```
 
 6. Start the webportal-solr service:
