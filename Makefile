@@ -27,7 +27,17 @@ SOLR_CORES := $(addprefix build/server/solr/, $(COLLECTIONS))
 .PHONY: usage
 usage:
 	@echo Usage:
-	@echo make build-all  -- Do everything.
+	@echo
+	@echo make build-all    -- Same as build-html build-cores.
+	@echo make build-html   -- Builds the web app part of the web portal.
+	@echo make build-cores  -- Builds the solr cores for all collections.
+	@echo make load-data    -- Loads the collection data into solr.
+	@echo make load-data-COLLECTION  -- Loads the data for COLLECTION into solr.
+	@echo
+	@echo The build-all and build-cores targets should only be used when solr is
+	@echo not running. The build-html and load-data* targets maybe used freely.
+	@echo All build and load targets will only have effect if there are changes in
+	@echo the specify_exports or custom_settings directories.
 
 ##### Main targets #####
 
