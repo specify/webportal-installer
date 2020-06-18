@@ -168,4 +168,4 @@ In this case, you will need to stop Solr `(solr-[SOLRVERSION]/bin/solr stop)`, r
 Web Portal Application Updates
 ------------------------------
 
-If a new version of the Web Portal is being installed it will be necessary to perform step 8 after building[![analytics](http://www.google-analytics.com/collect?v=1&t=pageview&dl=https%3A%2F%2Fgithub.com%2Fspecify%2Fsp7-stats&uid=readme&tid=UA-169822764-5)]()
+If a new version of the Web Portal is being installed it will be necessary to perform step 8 after building[![analytics](http://www.google-analytics.com/collect?v=1&t=pageview&dl=https%3A%2F%2Fgithub.com%2Fspecify%2Fwebportal-installer&uid=readme&tid=UA-169822764-5)]()
