@@ -2,6 +2,8 @@ How to Setup an Aggregated Portal
 
 These instructions assume a common mapping is being used for all collections. It is possible to use different mappings and to adjust the CSV file in step d to make the data fit into the mapping used by the Solr instance.
 
+NOTE: Aggregation will only work if the "spid" value is unique for all rows in the aggregation. If all Specify CollectionObjects have GUIDs then spid will be unique. When a GUID is not available, CollectionObjectID is assigned to spid, which can result in duplication. 
+
 1. Create a common mapping for the collections you want to be aggregated. The mapping must contain a field that identifies which collection a record belongs to. (See section e below.)
 
 2. For one collection, use the Exporter App to build the mapping and export for the web portal, then use the web portal installer to set up Solr and the portal application. (See README.md)
