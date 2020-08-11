@@ -146,6 +146,7 @@ Ext.define('SpWebPortal.view.Viewport', {
 		html: '<table class="deadcenter"> <tr><td><img src='+  settings.get('bannerURL') + '></td></tr></table>',
 		id: 'spwpbannerpanel',
 		height: settings.get('bannerHeight'),
+		width: settings.get('bannerWidth'),
 		region: 'north'
 	    });
 	}
