@@ -28,11 +28,11 @@ $(SCHEMA_FILE): $(TOPDIR)/patch_schema_xml.py \
 	# Patching Solr schema with fields from Specify export.
 	python2 $^ > $@
 
-web.xml: $(TOPDIR)/patch_web_xml.py \
+web.xml: $(TOPDIR)/patch_web_xml_3.py \
 		$(TOPDIR)/$(SOLR_DIST)/server/solr-webapp/webapp/WEB-INF/web.xml 
 	# Patching solr server app for cross-domain access to enable extjs ajax stores to POST solr query params.
 	#python $^ > $(TOPDIR)/$(SOLR_DIST)/server/solr-webapp/webapp/WEB-INF/web.xml
-	python2 $^ > $@
+	python $^ > $@
 	sudo cp $@ $(TOPDIR)/$(SOLR_DIST)/server/solr-webapp/webapp/WEB-INF/web.xml
  
 solrconfig.xml: $(TOPDIR)/patch_solrconfig_xml.py \
