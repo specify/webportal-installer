@@ -1,3 +1,9 @@
+# Build it like this:
+# docker build --tag webportal-service:improve-build .
+
+# Run it like this:
+# docker run -p 80:80 -v /absolute/location/of/your/export.zip:/home/specify/webportal-installer/specify_exports/export.zip webportal-service:improve-build
+
 FROM ubuntu:18.04
 
 LABEL maintainer="Specify Collections Consortium <github.com/specify>"
