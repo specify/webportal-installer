@@ -46,9 +46,6 @@ RUN rm /etc/nginx/sites-enabled/default \
 	&& ln -s /etc/nginx/sites-available/webportal-nginx.conf /etc/nginx/sites-enabled/ \
 	&& service nginx stop
 
-# Copy the zip files from the Specify Data Export into the webportal-installer/specify_exports
-COPY data/export.zip ./specify_exports/
-
 # Build the Solr app
 RUN make clean-all && make build-all
 # TODO: test what folders we can remove from here
