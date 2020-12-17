@@ -46,17 +46,15 @@ RUN rm /etc/nginx/sites-enabled/default \
 	&& ln -s /etc/nginx/sites-available/webportal-nginx.conf /etc/nginx/sites-enabled/ \
 	&& service nginx stop
 
-# Build the Solr app
-RUN make clean-all && make build-all
-# TODO: test what folders we can remove from here
-
 RUN ln -sf /dev/stderr /var/log/nginx/error.log && ln -sf /dev/stdout /var/log/nginx/access.log
 
+# Build the Solr app
 # Run Solr in foreground
 # Wait for Solr to load
 # Import data from the .zip file
 # Run Docker in foreground
-CMD ./build/bin/solr start -force -p 8983 \
+CMD make clean-all && make build-all \
+	&& ./build/bin/solr start -force \
 	&& sleep 10 \
 	&& make load-data \
 	&& nginx -g 'daemon off;'
