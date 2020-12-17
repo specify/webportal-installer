@@ -55,6 +55,6 @@ RUN ln -sf /dev/stderr /var/log/nginx/error.log && ln -sf /dev/stdout /var/log/n
 # Run Docker in foreground
 CMD make clean-all && make build-all \
 	&& ./build/bin/solr start -force \
-	&& sleep 10 \
-	&& make load-data \
+	&& sleep 20 \
+	&& curl -v "http://localhost:8983/solr/export/update/csv?commit=true&encapsulator=\"&escape=\&header=true" --data-binary @./build/col/export/PortalFiles/PortalData.csv -H 'Content-type:application/csv' \
 	&& nginx -g 'daemon off;'
