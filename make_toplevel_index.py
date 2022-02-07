@@ -61,4 +61,4 @@ for settings_file in settings_files:
 update_time = skel.find('.//span[@id="update-time"]')
 update_time.text = datetime.now().isoformat()
 
-skel.write(sys.stdout)
+skel.write(sys.stdout, encoding='unicode')

@@ -1,8 +1,8 @@
 # Mirror for downloading Apache Solr.
 SOLR_MIRROR := http://archive.apache.org/dist/lucene/solr
 
-# Use latest available version of Solr 4.
-export SOLR_VERSION := $(shell curl -s $(SOLR_MIRROR)/ | python2 get_latest_solr_vers.py)
+# Use latest available version of Solr 
+export SOLR_VERSION := $(shell curl -s $(SOLR_MIRROR)/ | python3 get_latest_solr_vers.py)
 
 export SOLR_DIST := solr-$(SOLR_VERSION)
 export TOPDIR := $(shell pwd)

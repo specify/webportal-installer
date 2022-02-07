@@ -35,7 +35,7 @@ for f in example_fields:
         root.remove(f)
 
 for f in specify_fields.findall('field'):
-    root.append(f.copy())
+    root.append(f.__copy__())
 
 # Delete all dynamic fields. For unknown reasons.
 ElementTree.SubElement(root, 'fieldType',
@@ -55,4 +55,4 @@ for elem in schema.findall('copyField'):
 
 # Done.
 
-schema.write(sys.stdout)
+schema.write(sys.stdout, encoding='unicode')

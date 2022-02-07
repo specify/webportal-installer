@@ -43,4 +43,4 @@ settings_out = OrderedDict((key, settings_in[key])
                            for key in settings_in
                            if key in USER_EDITABLE_SETTINGS)
 
-print json.dumps(settings_out, indent=4)
+print(json.dumps(settings_out, indent=4))

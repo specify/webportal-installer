@@ -51,4 +51,4 @@ fields_out = [munge(field)
               for field in fields_in
               if field["colname"] not in ("spid", "img")]
 
-print json.dumps(fields_out, indent=4)
+print(json.dumps(fields_out, indent=4))

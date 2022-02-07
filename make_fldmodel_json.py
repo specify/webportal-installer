@@ -45,4 +45,4 @@ def munge(field):
 
 
 fldmodel_out = [munge(field) for field in fldmodel_in]
-print json.dumps(fldmodel_out, indent=4)
+print(json.dumps(fldmodel_out, indent=4))

@@ -22,10 +22,10 @@ import re
 
 index_html = sys.stdin.read()
 
-matches = re.findall(r'href="7\.5\.(\d+)/"', index_html)
+matches = re.findall(r'href="8\.9\.(\d+)/"', index_html)
 
 versions = [tuple(int(x) for x in v) for v in matches]
 
 latest = sorted(versions, reverse=True)[0]
 
-print '7.5.%d' % latest
+print('8.9.%d' % latest)
