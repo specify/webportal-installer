@@ -40,7 +40,7 @@ RUN cd /home/ \
 	&& cd specify \
 	&& git clone https://github.com/cryoarks/webportal-installer/
 WORKDIR /home/specify/webportal-installer/
-RUN git checkout python3_solor8.9.0
+RUN git checkout python3_solr8.11
 
 
 ### INSTALL AND CONFIGURE WEB PORTAL ###
