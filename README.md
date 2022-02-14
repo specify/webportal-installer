@@ -22,7 +22,7 @@ These instructions are for deployment on a server running Ubuntu. An export file
 Install system dependencies
 ------------
 
-* Python 2.7
+* Python 3
 * Nginx webserver
 * JRE for running Solr
 * GNUMake
@@ -54,7 +54,7 @@ web portal. For updating existing installations, se the 'Data Only Updates' sect
 
    [CORENAME] - the name of the exported archive without the file extension. (E.g. `kufish`)
 
-   [SOLRVERSION] - the version of Solr. (E.g. `7.5.0`)
+   [SOLRVERSION] - the version of Solr. (E.g. `8.11.1`)
 
 ```
     mkdir solr-[SOLRVERSION]/server/solr/[CORENAME]
@@ -62,7 +62,7 @@ web portal. For updating existing installations, se the 'Data Only Updates' sect
     cp build/cores/[CORENAME]/web.xml solr-[SOLRVERSION]/server/solr-webapp/webapp/WEB-INF/web.xml 
     # Only necessary for the first core.
 ```
-6. Restrict access to the solr admin web page. This can be done in solr 7.5 by editing solr:
+6. Restrict access to the solr admin web page. This can be done in solr 8.11 by editing solr:
 
    `[SOLRVERSION]/server/etc/jetty-http.xml`
 
