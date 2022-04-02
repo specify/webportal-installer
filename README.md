@@ -147,14 +147,14 @@ Installation Instructions with docker-compose
 docker-compose up -d
 ```
 
-4. The Web Portal is now running.
+The Web Portal is now running.
 
-5. To remove the Web Portal, the nginx front-end, and the volume created by docker-compose:
+4. To remove the Web Portal, the nginx front-end, and the volume created by docker-compose:
 
 ```
 docker-compose down -v 
 ```
-6. If you have an updated export.zip file, rebuild the containers and run again:
+5. If you have an updated export.zip file, rebuild the containers and run again:
 
 ```
 docker-compose build --no-cache
