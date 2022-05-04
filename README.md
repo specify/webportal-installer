@@ -139,7 +139,7 @@ Installation Instructions with docker-compose
 
 1. Clone the Web Portal repository.
 
-2. Use the Specify Data Export tool to create a Web Portal export zip file. Name this zip file export.zip and copy it into the root of your cloned webportal_installer git repository.
+2. Use the Specify Data Export tool to create a Web Portal export zip file. Name this zip file export.zip and copy it into the *specify_exports* folder of your cloned webportal_installer git repository.
 
 3. Use docker-compose to build and run the webportal_installer and nginx frontend. 
 
@@ -154,6 +154,7 @@ The Web Portal is now running.
 ```
 docker-compose down -v 
 ```
+
 5. If you have an updated export.zip file, rebuild the containers and run again:
 
 ```

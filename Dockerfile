@@ -26,20 +26,11 @@ RUN apt-get update && apt-get -y install \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-
 FROM specify_base_ubuntu as webportal
 
 # Get Web Portal
-RUN cd /home/ \
-	&& mkdir specify \
-	&& cd specify \
-	&& git clone https://github.com/cryoarks/webportal-installer/
+COPY . /home/specify/webportal-installer
 WORKDIR /home/specify/webportal-installer/
-RUN git checkout python3_solr8.11
-
-
-# Copy the zip files from the Specify Data Export into the webportal-installer/specify_exports
-COPY export.zip ./specify_exports/
 
 # Build the Solr app
 RUN cd /home/specify/webportal-installer/  && make clean && make build
