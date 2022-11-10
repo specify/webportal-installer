@@ -20,17 +20,17 @@ setting_templates: $(TOPDIR)/make_settings_template.py $(TOPDIR)/make_fields_tem
 	for core in cores/* ; do \
 		corename=`basename "$$core"` ; \
 		mkdir -p "$@/$$corename" ; \
-		python2 $(TOPDIR)/make_settings_template.py \
+		python3 $(TOPDIR)/make_settings_template.py \
 			$(TOPDIR)/PortalApp/resources/config/settings.json \
 			> "$@/$$corename/settings.json" ; \
-		python2 $(TOPDIR)/make_fields_template.py \
+		python3 $(TOPDIR)/make_fields_template.py \
 			"cores/$$corename/webapp/resources/config/fldmodel.json" \
 			> "$@/$$corename/fldmodel.json" ; \
 	done
 
 
 html/index.html: $(TOPDIR)/make_toplevel_index.py $(TOPDIR)/index_skel.html cores html
-	python2 $(TOPDIR)/make_toplevel_index.py $(TOPDIR)/index_skel.html \
+	python3 $(TOPDIR)/make_toplevel_index.py $(TOPDIR)/index_skel.html \
 		cores/*/webapp/resources/config/settings.json > $@
 
 html: cores

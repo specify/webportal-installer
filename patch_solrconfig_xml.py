@@ -44,4 +44,4 @@ for elem in config.findall('.//str[@name="df"]'):
 
 # Done.
 
-config.write(sys.stdout)
+config.write(sys.stdout, encoding='unicode')

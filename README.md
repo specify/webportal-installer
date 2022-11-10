@@ -22,7 +22,7 @@ These instructions are for deployment on a server running Ubuntu. An export file
 Install system dependencies
 ------------
 
-* Python 2.7
+* Python 3
 * Nginx webserver
 * JRE for running Solr
 * GNUMake
@@ -54,7 +54,7 @@ web portal. For updating existing installations, se the 'Data Only Updates' sect
 
    [CORENAME] - the name of the exported archive without the file extension. (E.g. `kufish`)
 
-   [SOLRVERSION] - the version of Solr. (E.g. `7.5.0`)
+   [SOLRVERSION] - the version of Solr. (E.g. `8.11.1`)
 
 ```
     mkdir solr-[SOLRVERSION]/server/solr/[CORENAME]
@@ -62,7 +62,7 @@ web portal. For updating existing installations, se the 'Data Only Updates' sect
     cp build/cores/[CORENAME]/web.xml solr-[SOLRVERSION]/server/solr-webapp/webapp/WEB-INF/web.xml 
     # Only necessary for the first core.
 ```
-6. Restrict access to the solr admin web page. This can be done in solr 7.5 by editing solr:
+6. Restrict access to the solr admin web page. This can be done in solr 8.11 by editing solr:
 
    `[SOLRVERSION]/server/etc/jetty-http.xml`
 
@@ -133,6 +133,34 @@ web portal. For updating existing installations, se the 'Data Only Updates' sect
 
     The Web Portal can be customized by editing the settings in the settings.json file found at here: [WPPATH]/html/corename/resources/config/settings.json 
 
+
+Installation Instructions with docker-compose
+---------------------------------------------
+
+1. Clone the Web Portal repository.
+
+2. Use the Specify Data Export tool to create a Web Portal export zip file. Name this zip file export.zip and copy it into the *specify_exports* folder of your cloned webportal_installer git repository.
+
+3. Use docker-compose to build and run the webportal_installer and nginx frontend. 
+
+```
+docker-compose up -d
+```
+
+The Web Portal is now running.
+
+4. To remove the Web Portal, the nginx front-end, and the volume created by docker-compose:
+
+```
+docker-compose down -v 
+```
+
+5. If you have an updated export.zip file, rebuild the containers and run again:
+
+```
+docker-compose build --no-cache
+docker-compose up -d
+```
 
 Data Only Updates
 -----------------

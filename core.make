@@ -12,7 +12,7 @@ all: webapp core
 settings.json: $(TOPDIR)/patch_settings_json.py \
 		$(TOPDIR)/PortalApp/resources/config/settings.json
 	# Patch web app settings.
-	python2 $^ $(TOPDIR)/custom_settings/$(CORENAME)/settings.json \
+	python3 $^ $(TOPDIR)/custom_settings/$(CORENAME)/settings.json \
 		 $(CORENAME) PortalFiles/*Setting.json > $@
 
 SolrFldSchema.xml: PortalFiles/SolrFldSchema.xml
@@ -26,25 +26,25 @@ $(SCHEMA_FILE): $(TOPDIR)/patch_schema_xml.py \
 		$(TOPDIR)/$(SOLR_DIST)/$(DEFAULT_SETS)/conf/$(SCHEMA_FILE) \
 		SolrFldSchema.xml
 	# Patching Solr schema with fields from Specify export.
-	python2 $^ > $@
+	python3 $^ > $@
 
 web.xml: $(TOPDIR)/patch_web_xml.py \
 		$(TOPDIR)/$(SOLR_DIST)/server/solr-webapp/webapp/WEB-INF/web.xml 
 	# Patching solr server app for cross-domain access to enable extjs ajax stores to POST solr query params.
 	#python $^ > $(TOPDIR)/$(SOLR_DIST)/server/solr-webapp/webapp/WEB-INF/web.xml
-	python2 $^ > $@
-	sudo cp $@ $(TOPDIR)/$(SOLR_DIST)/server/solr-webapp/webapp/WEB-INF/web.xml
+	python3 $^ $@
+	cp $@ $(TOPDIR)/$(SOLR_DIST)/server/solr-webapp/webapp/WEB-INF/web.xml
  
 solrconfig.xml: $(TOPDIR)/patch_solrconfig_xml.py \
 		$(TOPDIR)/$(SOLR_DIST)/$(DEFAULT_SETS)/conf/solrconfig.xml
 	# Patching Solr config for use with Specify.
-	python2 $^ > $@
+	python3 $^ > $@
 
 # The custom setting file should really be a dependency here,
 # but I don't know how to handle the case that it doesn't exist.
 fldmodel.json: $(TOPDIR)/make_fldmodel_json.py PortalFiles/*flds.json
 	# Patch any custom settings into the field definitions.
-	python2 $^ $(TOPDIR)/custom_settings/$(CORENAME)/fldmodel.json > $@
+	python3 $^ $(TOPDIR)/custom_settings/$(CORENAME)/fldmodel.json > $@
 
 webapp: $(TOPDIR)/PortalApp settings.json fldmodel.json
 	# Setup web app instance for this core.

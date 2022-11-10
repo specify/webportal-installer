@@ -54,4 +54,4 @@ full_settings.update({
 
 settings[0].update(full_settings)
 
-print json.dumps(settings, indent=2)
+print(json.dumps(settings, indent=2))
