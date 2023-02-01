@@ -59,7 +59,7 @@ Ext.define('SpWebPortal.view.ThumbnailView', {
 		'<div class="tv-thumb-wrap" id="{AttachmentID}">',
 		//'<div class="tv-thumb"><img src="' + settings.get('imageBaseUrl') + '/{AttachmentLocation}" title="{AttachedToDescr} - {Title}"></div>',
 		//'<div class="tv-thumb"><img src="{ThumbSrc}" title="{AttachedToDescr} - {Title}"></div>',
-		'<table class="tv-thumb"><tr><td><img src="{ThumbSrc}" title="{AttachedToDescr}"></td></tr></table>',
+		'<table class="tv-thumb"><tr><td><img src="{ThumbSrc}" title="{AttachedToDescr}" alt="{AttachedToDescr}"></td></tr></table>',
 		//'<span class="x-editable">{shortName}</span>
 		'</div>',
 		'</tpl>',
