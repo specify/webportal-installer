@@ -266,7 +266,7 @@ Ext.define('SpWebPortal.view.MainGrid', {
 
     renderGeoCol: function(value, grid, record) {
 	if (this.hasGeo(value, grid, record)) {
-	    return '<img src="resources/images/GoogleEarth16x16.png" height="12" width="12">';
+	    return '<img src="resources/images/GoogleEarth16x16.png" alt="GoogleEarth" height="12" width="12">';
 	} else {
 	    return "";
 	}
@@ -295,7 +295,7 @@ Ext.define('SpWebPortal.view.MainGrid', {
     
     renderImgPresCol: function(value, grid, record) {
 	if (this.getShowImgBtn() && this.hasImg(value, grid, record)) {
-	    return  '<img src="resources/images/ImageWindow20x20.png" height="12" width="12">';
+	    return  '<img src="resources/images/ImageWindow20x20.png" alt="ImageWindow" height="12" width="12">';
 	} else {
 	    return "";
 	}
