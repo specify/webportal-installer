@@ -17,6 +17,12 @@ University of Kansas
 Lawrence, KS 66045 USA
 ```
 
+## Configuration Instructions
+
+Instructions on customizing the Web Portal configuration are available on the Specify Communtiy Forum:
+
+[Web Portal Configuration Instructions](https://discourse.specifysoftware.org/t/web-portal-configuration-instructions/1144)
+
 ## Developer Instructions
 
 After completing these instructions you will be able to run Specify
