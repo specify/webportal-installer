@@ -57,6 +57,9 @@ web portal.
    used, the directory paths in these instructions will need to be
    updated accordingly.
 
+   You will also need to update the `webportal-solr.service` file to use
+   the correct user and group.
+
 1. Clone the Web Portal 2.0 repository using git:
 
     ```console
