@@ -62,7 +62,7 @@ Ext.define('SpWebPortal.model.SettingsModel', {
     {name: 'clusterMinimumClusterSize', type: 'int'},
     {name: 'clusterIgnoreHiddenMarkers', type: 'boolean', defaultValue: true},
     {name: 'clusterStyles', type: 'json'},
-		{name: 'displayImgCaption', type: 'boolean', defaultValue: false}
+    {name: 'displayImgCaption', type: 'boolean', defaultValue: false}
   ],
   validations: [
     {type: 'inclusion', field: 'defInitialView', list: ['grid', 'image', 'map']},
