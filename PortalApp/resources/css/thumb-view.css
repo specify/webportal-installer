@@ -40,7 +40,7 @@
     float: left;
     /*margin: 4px;*/
     margin-right: 0;
-    //padding: 1px;
+    max-width: 207px;
 }
 *.tv-thumb-wrap span {
     
@@ -89,4 +89,9 @@
 }.ext-strict .ext-ie .x-tree .x-panel-bwrap{
     position:relative;
     overflow:hidden;
+}
+
+.tv-desc {
+    padding: 0.5rem 0.5rem 1rem;
+    display: table-cell;
 }

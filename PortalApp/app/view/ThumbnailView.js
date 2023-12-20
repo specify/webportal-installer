@@ -41,35 +41,40 @@ Ext.define('SpWebPortal.view.ThumbnailView', {
 	Ext.create('Ext.ux.DataView.DragSelector', {}),
 	Ext.create('Ext.ux.DataView.LabelEditor', {dataIndex: 'name'})
     ],*/
-    prepareData: function(data) {
-	Ext.apply(data, {
-	    shortName: Ext.util.Format.ellipsis(data.Title, 15)
-	});
-	return data;
-    },
+  prepareData: function (data) {
+    Ext.apply(data, {
+      shortName: Ext.util.Format.ellipsis(data.Title, 15),
+      AttachedToDescrFormatted: data.AttachedToDescr.replace('\n', '<br>')
+    })
+    return data
+  },
 
-	
+  initComponent: function () {
+		var displayImgCaption = Ext.getStore('SettingsStore').getAt(0).get('displayImgCaption')
 
-    initComponent: function() {
-	var settingsStore =  Ext.getStore('SettingsStore');
-	var settings = settingsStore.getAt(0);
-	Ext.apply(this, {
-	    tpl: [
-		'<tpl for=".">',
-		'<div class="tv-thumb-wrap" id="{AttachmentID}">',
-		//'<div class="tv-thumb"><img src="' + settings.get('imageBaseUrl') + '/{AttachmentLocation}" title="{AttachedToDescr} - {Title}"></div>',
-		//'<div class="tv-thumb"><img src="{ThumbSrc}" title="{AttachedToDescr} - {Title}"></div>',
-		'<table class="tv-thumb"><tr><td><img src="{ThumbSrc}" title="{AttachedToDescr}"></td></tr></table>',
-		//'<span class="x-editable">{shortName}</span>
-		'</div>',
-		'</tpl>',
-		'<div class="x-clear"></div>'
-	    ]
-	});
+    Ext.apply(this, {
+      tpl: new Ext.XTemplate(
+        '<tpl for=".">',
+        '<div class="tv-thumb-wrap" id="{AttachmentID}">',
+        //'<div class="tv-thumb"><img src="' + settings.get('imageBaseUrl') + '/{AttachmentLocation}" title="{AttachedToDescr} - {Title}"></div>',
+        //'<div class="tv-thumb"><img src="{ThumbSrc}" title="{AttachedToDescr} - {Title}"></div>',
+        '<table class="tv-thumb"><tr><td class="tv-cell"><img src="{ThumbSrc}" title="{AttachedToDescr}"></td></tr></table>',
+        '<tpl if="this.displayCaption()">',
+          '<table class="tv-desc"><tr><td>{AttachedToDescrFormatted}</td></tr></table>',
+        '</tpl>',
+        //'<span class="x-editable">{shortName}</span>
+        '</div>',
+        '</tpl>',
+        '<div class="x-clear"></div>',
+        {
+          displayCaption: function() {
+            return displayImgCaption
+          }
+        }
+      ),
+    })
 
-//	this.callParent(arguments);
-	this.superclass.initComponent.apply(this, arguments);
-    }
-		 
-});
-
+    //	this.callParent(arguments);
+    this.superclass.initComponent.apply(this, arguments)
+  }
+})
