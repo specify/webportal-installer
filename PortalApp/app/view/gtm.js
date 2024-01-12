@@ -8,6 +8,7 @@ var settingsJson = await fetch('resources/config/settings.json')
 var settings = await settingsJson.json()
 var gtmContainerId = settings[0].gtmContainerId ?? null
 
+window.dataLayer = window.dataLayer || [];
 if (gtmContainerId && document.readyState !== 'loading') {
   var script = document.createElement('script')
   script.innerHTML = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
