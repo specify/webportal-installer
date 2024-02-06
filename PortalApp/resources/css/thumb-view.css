@@ -94,6 +94,7 @@
 .tv-desc {
     padding: 0.5rem 0.5rem 1rem;
     display: table-cell;
+    line-height: 1.35;
 }
 
 .tv-wrap {
