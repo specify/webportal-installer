@@ -44,7 +44,7 @@ Ext.define('SpWebPortal.view.ThumbnailView', {
   prepareData: function (data) {
     Ext.apply(data, {
       shortName: Ext.util.Format.ellipsis(data.Title, 15),
-      AttachedToDescrFormatted: data.AttachedToDescr.replace('\n', '<br>')
+      AttachedToDescrFormatted: data.AttachedToDescr.split('\n').join('<br>')
     })
     return data
   },
