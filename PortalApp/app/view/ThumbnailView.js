@@ -28,6 +28,7 @@ Ext.define('SpWebPortal.view.ThumbnailView', {
     extend: 'Ext.view.View',
     xtype: 'spthumbnail',
     alias: 'widget.thumbnail',
+    cls: 'tv-wrap',
 
     //localizable text...
     emptyText: 'No images to display',

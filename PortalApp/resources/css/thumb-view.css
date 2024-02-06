@@ -95,3 +95,8 @@
     padding: 0.5rem 0.5rem 1rem;
     display: table-cell;
 }
+
+.tv-wrap {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 207px);
+}
