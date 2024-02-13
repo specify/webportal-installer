@@ -1,5 +1,5 @@
 # Mirror for downloading Apache Solr.
-SOLR_MIRROR := http://archive.apache.org/dist/lucene/solr
+SOLR_MIRROR := https://archive.apache.org/dist/lucene/solr
 
 # Use 'schema.xml' if solr will be used to create the core
 # Use 'managed-schema' if pre-configuring core
