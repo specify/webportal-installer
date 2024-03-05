@@ -34,8 +34,13 @@ Ext.define('SpWebPortal.controller.AdvancedSearch', {
 	solr: true
     },
 
+    gtmContainerId: null,
+
     init: function() {
 	//console.info("AdvancedSearch.init");
+      var settingsStore =  Ext.getStore('SettingsStore');
+      var settings = settingsStore.getAt(0);
+      this.gtmContainerId = settings.get('gtmContainerId');
 
 	this.control({
 	    'advSrch button[itemid="search-btn"]': {
@@ -152,6 +157,13 @@ Ext.define('SpWebPortal.controller.AdvancedSearch', {
 	var filterToMap = (this.getForceFitToMap() || this.getFitToMap()) && (this.mapViewIsActive() || this.getWriteToCsv());
 	if (filterStr.length == 0) {
 	    filterStr = "*";
+	}
+
+	if (this.gtmContainerId) {
+		window.dataLayer.push({
+			'event': 'search_query',
+			'searchQuery': filterStr
+		});
 	}
         this.searchFor('(' + filterStr + ')', images, maps, filterToMap);
     }

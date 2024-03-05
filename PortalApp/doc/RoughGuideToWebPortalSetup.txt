@@ -294,6 +294,7 @@ bottomHeight: height in pixels of the bottomBranding area.
 bottomMarginLeft: CSS setting for bottomBranding content.
 bottomMarginRight: CSS setting for bottomBranding content.
 bottomWidth: width in pixels of bottomBranding content.
+gtmContainerId: Google Tag Manager container ID.
 
 
 ###################################################################

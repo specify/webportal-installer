@@ -40,6 +40,7 @@ Ext.define('SpWebPortal.controller.Detailer', {
     ignoreDetailsPageChange: true,
     stdImgSize: 500,
     collectionName: '',
+		gtmContainerId: null,
 
     init: function() {
 	//console.info("Detailer.init");
@@ -47,6 +48,7 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	var settings = settingsStore.getAt(0);
 	this.stdImgSize = settings.get('imageViewSize');
 	this.collectionName = settings.get('collectionName');
+	this.gtmContainerId = settings.get('gtmContainerId');
 
 	this.control({
 	    'actioncolumn[itemid="detail-popup-ctl"]': {
@@ -375,6 +377,14 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	} else {
 	    this.popupImageSrcReady(imgRecord, [isActualSize, imgWinOwner]);
 	}
+
+	if (this.gtmContainerId) {
+		window.dataLayer.push({
+			'event': 'image_detail',
+			'attachmentId': imgRecord.data.AttachmentID,
+			'attachmentTitle': imgRecord.data.Title
+		});
+	}
     },
 
     popupDetails: function(records, showMap) {
@@ -517,6 +527,14 @@ Ext.define('SpWebPortal.controller.Detailer', {
 	} else {
 	    this.detailPopWinShown(record, showMap);
 	}  
+
+	if (this.gtmContainerId) {
+		window.dataLayer.push({
+			'event': 'record_detail',
+			'catalogNumber': record.data.catalogNumber
+		});
+	}
+
     },
 
     detailPopWinShown:  function(record, showMap) {
