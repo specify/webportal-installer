@@ -44,6 +44,19 @@ Install system dependencies
 * Unzip utility
 * cURL utility
 * python-lxml
+* sudo
+* systemd
+* ufw
+* lsof
+* wget
+* git
+
+You can install them all like this:
+```bash
+aapt-get update && apt-get -y install \
+	python make unzip curl python-lxml wget \
+	git sudo default-jre nginx lsof
+```
 
 
 Installation Instructions
