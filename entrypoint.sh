@@ -11,6 +11,9 @@ set -e
 echo "==> Moving to project directory"
 cd /home/specify/webportal-installer
 
+echo "DEBUG ==> Listing current directory contents:"
+ls -la
+
 echo "==> Cleaning previous builds"
 make clean-all
 
