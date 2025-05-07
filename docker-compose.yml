@@ -1,27 +1,17 @@
 version: '3.8'
 
 services:
-  solr:
-    image: solr:7.5
-    container_name: solr
-    ports:
-      - "8983:8983"
-    volumes:
-      - solr_data:/var/solr
-
   webportal:
-    build: .
+    image: specify-webportal
     container_name: webportal
     ports:
       - "80:80"
-    depends_on:
-      - solr
+      - "443:443"
     volumes:
+      - /etc/letsencrypt/live/webportal.specifycloud.org:/etc/nginx/ssl
+      - /etc/letsencrypt:/etc/letsencrypt
+      - /etc/ssl/certs/dhparam.pem:/etc/ssl/certs/dhparam.pem
+      - /var/www:/var/www
       - ./specify_exports:/home/specify/webportal-installer/specify_exports
-      - ./custom_settings:/home/specify/webportal-installer/custom_settings
       - ./custom-images:/home/specify/webportal-installer/custom-images
-    environment:
-      - SOLR_HOST=solr
-
-volumes:
-  solr_data:
+    restart: unless-stopped
