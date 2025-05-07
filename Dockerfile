@@ -4,59 +4,43 @@
 # Run it like this:
 # docker run -p 80:80 -v /absolute/location/of/your/export.zip:/home/specify/webportal-installer/specify_exports/export.zip webportal-service:improve-build
 
-FROM ubuntu:20.04
 
-ENV DEBIAN_FRONTEND=noninteractive
+
+FROM ubuntu:20.04 as specify_base_ubuntu
 
 LABEL maintainer="Specify Collections Consortium <github.com/specify>"
 
+ENV DEBIAN_FRONTEND=noninteractive
+
 # Get Ubuntu packages
 RUN apt-get update && apt-get -y install \
-        nginx \
-        unzip \
-        curl \
-        wget \
-        python \
-        python-lxml \
-        make \
-        lsof \
-        default-jre \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+	curl \
+	default-jre \
+        git \
+	lsof \
+	make \
+	python3 \
+	python3-lxml \
+	unzip \
+	wget && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-# Create a user and group for the application
-RUN groupadd -g 999 specify && \
-    useradd -r -u 999 -g specify specify
+FROM specify_base_ubuntu as webportal
 
-# Create the application directory and set ownership
-RUN mkdir -p /home/specify/webportal-installer && chown specify:specify -R /home/specify
+# Get Web Portal
+COPY . /home/specify/webportal-installer
+WORKDIR /home/specify/webportal-installer/
 
-# Copy the entire project into the container (Makefile included)
-COPY --chown=specify:specify . /home/specify/webportal-installer
+# Build the Solr app
+RUN cd /home/specify/webportal-installer/  && make clean && make build
 
-# Set working directory
-WORKDIR /home/specify/webportal-installer
+# Run Solr in foreground
+# Give Solr time to get up and running
+# Import .zip file
+CMD ./build/bin/solr start -force -p 8983 \
+	&& sleep 10 \
+        && ./build/bin/solr create_core -c export -p 8983 -force \
+	&& curl 'http://localhost:8983/solr/export/update?commit=true' --data-binary @./build/cores/export/PortalFiles/PortalData.csv  -H 'Content-type:application/csv' \
+        && sleep infinity
 
-# Expose the port for the web portal
-EXPOSE 80
-
-# Switch back to root user for further configuration
-USER root
-
-# Configure nginx to proxy the Solr requests and serve the static files
-COPY webportal-nginx.conf /etc/nginx/sites-available/webportal-nginx.conf
-
-# Disable the default nginx site and enable the portal site
-RUN rm /etc/nginx/sites-enabled/default \
-        && ln -s /etc/nginx/sites-available/webportal-nginx.conf /etc/nginx/sites-enabled/ \
-        && service nginx stop
-
-# Redirect nginx logs to stdout/stderr
-RUN ln -sf /dev/stderr /var/log/nginx/error.log \
-    && ln -sf /dev/stdout /var/log/nginx/access.log
-
-# Copy and enable the entrypoint script
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-
-# Run the entrypoint
-CMD ["/entrypoint.sh"]

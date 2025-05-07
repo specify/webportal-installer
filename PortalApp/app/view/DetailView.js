@@ -31,29 +31,15 @@ Ext.define('SpWebPortal.view.DetailView', {
 	var flds = [];
 	for (var f = 1; f < fieldStore.count(); f++) {
 	    var fld = fieldStore.getAt(f);
-            if (fld.get('linkify')) {
-                //Display object is less than ideal for columns with values that may or may not
-                //contain embedded links. Linkless values will be unbordered and unadorned and might
-                //look strange.
-                flds[f] = Ext.create('Ext.form.field.Display', {
-		    fieldLabel: fld.get('title'),
-		    name: fld.get('solrname'),
-		    readOnly: true,
-		    labelAlign: 'right',
-		    anchor: '100%',
-		    displaycolidx: fld.get('displaycolidx'),
-                    linkify: fld.get('linkify')
-	        });
-            } else {
-                flds[f] = Ext.create('Ext.form.field.Text', {
-		    fieldLabel: fld.get('title'),
-		    name: fld.get('solrname'),
-		    labelAlign: 'right',
-		    anchor: '100%',
-		    displaycolidx: fld.get('displaycolidx'),
-                    linkify: fld.get('linkify')
-	        });
-            }
+            flds[f] = Ext.create('Ext.form.field.Display', {
+		fieldLabel: fld.get('title'),
+		name: fld.get('solrname'),
+		readOnly: true,
+		labelAlign: 'right',
+		anchor: '100%',
+		displaycolidx: fld.get('displaycolidx'),
+                linkify: fld.get('linkify')
+	    });
 	}
 	flds.sort(function(a, b){return a.displaycolidx - b.displaycolidx;});
 	this.items = flds;
