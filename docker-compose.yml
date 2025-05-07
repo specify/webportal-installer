@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   solr:
-    image: solr:8.11
+    image: solr:7.5
     container_name: solr
     ports:
       - "8983:8983"
