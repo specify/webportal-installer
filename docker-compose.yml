@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   webportal:
-    image: specifyconsortium/webportal:improve-build
+    image: specifyconsortium/webportal-service:improve-build
     container_name: webportal
     ports:
       - "80:80"
