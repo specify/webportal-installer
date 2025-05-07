@@ -52,4 +52,6 @@ RUN rm /etc/nginx/sites-enabled/default \
 # Redirect nginx logs to stdout and stderr
 RUN ln -sf /dev/stderr /var/log/nginx/error.log && ln -sf /dev/stdout /var/log/nginx/access.log
 
-CMD ["sh", "-xc", "cd /home/specify/webportal-installer && make"]
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+CMD ["/entrypoint.sh"]
