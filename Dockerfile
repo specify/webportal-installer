@@ -50,7 +50,6 @@ RUN rm /etc/nginx/sites-enabled/default \
         && ln -s /etc/nginx/sites-available/webportal-nginx.conf /etc/nginx/sites-enabled/ \
         && service nginx stop
 
-# Redirect nginx logs to stdout and stderr
 # Redirect nginx logs to stdout/stderr
 RUN ln -sf /dev/stderr /var/log/nginx/error.log \
     && ln -sf /dev/stdout /var/log/nginx/access.log
