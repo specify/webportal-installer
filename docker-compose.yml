@@ -13,5 +13,5 @@ services:
       - /etc/ssl/certs/dhparam.pem:/etc/ssl/certs/dhparam.pem
       - /var/www:/var/www
       - ./specify_exports:/home/specify/webportal-installer/specify_exports
-      - ./custom-images:/home/specify/webportal-installer/custom-images
+      - ./custom-images:/home/specify/custom-images
     restart: unless-stopped
