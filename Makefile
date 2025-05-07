@@ -185,11 +185,11 @@ load-data-%: build/html/%/load-timestamp.txt ;
 .PRECIOUS: build/html/%/load-timestamp.txt
 build/html/%/load-timestamp.txt: build/col/%/PortalFiles | build/html/%
 	@printf "\n\n### Loading data into $*.\n\n"
-	curl -X POST "http://solr:8983/solr/$*/update" \
+	curl -X POST "http://localhost:8983/solr/$*/update" \
 		-d '{ "delete": {"query":"*:*"} }' \
 		-H 'Content-Type: application/json' \
 		| grep '"status":0'
-	curl "http://solr:8983/solr/$*/update/csv?commit=true&encapsulator=\"&escape=\&header=true" \
+	curl "http://localhost:8983/solr/$*/update/csv?commit=true&encapsulator=\"&escape=\&header=true" \
 		--data-binary @build/col/$*/PortalFiles/PortalData.csv \
 		-H 'Content-type:application/csv' \
 		| grep '"status":0'
