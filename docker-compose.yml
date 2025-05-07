@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   webportal:
-    image: specify-webportal
+    image: specifyconsortium/webportal:improve-build
     container_name: webportal
     ports:
       - "80:80"
@@ -15,3 +15,5 @@ services:
       - ./specify_exports:/home/specify/webportal-installer/specify_exports
       - ./custom-images:/home/specify/
     restart: unless-stopped
+
+
