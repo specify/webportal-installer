@@ -19,17 +19,6 @@ After completing these instructions you will be able to run Specify Web Portal 2
 
 These instructions are for deployment on a server running Ubuntu. An export file for a single collection is required for setting up the Specify Web Portal. This can be accomplished using the Schema Mappging tool tool within the Specify 6 application together with the stand alone Specify Data Export tool.
 
-Install system dependencies
-------------
-
-* Python 3
-* Nginx webserver
-* JRE for running Solr
-* GNUMake
-* Unzip utility
-* cURL utility
-* python-lxml
-
 
 Installation Instructions
 -------------------------
@@ -47,6 +36,22 @@ web portal. For updating existing installations, se the 'Data Only Updates' sect
 
 3. Create a  `specify_exports` directory in the web portal directory and copy the zip files (step 2) into it. The copied files should be given names that are suitable for use in URLs; so no spaces, capital letters, slashes or
    other problematic characters. E.g. `kufish.zip`
+
+### Docker Installation (Recommended)
+
+Install via Docker.
+
+### Local Installation 
+Install system dependencies
+------------
+
+* Python 3
+* Nginx webserver
+* JRE for running Solr
+* GNUMake
+* Unzip utility
+* cURL utility
+* python-lxml
 
 4. Build the Solr app: `make clean && make`.
 
