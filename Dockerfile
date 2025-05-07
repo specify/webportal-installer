@@ -6,7 +6,7 @@
 
 
 
-FROM ubuntu:20.04 as specify_base_ubuntu
+FROM ubuntu:24.04 as specify_base_ubuntu
 
 LABEL maintainer="Specify Collections Consortium <github.com/specify>"
 
