@@ -1,9 +1,13 @@
 Specify Web Portal (Version 2.0)
 ================================
 
-The Specify Collections Consortium is funded by its member institutions. The Consortium web site is: [http://wwww.specifysoftware.org](http://wwww.specifysoftware.org/)
+The Specify Collections Consortium is funded by its member
+institutions. The Consortium web site is:
+[http://wwww.specifysoftware.org](http://wwww.specifysoftware.org/)
 
-Specify Web Portal Copyright © 2020 Specify Collections Consortium. Specify comes with ABSOLUTELY NO WARRANTY. This is free software licensed under GNU General Public License 2 (GPL2).
+Specify Web Portal Copyright © 2025 Specify Collections
+Consortium. Specify comes with ABSOLUTELY NO WARRANTY. This is free
+software licensed under GNU General Public License 2 (GPL2).
 
 ```
 Specify Collections Consortium
@@ -13,11 +17,22 @@ University of Kansas
 Lawrence, KS 66045 USA
 ```
 
+## Configuration Instructions
+
+Instructions on customizing the Web Portal configuration are available on the Specify Communtiy Forum:
+
+[Web Portal Configuration Instructions](https://discourse.specifysoftware.org/t/web-portal-configuration-instructions/1144)
+
 ## Developer Instructions
 
-After completing these instructions you will be able to run Specify Web Portal 2.0.
+After completing these instructions you will be able to run Specify
+Web Portal 2.0.
 
-These instructions are for deployment on a server running Ubuntu. An export file for a single collection is required for setting up the Specify Web Portal. This can be accomplished using the Schema Mappging tool tool within the Specify 6 application together with the stand alone Specify Data Export tool.
+These instructions are for deployment on a server running Ubuntu. An
+export file for a single collection is required for setting up the
+Specify Web Portal. This can be accomplished using the Schema Mappging
+tool tool within the Specify 6 application together with the stand
+alone Specify Data Export tool.
 
 Install system dependencies
 ------------
@@ -35,18 +50,53 @@ Installation Instructions
 -------------------------
 
 These instructions illustrate the fewest steps needed to install the
-web portal. For updating existing installations, se the 'Data Only Updates' section below.
+web portal. 
 
-1. Clone the Web Portal 2.0 repository by clicking the green button (Clone or Download) at the top of the page and unpack this repository on your server.
+1. These instructions assume the Web Portal is being setup under a
+   user account with the name `specify`. If a different account is
+   used, the directory paths in these instructions will need to be
+   updated accordingly.
 
-   This will install Solr on the server.
+   You will also need to update the `webportal-solr.service` file to use
+   the correct user and group.
+
+1. Clone the Web Portal 2.0 repository using git:
+
+    ```console
+    specify@wp:~$ git clone https://github.com/specify/webportal-installer.git
+    ```
+    
+    This will create the directory `webportal-installer`.
+    
+1. Configure nginx to proxy the Solr requests and serve the static
+   files by copying the provided `webportal-nginx.conf` to
+   `/etc/nginx/sites-available/`:
+   
+   ```console
+   root@wp:~# install -o root -g root -m644 /home/specify/webportal-installer/webportal-nginx.conf /etc/nginx/sites-available/
+   ```
+   
+   N.B. this file will require changes if the `webportal-installer` is
+   in a different location.
+   
+1. Disable the default nginx site and enable the portal site:
+   ```console
+   root@wp:~# rm /etc/nginx/sites-enabled/default
+   root@wp:~# ln -s /etc/nginx/sites-available/webportal-nginx.conf /etc/nginx/sites-enabled/
+   root@wp:~# systemctl restart nginx
+   ```
 
 2. Use the Specify Data Export tool to create a Web Portal export zip
-   file (see the Specify 6 Data Export documentation) for each collection
-   to be hosted in the portal. If aggregated collections are desired, replace the single colleciton with the aggregated collections file after the initial Web Portal installation.
+   file (see the Specify 6 Data Export documentation) for each
+   collection to be hosted in the portal. If aggregated collections
+   are desired, replace the single colleciton with the aggregated
+   collections file after the initial Web Portal installation.
 
-3. Create a  `specify_exports` directory in the web portal directory and copy the zip files (step 2) into it. The copied files should be given names that are suitable for use in URLs; so no spaces, capital letters, slashes or
-   other problematic characters. E.g. `kufish.zip`
+3. Copy the zip files from the Specify Data Export into the
+   `webportal-installer/specify_exports` directory. The copied files
+   should be given names that are suitable for use in URLs; so no
+   spaces, capital letters, slashes or other problematic
+   characters. E.g. `kufish.zip`
 
 4. Build the Solr app: `make clean && make`.
 

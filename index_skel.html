@@ -3,15 +3,41 @@
   <head>
     <title>Specify Web Portal</title>
     <meta name="robots" content="noindex" />
+    <style>
+      body {
+          font-size: 100%;
+          font-family: sans-serif;
+      }
+      #collections span {
+          font-size: 66%;
+          margin-left: 2em;
+      }
+      #collections span::before {
+          content: "last update: "
+      }
+    </style>
   </head>
   <body>
     <h2>The following collections are available:</h2>
     <ul id="collections">
       <li>Nothing here</li>
     </ul>
-    <p>
-      Last update:
-      <span id="update-time">N/A</span>
-    </p>
+    <script type="text/javascript">
+      document.querySelectorAll('#collections li').forEach(function(li) {
+          var a = li.querySelector('a');
+          if (a == null) return;
+
+          var xhr = new XMLHttpRequest();
+          xhr.open('GET', a.getAttribute('href') + '/load-timestamp.txt');
+          xhr.onload = function() {
+              if (xhr.status === 200) {
+                  var update = document.createElement('span');
+                  update.textContent = xhr.responseText;
+                  li.append(update);
+              }
+          };
+          xhr.send();
+      });
+    </script>
   </body>
 </html>

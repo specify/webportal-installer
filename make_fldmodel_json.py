@@ -27,7 +27,11 @@ with open(sys.argv[1]) as f:
 
 if os.path.isfile(sys.argv[2]):
     with open(sys.argv[2]) as f:
-        custom = json.load(f, object_pairs_hook=OrderedDict)
+        data = f.read().strip()
+        if data:
+            custom = json.loads(data, object_pairs_hook=OrderedDict)
+        else:
+            custom = []
 else:
     custom = []
 
