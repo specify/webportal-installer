@@ -1,17 +1,25 @@
-version: '3.8'
+version: "3.8"
 
 services:
   webportal:
-    image: specifyconsortium/webportal-service:improve-build
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: webportal-service:improve-build
     container_name: webportal
     ports:
       - "80:80"
       - "443:443"
     volumes:
+      # SSL and certs
       - /etc/letsencrypt/live/webportal.specifycloud.org:/etc/nginx/ssl
       - /etc/letsencrypt:/etc/letsencrypt
       - /etc/ssl/certs/dhparam.pem:/etc/ssl/certs/dhparam.pem
+
+      # Static content
       - /var/www:/var/www
+
+      # Specify exports and customizations
       - ./specify_exports:/home/specify/webportal-installer/specify_exports
       - ./custom-images:/home/specify/
     restart: unless-stopped
