@@ -21,10 +21,13 @@ services:
 
       # Static content
       - /var/www:/var/www
-      
+
+      # Specify exports and customizations
+      # - ./specify_exports:/home/specify/webportal-installer/specify_exports
+      # - ./custom_settings:/home/specify/webportal-installer/custom_settings
+
       # Custom images
       - ./custom-images:/home/specify/
-
     
     restart: unless-stopped
 
