@@ -52,9 +52,4 @@ RUN rm /etc/nginx/sites-enabled/default \
 # Redirect nginx logs to stdout and stderr
 RUN ln -sf /dev/stderr /var/log/nginx/error.log && ln -sf /dev/stdout /var/log/nginx/access.log
 
-# Build the Solr app
-# Run Solr in foreground
-# Wait for Solr to load
-# Import data from the .zip file
-# Run Docker in foreground
-CMD ["sh", "-xc", "cd /home/specify/webportal-installer && make build-all && ./build/bin/solr start -force && sleep 20 && curl -v \"http://localhost:8983/solr/export/update/csv?commit=true&encapsulator=\\\"&escape=\\&header=true\" --data-binary @./build/col/export/PortalFiles/PortalData.csv -H 'Content-type:application/csv' && nginx -g 'daemon off;'"]
+CMD ["sh", "-xc", "cd /home/specify/webportal-installer && make"]
