@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  solr:
+    image: solr:8.11
+    container_name: solr
+    ports:
+      - "8983:8983"
+    volumes:
+      - solr_data:/var/solr
+
+  webportal:
+    build: .
+    container_name: webportal
+    ports:
+      - "80:80"
+    depends_on:
+      - solr
+    volumes:
+      - ./specify_exports:/home/specify/webportal-installer/specify_exports
+    environment:
+      - SOLR_HOST=solr
+
+volumes:
+  solr_data:
