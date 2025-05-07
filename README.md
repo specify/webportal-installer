@@ -34,17 +34,6 @@ Specify Web Portal. This can be accomplished using the Schema Mappging
 tool tool within the Specify 6 application together with the stand
 alone Specify Data Export tool.
 
-Install system dependencies
-------------
-
-* Python 3
-* Nginx webserver
-* JRE for running Solr
-* GNUMake
-* Unzip utility
-* cURL utility
-* python-lxml
-
 
 Installation Instructions
 -------------------------
@@ -97,6 +86,22 @@ web portal.
    should be given names that are suitable for use in URLs; so no
    spaces, capital letters, slashes or other problematic
    characters. E.g. `kufish.zip`
+
+### Docker Installation (Recommended)
+
+Install via Docker.
+
+### Local Installation 
+Install system dependencies
+------------
+
+* Python 3
+* Nginx webserver
+* JRE for running Solr
+* GNUMake
+* Unzip utility
+* cURL utility
+* python-lxml
 
 4. Build the Solr app: `make clean && make`.
 
