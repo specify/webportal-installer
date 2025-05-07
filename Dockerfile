@@ -4,7 +4,9 @@
 # Run it like this:
 # docker run -p 80:80 -v /absolute/location/of/your/export.zip:/home/specify/webportal-installer/specify_exports/export.zip webportal-service:improve-build
 
-FROM ubuntu:18.04
+FROM ubuntu:20.04
+
+ENV DEBIAN_FRONTEND=noninteractive
 
 LABEL maintainer="Specify Collections Consortium <github.com/specify>"
 
@@ -28,11 +30,10 @@ RUN groupadd -g 999 specify && \
 # Create the application directory and set ownership
 RUN mkdir -p /home/specify/webportal-installer && chown specify:specify -R /home/specify
 
-# Switch to the specify user
-USER specify
-
-# Copy the application files into the container
+# Copy the entire project into the container (Makefile included)
 COPY --chown=specify:specify . /home/specify/webportal-installer
+
+# Set working directory
 WORKDIR /home/specify/webportal-installer
 
 # Expose the port for the web portal
@@ -50,8 +51,13 @@ RUN rm /etc/nginx/sites-enabled/default \
         && service nginx stop
 
 # Redirect nginx logs to stdout and stderr
-RUN ln -sf /dev/stderr /var/log/nginx/error.log && ln -sf /dev/stdout /var/log/nginx/access.log
+# Redirect nginx logs to stdout/stderr
+RUN ln -sf /dev/stderr /var/log/nginx/error.log \
+    && ln -sf /dev/stdout /var/log/nginx/access.log
 
+# Copy and enable the entrypoint script
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
+
+# Run the entrypoint
 CMD ["/entrypoint.sh"]
