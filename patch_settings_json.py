@@ -27,7 +27,11 @@ with open(sys.argv[1]) as settings_file:
 
 if os.path.isfile(sys.argv[2]):
     with open(sys.argv[2]) as f:
-        custom_settings = json.load(f)
+        data = f.read().strip()
+        if data:
+            custom_settings = json.loads(data)
+        else:
+            custom_settings = {}
 else:
     custom_settings = {}
 
