@@ -69,4 +69,5 @@ if addcrossorigin:
 
 # Done.
 
-webxml.write(sys.stdout)
+outFile = open(sys.argv[2], 'wb')
+webxml.write(outFile)

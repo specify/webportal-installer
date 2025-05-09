@@ -58,4 +58,7 @@ for settings_file in settings_files:
     a.set('href', core_dir)
     a.text = core_name
 
-skel.write(sys.stdout)
+update_time = skel.find('.//span[@id="update-time"]')
+update_time.text = datetime.now().isoformat()
+
+skel.write(sys.stdout, encoding='unicode')

@@ -1,17 +1,8 @@
 # Mirror for downloading Apache Solr.
-SOLR_MIRROR := https://archive.apache.org/dist/lucene/solr
-
-# Use 'schema.xml' if solr will be used to create the core
-# Use 'managed-schema' if pre-configuring core
-SCHEMA_FILE := managed-schema
-
-#location of default settings files in solr dist
-DEFAULT_SETS := server/solr/configsets/_default
-
-PYTHON := python2
+SOLR_MIRROR := http://archive.apache.org/dist/lucene/solr
 
 # Use latest available version of Solr 4.
-SOLR_VERSION := $(shell curl -s $(SOLR_MIRROR)/ | $(PYTHON) get_latest_solr_vers.py)
+export SOLR_VERSION := $(shell curl -s $(SOLR_MIRROR)/ | python3 get_latest_solr_vers.py)
 
 SOLR_DIST := solr-$(SOLR_VERSION)
 
