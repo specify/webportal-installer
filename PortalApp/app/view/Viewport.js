@@ -143,7 +143,7 @@ Ext.define('SpWebPortal.view.Viewport', {
 	var bannerURL = settings.get('bannerURL');
 	if (bannerURL) {
 	    this.banner = Ext.create('Ext.panel.Panel', {
-		html: '<table class="deadcenter"> <tr><td><img src='+  settings.get('bannerURL') + '></td></tr></table>',
+		html: '<table class="deadcenter"> <tr><td><img src='+  settings.get('bannerURL') + ' alt=' + settings.get('bannerAltText') + '></td></tr></table>',
 		id: 'spwpbannerpanel',
 		height: settings.get('bannerHeight'),
 		region: 'north'
@@ -151,7 +151,7 @@ Ext.define('SpWebPortal.view.Viewport', {
 	}
 
 	this.background = Ext.create('Ext.panel.Panel', {
-	    html: '<table class="deadcenter"> <tr><td><img src='+  Ext.getStore('SettingsStore').getAt(0).get('backgroundURL') + '></td></tr></table>',
+	    html: '<table class="deadcenter"> <tr><td><img src='+  settings.get('backgroundURL') + ' alt=' + settings.get('backgroundAltText') + '></td></tr></table>',
 	    id: 'spwpmainbackground'
 	});
 
