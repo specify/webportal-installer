@@ -69,4 +69,4 @@ if addcrossorigin:
 
 # Done.
 
-webxml.write(sys.stdout)
+webxml.write(sys.stdout.buffer, encoding="utf-8", xml_declaration=True)

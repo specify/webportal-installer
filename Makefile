@@ -1,5 +1,6 @@
 # Mirror for downloading Apache Solr.
-SOLR_MIRROR := https://archive.apache.org/dist/lucene/solr
+# SOLR_MIRROR := https://archive.apache.org/dist/lucene/solr
+SOLR_MIRROR := https://archive.apache.org/dist/solr/solr
 
 # Use 'schema.xml' if solr will be used to create the core
 # Use 'managed-schema' if pre-configuring core
@@ -8,10 +9,19 @@ SCHEMA_FILE := managed-schema
 #location of default settings files in solr dist
 DEFAULT_SETS := server/solr/configsets/_default
 
-PYTHON := python2
+PYTHON := python3
 
 # Use latest available version of Solr 4.
-SOLR_VERSION := $(shell curl -s $(SOLR_MIRROR)/ | $(PYTHON) get_latest_solr_vers.py)
+# SOLR_VERSION := $(shell curl -s $(SOLR_MIRROR)/ | $(PYTHON) get_latest_solr_vers.py)
+ifeq ($(origin SOLR_VERSION), undefined)
+  SOLR_VERSION_DISCOVERED := $(shell curl -fsSL $(SOLR_MIRROR)/ | $(PYTHON) get_latest_solr_vers.py 2>/dev/null || true)
+  ifeq ($(strip $(SOLR_VERSION_DISCOVERED)),)
+    # Fallback: set a known-good version (change as needed)
+    SOLR_VERSION := 9.6.0
+  else
+    SOLR_VERSION := $(SOLR_VERSION_DISCOVERED)
+  endif
+endif
 
 SOLR_DIST := solr-$(SOLR_VERSION)
 
@@ -76,7 +86,7 @@ clean-%-core:
 	rm -rf build/server/solr/$*
 
 clean-setting-templates:
-	rm -rf build/setting-templates
+	rm -rf build/setting_templates
 
 ##### Common building steps #####
 
