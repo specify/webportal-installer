@@ -18,6 +18,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */"""
 import sys
+from copy import deepcopy
 from xml.etree import ElementTree
 
 # See:
@@ -35,13 +36,27 @@ for f in example_fields:
         root.remove(f)
 
 for f in specify_fields.findall('field'):
-    root.append(f.copy())
+    root.append(deepcopy(f))
 
-# Delete all dynamic fields. For unknown reasons.
-ElementTree.SubElement(root, 'fieldType',
-                       attrib={'name':"ignored", 'class':"solr.StrField", 'indexed':"false", 'stored':"false", 'multiValued':"true"})
-ElementTree.SubElement(root, 'dynamicField',
-                       attrib={'name':"*", 'type':"ignored"})
+# # Delete all dynamic fields. For unknown reasons.
+# ElementTree.SubElement(root, 'fieldType',
+#                        attrib={'name':"ignored", 'class':"solr.StrField", 'indexed':"false", 'stored':"false", 'multiValued':"true"})
+# ElementTree.SubElement(root, 'dynamicField',
+#                        attrib={'name':"*", 'type':"ignored"})
+# Ensure a catch-all ignores unknown fields, but don't duplicate existing 'ignored' type.
+if root.find("./fieldType[@name='ignored']") is None:
+    ElementTree.SubElement(
+        root, 'fieldType',
+        attrib={'name':"ignored", 'class':"solr.StrField",
+                'indexed':"false", 'stored':"false", 'multiValued':"true"}
+    )
+
+# Add or update a '*' dynamicField to use 'ignored'
+df = root.find("./dynamicField[@name='*']")
+if df is None:
+    ElementTree.SubElement(root, 'dynamicField', attrib={'name':"*", 'type':"ignored"})
+else:
+    df.set('type', 'ignored')
 
 # Change uniqueKey to spid.
 
@@ -55,4 +70,4 @@ for elem in schema.findall('copyField'):
 
 # Done.
 
-schema.write(sys.stdout)
+schema.write(sys.stdout.buffer, encoding="utf-8", xml_declaration=True)

@@ -38,4 +38,4 @@ for core_dir in sys.argv[2:]:
     core.attrib.update({'name':core_name, 'instanceDir':core_name})
 """
 
-example_solr_xml.write(sys.stdout)
+example_solr_xml.write(sys.stdout.buffer, encoding="utf-8", xml_declaration=True))

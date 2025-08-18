@@ -59,8 +59,6 @@ CMD ["sh","-c", "\
     make build-all && \
     ./build/bin/solr start -force && \
     sleep 20 && \
-    curl -v \"http://localhost:8983/solr/export/update/csv?commit=true&encapsulator=\\\"&escape=\\&header=true\" \
-         --data-binary @./build/col/export/PortalFiles/PortalData.csv \
-         -H 'Content-type:application/csv' && \
+    make load-data || true && \
     nginx -g 'daemon off;' \
 "]

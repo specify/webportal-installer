@@ -4,7 +4,7 @@ SOLR_MIRROR := https://archive.apache.org/dist/solr/solr
 
 # Use 'schema.xml' if solr will be used to create the core
 # Use 'managed-schema' if pre-configuring core
-SCHEMA_FILE := managed-schema
+SCHEMA_FILE := managed-schema.xml
 
 #location of default settings files in solr dist
 DEFAULT_SETS := server/solr/configsets/_default
@@ -195,14 +195,15 @@ load-data-%: build/html/%/load-timestamp.txt ;
 .PRECIOUS: build/html/%/load-timestamp.txt
 build/html/%/load-timestamp.txt: build/col/%/PortalFiles | build/html/%
 	@printf "\n\n### Loading data into $*.\n\n"
-	curl -X POST "http://localhost:8983/solr/$*/update" \
-		-d '{ "delete": {"query":"*:*"} }' \
+	curl -sS -X POST "http://localhost:8983/solr/$*/update?wt=json" \
 		-H 'Content-Type: application/json' \
-		| grep '"status":0'
-	curl "http://localhost:8983/solr/$*/update/csv?commit=true&encapsulator=\"&escape=\&header=true" \
-		--data-binary @build/col/$*/PortalFiles/PortalData.csv \
+		-H 'Accept: application/json' \
+		-d '{ "delete": {"query":"*:*"} }' \
+		| grep -E '"status"\s*:\s*0' || true
+	curl -sS "http://localhost:8983/solr/$*/update/csv?commit=true&encapsulator=\"&escape=\&header=true&wt=json" \
 		-H 'Content-type:application/csv' \
-		| grep '"status":0'
+		--data-binary @build/col/$*/PortalFiles/PortalData.csv \
+		| grep -E '"status"\s*:\s*0'
 	date > $@
 
 .PHONY: force-load-data-%
