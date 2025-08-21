@@ -61,7 +61,8 @@ Ext.define('SpWebPortal.model.SettingsModel', {
         {name: 'clusterAverageCenter', type: 'boolean', defaultValue: true},
         {name: 'clusterMinimumClusterSize', type: 'int'},
         {name: 'clusterIgnoreHiddenMarkers', type: 'boolean', defaultValue: true},
-        {name: 'clusterStyles', type: 'json'}
+        {name: 'clusterStyles', type: 'json'},
+        {name: 'gtmContainerId', type: 'string', default: null}
    ],
 
     validations: [
