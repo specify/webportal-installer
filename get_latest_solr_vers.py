@@ -28,4 +28,4 @@ versions = [tuple(int(x) for x in v) for v in matches]
 
 latest = sorted(versions, reverse=True)[0]
 
-print '7.5.%d' % latest
+print('7.5.%d' % latest)

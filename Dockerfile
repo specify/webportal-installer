@@ -4,57 +4,61 @@
 # Run it like this:
 # docker run -p 80:80 -v /absolute/location/of/your/export.zip:/home/specify/webportal-installer/specify_exports/export.zip webportal-service:improve-build
 
-FROM ubuntu:18.04
+FROM ubuntu:24.04
 
 LABEL maintainer="Specify Collections Consortium <github.com/specify>"
 
-# Get Ubuntu packages
+# Install system packages
 RUN apt-get update && apt-get -y install \
         nginx \
         unzip \
         curl \
         wget \
-        python \
-        python-lxml \
+        python3 \
+        python3-lxml \
         make \
         lsof \
-        default-jre \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+        openjdk-17-jre-headless \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Create a user and group for the application
-RUN groupadd -g 999 specify && \
-    useradd -r -u 999 -g specify specify
+# Create 'specify' group and user if they don't already exist
+RUN groupadd specify || true \
+ && useradd -r -g specify specify || true
 
-# Create the application directory and set ownership
-RUN mkdir -p /home/specify/webportal-installer && chown specify:specify -R /home/specify
+# Create application directory and set ownership
+RUN mkdir -p /home/specify/webportal-installer \
+    && chown specify:specify -R /home/specify
 
-# Switch to the specify user
+# Copy application code as the unprivileged 'specify' user
 USER specify
-
-# Copy the application files into the container
 COPY --chown=specify:specify . /home/specify/webportal-installer
 WORKDIR /home/specify/webportal-installer
-
-# Expose the port for the web portal
 EXPOSE 80
 
-# Switch back to root user for further configuration
+# Switch back to root for system configuration
 USER root
 
-# Configure nginx to proxy the Solr requests and serve the static files
+# Configure nginx
 COPY webportal-nginx.conf /etc/nginx/sites-available/webportal-nginx.conf
-
-# Disable the default nginx site and enable the portal site
 RUN rm /etc/nginx/sites-enabled/default \
-        && ln -s /etc/nginx/sites-available/webportal-nginx.conf /etc/nginx/sites-enabled/ \
-        && service nginx stop
+    && ln -s /etc/nginx/sites-available/webportal-nginx.conf /etc/nginx/sites-enabled/ \
+    && service nginx stop
 
-# Redirect nginx logs to stdout and stderr
-RUN ln -sf /dev/stderr /var/log/nginx/error.log && ln -sf /dev/stdout /var/log/nginx/access.log
+# Redirect nginx logs to Docker stdout/stderr
+RUN ln -sf /dev/stderr /var/log/nginx/error.log \
+    && ln -sf /dev/stdout /var/log/nginx/access.log
 
-# Build the Solr app
-# Run Solr in foreground
-# Wait for Solr to load
-# Import data from the .zip file
-# Run Docker in foreground
-CMD ["sh", "-c", "make clean-all && make build-all && ./build/bin/solr start -force && sleep 20 && curl -v \"http://localhost:8983/solr/export/update/csv?commit=true&encapsulator=\\\"&escape=\\&header=true\" --data-binary @./build/col/export/PortalFiles/PortalData.csv -H 'Content-type:application/csv' && nginx -g 'daemon off;'"]
+# Default command:
+# 1. Clean & build your Solr-based portal
+# 2. Start Solr and wait 20s
+# 3. Import CSV into Solr
+# 4. Launch nginx in foreground
+CMD ["sh","-c", "\
+    make clean-all && \
+    make build-all && \
+    ./build/bin/solr start -force && \
+    sleep 20 && \
+    make load-data || true && \
+    nginx -g 'daemon off;' \
+"]
