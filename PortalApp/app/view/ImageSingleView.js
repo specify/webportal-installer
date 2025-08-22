@@ -87,9 +87,21 @@ Ext.define('SpWebPortal.view.ImageSingleView', {
 	this.superclass.initComponent.apply(this, arguments);
     },
 
-    getImgHtml: function() {
-	var src = this.getIsActualSize() ? this.getImageRecord().get('Src') : this.getImageRecord().get('StdSrc');
-	return  '<table class="deadcenter"> <tr><td><img src='+  src + '></td></tr></table>'; //caller will have filled-in the src.
-    }
+  getImgHtml: function () {
+    var src = this.getIsActualSize()
+      ? this.getImageRecord().get('Src')
+      : this.getImageRecord().get('StdSrc')
+
+		var displayImgCaption = Ext.getStore('SettingsStore').getAt(0).get('displayImgCaption')
+    var caption = this.getImageRecord().get('AttachedToDescr').replace('\n', '<br>')
+		var captionHtml = displayImgCaption ? '<tr><td>' + caption + '</td></tr>' : ''
+
+    return (
+      '<table class="deadcenter">' +
+      '<tr><td><img src=' + src + '></td></tr>' +
+			captionHtml +
+      '</table>'
+    ) //caller will have filled-in the src.
+  }
 
 });
