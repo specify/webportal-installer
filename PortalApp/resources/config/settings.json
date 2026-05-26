@@ -6,7 +6,7 @@
     "imageViewSize": 600,
     "imageInfoFlds": "",
     "portalInstance": "spwp",
-    "imageBaseUrl": "https://biodis-assets.ksulib.net/",
+    "imageBaseUrl": "https://specify-assets.test.ksulib.net/",
     "collectionName": "Collection1",
     "defInitialView": "grid",
     "defMapType": "roadmap",
